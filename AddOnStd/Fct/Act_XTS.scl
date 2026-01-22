@@ -1,0 +1,800 @@
+﻿FUNCTION_BLOCK "Act_XTS"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_AccDec_During_Reset : SInt;   // Configuration Acc/Dec Mover during Reset
+      Cfg_DisableNoHaltMotion : Bool;   // Configuration Disable No Halt Motion
+      Cfg_Gap0 : Real;   // Value of Gap
+      Cfg_Gap1 : Real;   // Value of Gap
+      Cfg_Gap2 : Real;   // Value of Gap
+      Cfg_Gap3 : Real;   // Value of Gap
+      Cfg_Index_Pos_ResetFct : DInt;   // Configuration  Index_pos For reset Function
+      Cfg_InhbtMotionAlarm : Bool;   // External Configuration to inhibitte Motion Alarm on specific conditions
+      Cfg_InPos : Real;   // Configuration Mover in Position
+      Cfg_IsMoved : Real;   // Configuration Mover has been moved
+      Cfg_LastPos : DInt;   // Last Position number : used to reset position index
+      Cfg_LenghtRail : Real;   // Configuration Lenght Rail
+      Cfg_MoverIN_Number : DInt;   // Configuration input Mover number
+      Cfg_MoverInMD : DInt;   // Configuration Mover Present in Module
+      Cfg_MoverNumber : Int;   // Configuration Mover number
+      Cfg_NbrHMI : DInt;   // Configuration number of HMI
+      Cfg_NbrOfMover : DInt;   // Configuration number of Mover
+      Cfg_Offset_Mover : DInt;   // Configuration Offset Mover
+      Cfg_Positive_Direction : Bool;   // Configuration No Shortest Way
+      Cfg_Scaling : Real;   // Configuration scaling of Position
+      Cfg_Speed_During_Reset : SInt;   // Configuration Speed During Reset Cycle
+      Cmd_Ack : Bool;   // Command for alarm acknowledgement
+      Cmd_HaltMotion : Bool;   // Command External Halt Motion
+      Cmd_Out : DInt;   // Command send by the station sequence
+      Cmd_ResetFct : Bool;   // Command for reset function
+      Mem_Force_Index : DInt;   // Memory Command Force Index Position
+      Mem_Index_pos : DInt;
+      ONS : DInt;
+      Par_TimeOut : DInt;   // TimeOut Parameter
+      Sts_MD_Exec : Bool;   // Status Module In Execute
+      Sts_NewMotionAck : Bool;
+      Cfg_Pos : Array[0.."Cfg_XTS_NbrMaxPosition"] of "Typ_XTS_Config_Pos";
+      MoverIN_Mover : Array[1.."Cfg_XTS_NbrMaxMover"] of "Typ_XTS_In_Mover";   // Array of Movers input data
+      Sync_PosToXTS : Array[0.."Cfg_XTS_NbrMaxPosition"] of "Typ_XTS_SyncPosToXTS";   // UDT for synchronize transport with station
+   END_VAR
+
+   VAR_OUTPUT 
+      Index_pos : DInt;   // Index select array value
+      MemoryPos : Real := -99.0;   // Memory of Mover Position for Abort cycle
+      Rep_dT : DInt;   // Reporting value to give current execution elapsed time
+      Sts_ActualPos : Real;   // Status Actual Position
+      Sts_AlmOns : Bool;   // Status to inform alarm coming edge
+      Sts_Alms : DInt;   // Status to inform the type of alarm pending
+      Sts_HoldMotionNoCA : Bool;   // Status Mover Motion Held
+      Sts_Idle : Bool := 1;   // Status to inform end of command
+      Sts_Mover_ColAvoidBW : Bool;   // Status Mover in Collision Avoidance
+      Sts_Mover_ColAvoidFF : Bool;   // Status Mover in Collision Avoidance
+      Sts_Mover_PosOk : Bool;   // Status Mover position ok
+      Sts_MoverInMD { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Array[1.."Cfg_XTS_NbrMaxMover"] of DInt;   // Status Mover in MD
+      Sts_NoAlm : Bool;   // Status to inform while no alarm pending
+      Sts_Out : DInt;   // Status to inform the command ongoing
+      Sts_Seq : DInt;   // Status to give current sequence value
+      Sts_Seqp : DInt;   // Status to give previous sequence value
+      TargetPosition : Real;   // Target Position
+      MoverOUT : "Typ_XTS_Out_Mover";   // Mover Output data
+   END_VAR
+
+   VAR_IN_OUT 
+      Index_Pos_Mover : Array[1.."Cfg_XTS_NbrMaxMover"] of DInt;
+      Sts_MoverNb_Pos : Array[0.."Cfg_XTS_NbrMaxPosition"] of Int;   // Status Mover number in front of Position[index]
+      Sts_Pos : Array[0.."Cfg_XTS_NbrMaxPosition"] of "Typ_XTS_StatusPos";   // UDT Position Status
+      Sync_PosFromXTS : Array[0.."Cfg_XTS_NbrMaxPosition"] of "Typ_XTS_SyncPosFromXTS";   // UDT FOR synchronize transport with station
+      IN_InterfaceHMi : Array[0..10] of "Typ_XTS_AxSiHMi";   // XTS System Interface HMi
+      Function_XTS_HMi : "Fct_XTS_HMi";   //  INTERFACE XTS with HMI
+   END_VAR
+
+   VAR 
+      AckTmr {InstructionName := 'TOF_TIME'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TOF_TIME;   // -
+      "Tmp_" { S7_SetPoint := 'True'} : DInt;   // Temporary
+      Tmr_Cmd {InstructionName := 'TON_TIME'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON_TIME;   // Command duration :TON;
+      Tmr_Grp_TO {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // TON of Group Change Timeout
+      Tmr_Pos_TO1 {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // TON of position time out
+      Tmr_Pos_TO2 {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // TON of position time out
+      Tmr_Pos_TO3 {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // TON of position time out
+      Tmr_TO {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // TON of time out
+      Tmr_Wait {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // TON for Waiting Time
+      Cmd_FromHMi { S7_SetPoint := 'True'} : DInt;   // Command From HMi
+      Cmd_NewRqst : Bool;
+      Cmd_Seq : DInt;   // Command to define next sequence value
+      Gap : Real;   // Gap value
+      iLoop_HMI : DInt;   // Index for Loop HMI interface
+      iLoop_ManExe : DInt;   // Index for Loop to set all position status ManExe
+      IN_NextMover : DInt;   // Input of Next Mover
+      IN_PrevMover : DInt;   // Input of Previous Mover
+      Index_pos_HMi : Array[0..10] of DInt;   // Index select array value from HMI
+      InterfaceHMi { S7_SetPoint := 'False'} : "Typ_XTS_AxSiHMi";   //  XTS System INTERFACE HMi
+      LastIndex_Pos : DInt;   // Memory last Index position
+      Memo_NewMotionAck : Bool;
+      MemoryPosPre : Real;   // Previous value of Mover Memory Position for Abort Cycle
+      MoverIN { S7_SetPoint := 'False'} : "Typ_XTS_In_Mover";   //  Mover Input data
+      NextMoverNumber : DInt;   // ID of next Mover
+      Pos_LastIndex_Pos : Real;   // Memory value of position for last index position
+      PrevMoverNumber : DInt;   // ID of previous Mover
+      rTolPos : Real;   // Tolerance use for position control
+      SelectMover_HMi : Array[0..9] of DInt;   // Memory Mover selection from HMI
+      Sts_ManExe : Bool;   // Local Status Manual Exec
+      Sts_Mover_AnticipOk : Bool;   // Status Mover in anticipate Position
+      Sts_Mover_OutOfAnticip : Bool;   // Status Mover Out Of Its Anticipation Area
+      Sts_SeqOns : Bool;   // Status to inform once a sequence change
+      Sts_SeqT : DInt;   // Reporting value to give current execution elapsed time of the sequence
+      Sts_TimeOut : Bool;   // Timeout value reached
+      N : DInt;
+      Empty_StatusPos { S7_SetPoint := 'False'} : "Typ_XTS_StatusPos";
+      New_Request_Ons {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+      rMinPosWithTol { S7_SetPoint := 'True'} : Real;
+      rMaxPosWithTol : Real;
+      bInPos : Bool;
+      Fct_XTS_ManFct_Instance : "Fct_XTS_ManFct";
+      Fct_XTS_HMi_Instance : "Fct_XTS_HMi";
+      Memo_AbortSign { S7_SetPoint := 'True'} : Bool;   // Memo_AbortSign
+   END_VAR
+
+
+BEGIN
+	
+	REGION Reset function
+	Loop:
+	    IF #Cmd_ResetFct THEN
+	        #Index_Pos_Mover[#Cfg_MoverNumber] := #Cfg_Index_Pos_ResetFct;
+	        #Cmd_Seq := 0;
+	        #Sts_Seq := 0;
+	        #MoverOUT.bEnable := FALSE;
+	        #MoverOUT.bStopMoving := FALSE;
+	        #MoverOUT.bGrpBothWay := FALSE;
+	        #Cmd_Ack := TRUE;
+	        #Sts_Idle := TRUE;
+	        #MoverOUT.rTargetPosition := - #Cfg_LenghtRail;
+	        #Mem_Force_Index := 0;
+	        #MemoryPos := -99;
+	        #Cmd_Out := 0;
+	        #LastIndex_Pos := -1;
+	        #Mem_Index_pos := 0;
+	        #Cmd_ResetFct := FALSE;
+	    END_IF;
+	END_REGION
+	
+	REGION Local Parameters
+	    #rTolPos := 3.0;
+	END_REGION
+	
+	REGION Retrieve #Index_pos
+	    #Index_pos := #Index_Pos_Mover[#Cfg_MoverNumber];
+	END_REGION
+	
+	REGION Initialize #Index_pos
+	    IF #Index_pos > _."Cfg_XTS_NbrMaxPosition" OR #Index_pos < 0 THEN
+	        #Index_pos := 0;
+	    END_IF;
+	    IF #Mem_Force_Index > _."Cfg_XTS_NbrMaxPosition" OR #Mem_Force_Index < 0 THEN
+	        #Mem_Force_Index := 0;
+	    END_IF;
+	END_REGION
+	
+	REGION Retrieve #MoverIN
+	    #MoverIN := #MoverIN_Mover[#Cfg_MoverNumber];
+	END_REGION
+	
+	REGION Update Status Mover in Module
+	    #Sts_MoverInMD[#Cfg_MoverNumber] := #Cfg_MoverInMD;
+	END_REGION
+	
+	REGION Alarms Reset
+	    #AckTmr(IN := #Cmd_Ack AND #MoverIN.bError,
+	            PT := T#100MS);
+	    IF #Cmd_Ack THEN
+	        #Sts_Alms := 0;
+	        #Cmd_Ack := FALSE;
+	    END_IF;
+	    #MoverOUT.bAck := #AckTmr.Q;
+	END_REGION
+	
+	REGION Interface function with HMI
+	    
+	    // Input 
+	    #Function_XTS_HMi.Cfg_MoverNumber := #Cfg_MoverNumber;
+	    #Function_XTS_HMi.Cfg_MoverInMD := #Cfg_MoverInMD;
+	    #Function_XTS_HMi.Cfg_NbrHMI := #Cfg_NbrHMI;
+	    #Function_XTS_HMi.Cfg_LastPos := #Cfg_LastPos;
+	    #Function_XTS_HMi.Sts_Idle := #Sts_Idle;
+	    #Function_XTS_HMi.MoverIN := #MoverIN;
+	    #Function_XTS_HMi.Cfg_Pos := #Cfg_Pos;
+	    #Function_XTS_HMi.Sts_ActualPos := #Sts_ActualPos;
+	    #Function_XTS_HMi.Sts_Mover_ColAvoidFF := #Sts_Mover_ColAvoidFF;
+	    #Function_XTS_HMi.Sts_Mover_ColAvoidBW := #Sts_Mover_ColAvoidBW;
+	    #Function_XTS_HMi.Sts_NoAlm := #Sts_NoAlm;
+	    
+	    
+	    // Call
+	    #Fct_XTS_HMi_Instance(Cmd_FromHMi := #Cmd_FromHMi,
+	                          MemoryPos := #MemoryPos,
+	                          Cmd_Out := #Cmd_Out,
+	                          InterfaceHMi := #InterfaceHMi,
+	                          Sts_Pos := #Sts_Pos,
+	                          MoverOUT := #MoverOUT,
+	                          IN_InterfaceHMi := #IN_InterfaceHMi);
+	END_REGION
+	
+	REGION Update Status before Aborting if signature is pending
+	    
+	    IF #Cmd_Out.%X1 OR #Cmd_Out.%X2 OR #Cmd_Out.%X4 THEN
+	        #Memo_AbortSign := False;
+	    END_IF;
+	    
+	    IF #Cmd_Out.%X0 AND (#Sts_Seq = 103 OR #Cmd_Seq = 103) THEN
+	        #Memo_AbortSign := TRUE;
+	    END_IF;
+	    
+	    IF #Memo_AbortSign AND #Sync_PosToXTS[#Index_pos].Sts_Cycle AND #Sync_PosToXTS[#Index_pos].Cmd_Force_Index > 0 THEN
+	        
+	        IF #Sync_PosToXTS[#Index_pos].Cmd_Force_Index <= #Cfg_LastPos THEN
+	            #Mem_Force_Index := #Sync_PosToXTS[#Index_pos].Cmd_Force_Index;
+	        END_IF;
+	        
+	        #Memo_AbortSign := FALSE;
+	        #Sync_PosFromXTS[#Index_pos].Cmd_Cycle := FALSE;
+	        #LastIndex_Pos := #Index_pos;
+	        #Pos_LastIndex_Pos := #MoverIN.rPos;
+	        
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION Waiting for command
+	    IF #Cmd_Out <> 0 THEN
+	        #Sts_Out := #Cmd_Out;
+	        
+	        // Cmd Execute Manual
+	        IF #Cmd_Out.%X4 AND #Sts_Idle THEN
+	            #Cmd_Seq := 110;
+	            #Tmr_Cmd(IN := FALSE,
+	                     PT := #Tmr_Cmd.PT);
+	            #Sts_Idle := FALSE;
+	            
+	            // Cmd Execute
+	        ELSIF #Cmd_Out.%X2 AND #Sts_Idle THEN
+	            #Cmd_Seq := 100;
+	            #Tmr_Cmd(IN := FALSE,
+	                     PT := #Tmr_Cmd.PT);
+	            #Sts_Idle := FALSE;
+	            
+	            // Cmd Reset
+	        ELSIF #Cmd_Out.%X1 AND (#Sts_Idle OR #Sts_Seq > 99) THEN
+	            #Cmd_Seq := 10;
+	            #Cmd_Out := 2;
+	            #Tmr_Cmd(IN := FALSE,
+	                     PT := #Tmr_Cmd.PT);
+	            #Sts_Idle := FALSE;
+	            
+	            // Cmd Stop Mover
+	        ELSIF #Cmd_Out.%X3 AND (#Sts_Idle OR #Sts_Seq > 4) THEN
+	            #Cmd_Seq := 5;
+	            #Cmd_Out := 8;
+	            #Tmr_Cmd(IN := FALSE,
+	                     PT := #Tmr_Cmd.PT);
+	            #Sts_Idle := FALSE;
+	        END_IF;
+	        
+	        // Cmd Abort
+	        IF #Cmd_Out.%X0 AND (#Sts_Idle OR #Sts_Seq > 4) THEN
+	            #Cmd_Seq := 1;
+	            #Cmd_Out := 0;
+	            #Tmr_Cmd(IN := FALSE,
+	                     PT := #Tmr_Cmd.PT);
+	            #Sts_Idle := FALSE;
+	        END_IF;
+	        
+	        // Manual Reset of Memory Position  
+	        IF #Cmd_Out.%X7 THEN
+	            #MemoryPos := -99;
+	            #Cmd_Out.%X7 := FALSE;
+	        END_IF;
+	    END_IF;
+	END_REGION
+	
+	REGION Sequencer managenment
+	    #Sts_SeqOns := #Cmd_Seq <> 0;
+	    IF #Sts_SeqOns THEN
+	        #Sts_Seqp := #Sts_Seq;
+	        #Sts_Seq := #Cmd_Seq;
+	        #Cmd_Seq := 0;
+	        #Tmr_TO(IN := FALSE,
+	                PT := #Tmr_TO.PT);
+	    END_IF;
+	END_REGION
+	
+	REGION Timers Management : Sequence TimeOut / Command duration
+	    IF (NOT #Sts_Idle) THEN
+	        #Tmr_TO.PT := #Par_TimeOut;
+	        IF #Cfg_Speed_During_Reset = #MoverOUT.rTargetSpeed THEN
+	            #Tmr_TO.PT := #Par_TimeOut * 2;
+	        END_IF;
+	    END_IF;
+	    #Tmr_TO(IN := (NOT #Sts_Idle),
+	            PT := #Tmr_TO.PT);
+	    #Tmr_Cmd(IN := (NOT #Sts_Idle),
+	             PT := T#9999999ms);
+	    #Sts_SeqT := #Tmr_TO.ET;
+	    #Rep_dT := #Tmr_Cmd.ET;
+	    #Sts_TimeOut := #Tmr_TO.Q;
+	END_REGION
+	
+	REGION Alarm Mover in error
+	IF (NOT #Sts_Out.%X0) AND #MoverIN.bError THEN
+	    #MoverOUT.bStopMoving := TRUE;
+	    #Sts_Alms.%X1 := TRUE;
+	END_IF;
+	END_REGION
+	    
+	REGION Define #rMinPosWithTol TO manage when position request is closed TO #Cfg_LenghtRail
+	    #rMinPosWithTol := #MoverOUT.rTargetPosition - #Cfg_LenghtRail;
+	    IF #rMinPosWithTol < 0 THEN
+	        #rMinPosWithTol := #Cfg_LenghtRail - #Cfg_InPos;
+	    END_IF;
+	END_REGION
+	
+	REGION Define #rMinPosWithTol TO manage when position request is closed TO #Cfg_LenghtRail
+	#rMaxPosWithTol := #MoverOUT.rTargetPosition + #Cfg_InPos;
+	IF #rMinPosWithTol > #Cfg_LenghtRail THEN
+	    #rMaxPosWithTol := 0 + #Cfg_InPos;
+	END_IF;
+	END_REGION
+	
+	REGION Position requested is close TO zero
+	    
+	    IF #MoverOUT.rTargetPosition + #Cfg_InPos > #Cfg_LenghtRail
+	        OR #MoverOUT.rTargetPosition - #Cfg_InPos < 0 THEN
+	        IF ((#MoverIN.rPos >= #rMinPosWithTol AND #MoverIN.rPos <= #Cfg_LenghtRail)
+	            OR (#MoverIN.rPos <= #rMaxPosWithTol)) THEN
+	            #bInPos := TRUE;
+	        ELSE
+	            #bInPos := FALSE;
+	        END_IF;
+	    ELSE
+	        // Position request is not around 0
+	        IF ABS(#MoverIN.rPos - #MoverOUT.rTargetPosition) <= #Cfg_InPos THEN
+	            #bInPos := TRUE;
+	        ELSE
+	            #bInPos := FALSE;
+	        END_IF;
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION Mover In Position
+	    #Sts_Mover_PosOk := #bInPos AND (NOT #MoverIN.bIsMoving) AND (#MoverIN.bInPos OR ((NOT #Sts_Out.%X2) AND (NOT #Cmd_Out.%X2)));
+	    #Sts_Pos[#Index_pos].Mover_PosOk := #Sts_Mover_PosOk AND (#Sync_PosFromXTS[#Index_pos].Cmd_Cycle OR #Sts_ManExe);
+	END_REGION
+	
+	REGION Offset Management FOR Target Position
+	    IF #Cfg_Scaling <= 0 THEN
+	        #Cfg_Scaling := 1.0;
+	    END_IF;
+	    #TargetPosition := (#Cfg_Pos[#Index_pos].Position + #Cfg_Offset_Mover) / #Cfg_Scaling;
+	    #Sts_ActualPos := #MoverIN.rPos * #Cfg_Scaling;
+	END_REGION
+	
+	REGION Define number OF Next Mover - Define IO Number OF Next Mover
+	IF #Cfg_MoverNumber = 1 THEN
+	    #NextMoverNumber := #Cfg_NbrOfMover;
+	END_IF;
+	IF #Cfg_MoverNumber <> 1 THEN
+	    #NextMoverNumber := #Cfg_MoverNumber - 1;
+	END_IF;
+	IF #Cfg_MoverNumber = #Cfg_NbrOfMover THEN
+	    #PrevMoverNumber := 1;
+	END_IF;
+	IF #Cfg_MoverNumber <> #Cfg_NbrOfMover THEN
+	    #PrevMoverNumber := #Cfg_MoverNumber + 1;
+	END_IF;
+	#IN_NextMover := #NextMoverNumber;
+	#IN_PrevMover := #PrevMoverNumber;
+	END_REGION
+	
+	REGION Mover In Anticipate Position - Mover Out OF Its Anticipation Area
+	    
+	    //Mover In Anticipate Position
+	    IF #Index_pos <> #Index_Pos_Mover[#IN_NextMover] THEN
+	        IF ABS(#MoverIN.rPos - #MoverOUT.rTargetPosition) <= (#Cfg_Pos[#Index_pos].Anticip / #Cfg_Scaling) THEN
+	            #Sts_Mover_AnticipOk := TRUE;
+	        ELSIF (#MoverOUT.rTargetPosition - (#Cfg_Pos[#Index_pos].Anticip / #Cfg_Scaling) < 0) AND (ABS(#Cfg_Pos[#Index_pos].Anticip / #Cfg_Scaling - #MoverOUT.rTargetPosition - #Cfg_LenghtRail) <= #MoverIN.rPos) THEN
+	            #Sts_Mover_AnticipOk := TRUE;
+	        ELSIF #Cfg_Pos[#Index_pos].Anticip = -1 THEN
+	            #Sts_Mover_AnticipOk := TRUE;
+	        ELSE
+	            #Sts_Mover_AnticipOk := FALSE;
+	        END_IF;
+	    ELSE
+	        #Sts_Mover_AnticipOk := FALSE;
+	    END_IF;
+	    
+	    //Mover Out OF Its Anticipation Area
+	    IF #Cfg_Pos[#Index_pos].Anticip <> -1 THEN
+	        IF (#MoverOUT.rTargetPosition - (#Cfg_Pos[#Index_pos].Anticip / #Cfg_Scaling) < 0) AND #MoverIN.rPos>#MoverOUT.rTargetPosition AND (#Cfg_LenghtRail+#MoverOUT.rTargetPosition - #Cfg_Pos[#Index_pos].Anticip/#Cfg_Scaling)>#MoverIN.rPos THEN
+	            #Sts_Mover_OutOfAnticip := TRUE;
+	        ELSIF (#MoverOUT.rTargetPosition - (#Cfg_Pos[#Index_pos].Anticip / #Cfg_Scaling) >= 0) AND ((#MoverIN.rPos> #MoverOUT.rTargetPosition) OR (#MoverOUT.rTargetPosition - #Cfg_Pos[#Index_pos].Anticip/#Cfg_Scaling)>#MoverIN.rPos) THEN
+	            #Sts_Mover_OutOfAnticip := TRUE;
+	        ELSE
+	            #Sts_Mover_OutOfAnticip := FALSE;
+	        END_IF;
+	    ELSE
+	        #Sts_Mover_OutOfAnticip := FALSE;
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION Mover #Gap management
+	    #MoverOUT.bGapBit0 := FALSE;
+	    #MoverOUT.bGapBit1 := FALSE;
+	    IF #Cfg_Pos[#Index_pos].Gap = 1 THEN
+	        #Gap := #Cfg_Gap1;
+	        #MoverOUT.bGapBit0 := TRUE;
+	    END_IF;
+	    IF #Cfg_Pos[#Index_pos].Gap = 2 THEN
+	        #Gap := #Cfg_Gap2;
+	        #MoverOUT.bGapBit1 := TRUE;
+	    END_IF;
+	    IF #Cfg_Pos[#Index_pos].Gap = 3 THEN
+	        #Gap := #Cfg_Gap3;
+	        #MoverOUT.bGapBit0 := TRUE;
+	        #MoverOUT.bGapBit1 := TRUE;
+	    END_IF;
+	    IF (NOT #MoverOUT.bGapBit0) AND (NOT #MoverOUT.bGapBit1) THEN
+	        #Gap := #Cfg_Gap0;
+	    END_IF;
+	END_REGION
+	
+	REGION Status Mover in Collision Avoidance
+	    IF #MoverIN.rPos <= #MoverIN_Mover[#IN_NextMover].rPos AND ABS(#MoverIN.rPos - #MoverIN_Mover[#IN_NextMover].rPos) <= #Gap + #rTolPos
+	        OR
+	        (#MoverIN.rPos > #MoverIN_Mover[#IN_NextMover].rPos AND ABS(#MoverIN.rPos - (#MoverIN_Mover[#IN_NextMover].rPos + #Cfg_LenghtRail)) <= #Gap + #rTolPos) THEN
+	        #Sts_Mover_ColAvoidFF := TRUE;
+	    ELSE
+	        #Sts_Mover_ColAvoidFF := FALSE;
+	    END_IF;
+	    
+	    IF #MoverIN.rPos >= #MoverIN_Mover[#IN_PrevMover].rPos AND ABS(#MoverIN.rPos - #MoverIN_Mover[#IN_PrevMover].rPos) <= #Gap + #rTolPos
+	        OR
+	        #MoverIN.rPos < #MoverIN_Mover[#IN_PrevMover].rPos AND ABS(#MoverIN.rPos - (#MoverIN_Mover[#IN_PrevMover].rPos + #Cfg_LenghtRail)) <= #Gap + #rTolPos THEN
+	        #Sts_Mover_ColAvoidBW := TRUE;
+	    ELSE
+	        #Sts_Mover_ColAvoidBW := FALSE;
+	    END_IF;
+	END_REGION
+	
+	REGION Status Mover Held By Next Mover
+	    IF NOT #Cfg_DisableNoHaltMotion AND
+	        (
+	        (#MoverIN.rPos <= #MoverIN_Mover[#IN_NextMover].rPos AND ABS(#MoverIN.rPos - #MoverIN_Mover[#IN_NextMover].rPos) <= 500)
+	        OR
+	        #MoverIN.rPos > #MoverIN_Mover[#IN_NextMover].rPos AND ABS(#MoverIN.rPos - (#MoverIN_Mover[#IN_NextMover].rPos + #Cfg_LenghtRail)) <= 500
+	        ) THEN
+	        #Sts_HoldMotionNoCA := TRUE;
+	    ELSE
+	        #Sts_HoldMotionNoCA := FALSE;
+	    END_IF;
+	END_REGION
+	
+	REGION Reset Mover ID number in front OF Position[x] 
+	    IF #LastIndex_Pos <> -1 AND (NOT #Sts_Out.%X0) AND (NOT #Cmd_Out.%X0) AND (NOT #Sts_Out.%X1) AND (NOT #Cmd_Out.%X1) AND #Sts_Out.%X2 THEN
+	        #Sts_MoverNb_Pos[#LastIndex_Pos] := 0;
+	        #LastIndex_Pos := -1;
+	        #Pos_LastIndex_Pos := 0;
+	    END_IF;
+	END_REGION
+	
+	REGION New Motion Acknowledge
+	    IF (#Memo_NewMotionAck AND #MoverIN.bNewMotionAck) OR ((NOT #Memo_NewMotionAck) AND (NOT #MoverIN.bNewMotionAck)) THEN
+	        #Sts_NewMotionAck := TRUE;
+	    END_IF;
+	END_REGION
+	
+	REGION SEQUENCE
+	    CASE #Sts_Seq OF
+	            
+	        1:// Abort Cycle - Save Mover Actual Position
+	            IF #Sts_SeqOns THEN
+	                #Cmd_NewRqst := FALSE;
+	                #MoverOUT.bStopMoving := FALSE;
+	                #MoverOUT.bGrpBothWay := FALSE;
+	                #MoverOUT.bEnable := FALSE;
+	            ELSIF #MoverIN.bNoGroupCA OR (#Sts_SeqT >= (#Par_TimeOut * 0.9)) THEN
+	                #Sts_Idle := TRUE;
+	                IF #MemoryPos = -99 THEN
+	                    #MemoryPos := #MoverIN.rPos;
+	                    #MemoryPosPre := #MemoryPos;
+	                END_IF;
+	                IF #MemoryPos = -88 THEN
+	                    #MemoryPos := #MemoryPosPre;
+	                END_IF;
+	                #MoverOUT.rTargetPosition := - #Cfg_LenghtRail;
+	            END_IF;
+	            
+	        5:// Stop Mover cycle - Stop Mover in current pos with cmd bStopMover
+	            #MoverOUT.bStopMoving := TRUE;
+	            IF #Sts_SeqT > 1000 OR (NOT #MoverIN.bIsMoving) THEN
+	                #Cmd_Seq := 1;
+	            END_IF;
+	            
+	        10:// Reset Begin - Check If Mover is moved by hand - Check is Mover R Position is closed to Index Target Position
+	            IF #Sts_SeqOns THEN
+	                #Cmd_NewRqst := FALSE;
+	                #MoverOUT.rTargetPosition := - #Cfg_LenghtRail;
+	                #Cfg_InhbtMotionAlarm := FALSE;
+	                #Sts_ManExe := FALSE;
+	                #MoverOUT.bStopMoving := FALSE;
+	                #MoverOUT.bGrpBothWay := TRUE;
+	                #MoverOUT.bEnable := TRUE;
+	                #MoverOUT.rDec := #Cfg_AccDec_During_Reset;
+	                #MoverOUT.rAcc := #Cfg_AccDec_During_Reset;
+	                #MoverOUT.rTargetSpeed := #Cfg_Speed_During_Reset;
+	                IF #Sts_MoverNb_Pos[#Index_pos] = #Cfg_MoverNumber THEN
+	                    #Sync_PosFromXTS[#Index_pos].Cmd_Cycle := FALSE;
+	                END_IF;
+	                IF #MemoryPos <> -88 AND #MemoryPos <> -99 AND ABS(#MemoryPos - #MoverIN.rPos) > #Cfg_IsMoved THEN
+	                    #Sts_Pos[#Index_pos].Mover_Moved := TRUE;
+	                END_IF;
+	            ELSIF #Sts_TimeOut THEN
+	                #Sts_Alms.%X4 := TRUE; // Alm Mover Group Change
+	                #Sts_Idle := TRUE;
+	            ELSIF (NOT #MoverIN.bGroupFF) AND (NOT #MoverIN.bNoGroupCA) THEN
+	                IF #MemoryPos = -88 OR #MemoryPos = -99 THEN
+	                    #Sts_Idle := TRUE;
+	                ELSIF (NOT #MoverIN_Mover[#IN_PrevMover].bNoGroupCA) OR #Sts_MoverInMD[#Cfg_MoverNumber] <> #Sts_MoverInMD[#Cfg_MoverNumber + 1] OR #Cmd_FromHMi.%X1 THEN
+	                    #Cmd_Seq := 11;
+	                END_IF;
+	            END_IF;
+	            
+	        11:// Start Mover to Memory Position - When Mover was Moved after his target position
+	            IF #Sts_SeqOns THEN
+	                #MoverOUT.rTargetPosition := #MemoryPos;
+	                #Cmd_NewRqst := TRUE;
+	            ELSIF #Sts_TimeOut THEN
+	                #MoverOUT.rTargetPosition := - #Cfg_LenghtRail;
+	                #Sts_Alms.%X0 := TRUE;// Alm Mover Motion Error
+	                #Sts_Idle := TRUE;
+	                #Cmd_NewRqst := FALSE;
+	            ELSIF #Sts_NewMotionAck AND (#Sts_Mover_PosOk OR (#Sts_SeqT > 3000 AND (#Sts_Mover_ColAvoidFF OR #Sts_Mover_ColAvoidBW))) THEN
+	                IF ABS(#MemoryPos - #TargetPosition) >= #Cfg_IsMoved OR #Cfg_IsMoved <= 0 THEN
+	                    #Sts_Idle := TRUE;
+	                    #MemoryPos := -88;
+	                    #Cmd_NewRqst := FALSE;
+	                END_IF;
+	                IF ABS(#MemoryPos - #TargetPosition) < #Cfg_IsMoved AND #Cfg_IsMoved > 0 THEN
+	                        #Cmd_Seq := 12;
+	                        #Cmd_NewRqst := FALSE;
+	                END_IF;
+	                END_IF;
+	            
+	        12://  Repositioning
+	            IF #Sts_SeqOns THEN
+	                IF #Cfg_Pos[#Index_pos].Station_Present AND #TargetPosition <> #MoverOUT.rTargetPosition THEN
+	                    #MoverOUT.rTargetPosition := #TargetPosition;
+	                    #Cmd_NewRqst := TRUE;
+	                END_IF;
+	            ELSIF #Sts_TimeOut THEN
+	                #MoverOUT.rTargetPosition := - #Cfg_LenghtRail;
+	                #Sts_Alms.%X0 := TRUE; // Alm Mover Motion Error
+	                #Sts_Idle := TRUE;
+	            ELSIF (#Sts_NewMotionAck AND #Sts_Mover_PosOk) OR (NOT #Cfg_Pos[#Index_pos].Station_Present) OR #Sts_SeqT > 1000 AND (#Sts_Mover_ColAvoidFF OR #Sts_Mover_ColAvoidBW) THEN
+	                #Sts_Idle := TRUE;
+	            END_IF;
+	            
+	            IF #Sts_Idle THEN
+	                #MemoryPos := -99;
+	                #Cmd_NewRqst := FALSE;
+	            END_IF;
+	            
+	            
+	        100:// Exec Begin - Management Index Position  
+	            IF #Sts_SeqOns THEN
+	                #Tmr_Grp_TO(IN := FALSE,
+	                            PT := #Tmr_Grp_TO.PT);
+	                IF #Mem_Force_Index <> 0 THEN
+	                    IF #Mem_Force_Index < #Index_pos THEN
+	                        FOR #N := #Mem_Force_Index TO #Index_pos - #Mem_Force_Index DO
+	                            #Sts_Pos[#N] := #Empty_StatusPos;
+	                        END_FOR;
+	                    END_IF;
+	                    #Index_pos := #Mem_Force_Index;
+	                END_IF;
+	                #MemoryPos := -99;
+	                #MoverOUT.bGrpBothWay := FALSE;
+	                #MoverOUT.bEnable := TRUE;
+	                IF #Index_pos > #Cfg_LastPos THEN
+	                    FOR #N := 0 TO _."Cfg_XTS_NbrMaxPosition" DO
+	                        #Sts_Pos[#N] := #Empty_StatusPos;
+	                    END_FOR;
+	                    #Index_pos := 0;
+	                END_IF;
+	            ELSIF (NOT #MoverIN.bGroupFF) THEN
+	                #Tmr_Grp_TO(IN := TRUE,
+	                            PT := #Par_TimeOut);
+	                IF #Tmr_Grp_TO.Q THEN
+	                    #Sts_Alms.%X4 := TRUE; // Alm Mover Group Change
+	                    #Sts_Idle := TRUE;
+	                END_IF;
+	            ELSIF #MoverIN.bGroupFF THEN
+	                #Tmr_Grp_TO(IN := FALSE,
+	                            PT := #Tmr_Grp_TO.PT);
+	                IF (NOT #Cfg_Pos[#Index_pos].Used) THEN
+	                    #Index_pos := #Index_pos + 1;
+	                    #Mem_Force_Index := 0;
+	                    #Cmd_Seq := 100;
+	                ELSIF #Sync_PosToXTS[#Index_pos].Cmd_Allow THEN
+	                    #MoverOUT.rTargetSpeed := #Cfg_Pos[#Index_pos].Speed;
+	                    #MoverOUT.rDec := #Cfg_Pos[#Index_pos].Dec;
+	                    #MoverOUT.rAcc := #Cfg_Pos[#Index_pos].Acc;
+	                    #MoverOUT.rTargetPosition := #TargetPosition;
+	                    #Mem_Index_pos := #Index_pos;
+	                    #Cmd_Seq := 101;
+	                    #Mem_Force_Index := 0;
+	                END_IF;
+	            END_IF;
+	            
+	        101:// Step management mover position
+	            IF #Sts_SeqOns THEN
+	                #Tmr_Pos_TO1(IN := FALSE,
+	                             PT := #Tmr_Pos_TO1.PT);
+	            END_IF;
+	            IF (NOT #Sts_SeqOns) THEN
+	                IF #Sts_HoldMotionNoCA AND ((NOT #MoverIN_Mover[#IN_NextMover].bGroupFF) OR #Cmd_HaltMotion) THEN
+	                    #MoverOUT.bStopMoving := TRUE;
+	                END_IF;
+	                IF #Index_pos=#Mem_Index_pos AND  (NOT #Cmd_HaltMotion) AND #MoverIN_Mover[#IN_NextMover].bGroupFF AND (NOT #MoverIN_Mover[#IN_NextMover].bNoGroupCA) THEN
+	                    #MoverOUT.bStopMoving := FALSE;
+	                    #MoverOUT.rTargetPosition := #TargetPosition;
+	                END_IF;
+	            END_IF;
+	            IF (NOT #Sts_SeqOns) THEN
+	                IF #MoverOUT.rTargetSpeed = 0 THEN
+	                    #MoverOUT.rTargetPosition := - #Cfg_LenghtRail;
+	                    #Sts_Alms.%X0 := TRUE; // Alm Mover Motion Error
+	                    #Sts_Idle := TRUE;
+	                ELSIF #Index_pos <> #Mem_Index_pos AND #Index_pos <> 0 AND #Mem_Index_pos <> 0 THEN
+	                    #Cmd_Seq := 100;
+	                ELSIF (NOT #MoverOUT.bStopMoving) AND #LastIndex_Pos = -1 AND (NOT #Sync_PosFromXTS[#Index_pos].Cmd_Cycle) AND (NOT #Sync_PosToXTS[#Index_pos].Sts_Cycle) AND #Sync_PosToXTS[#Index_pos].Cmd_Force_Index = 0
+	                    AND (#Sts_MoverNb_Pos[#Index_pos] = 0 OR #Sts_MoverNb_Pos[#Index_pos] = #Cfg_MoverNumber) THEN
+	                    #Tmr_Pos_TO1(IN := (NOT #MoverIN.bIsMoving) AND ((NOT #Sts_Mover_ColAvoidFF) OR ((NOT #Cfg_InhbtMotionAlarm) AND (#MoverIN.rPos >= #TargetPosition))),
+	                                 PT := #Par_TimeOut);
+	                    IF #Sts_Mover_AnticipOk OR #Sts_Mover_PosOk THEN
+	                        #Tmr_Wait(IN := FALSE,
+	                                  PT := #Tmr_Wait.PT);
+	                        #Cmd_Seq := 102;
+	                    END_IF;
+	                    IF #Tmr_Pos_TO1.Q THEN
+	                        #MoverOUT.rTargetPosition := - #Cfg_LenghtRail;
+	                        #Sts_Alms.%X0 := TRUE; // Alm Mover Motion Error
+	                        #Sts_Idle := TRUE;
+	                    END_IF;
+	                END_IF;
+	            END_IF;
+	            
+	        102:// Check is station is present at index position
+	            IF #Sts_SeqOns THEN
+	                #Tmr_Pos_TO3(IN := FALSE,
+	                             PT := #Tmr_Pos_TO3.PT);
+	            END_IF;
+	            
+	            #Tmr_Wait(IN := #Sts_Mover_PosOk OR #Cfg_Pos[#Index_pos].WaitTime =0,
+	                      PT := #Cfg_Pos[#Index_pos].WaitTime);
+	            #Tmr_Pos_TO3(IN := (NOT #MoverIN.bIsMoving) AND ((NOT #Sts_Mover_ColAvoidFF) OR ((NOT #Cfg_InhbtMotionAlarm) AND (#MoverIN.rPos >= #TargetPosition))),
+	                         PT := #Par_TimeOut);
+	            IF #Cfg_Pos[#Index_pos].Station_Present THEN
+	                #Sts_MoverNb_Pos[#Index_pos] := #Cfg_MoverNumber;
+	                #Sync_PosFromXTS[#Index_pos].Cmd_Cycle := TRUE;
+	                #Cmd_Seq := 103;
+	            ELSIF #Tmr_Wait.Q OR #Cfg_Pos[#Index_pos].WaitTime = 0 THEN
+	                #Sts_MoverNb_Pos[#Index_pos] := 0;
+	                #Index_pos := #Index_pos + 1;
+	                IF #Cfg_Pos[#Index_pos].Anticip <> -1 OR (NOT #Sts_MD_Exec) THEN
+	                    #Sts_Idle := TRUE;
+	                ELSE
+	                    #Cmd_Seq := 100;
+	                END_IF;
+	            ELSIF #Tmr_Pos_TO3.Q THEN
+	                #MoverOUT.rTargetPosition := - #Cfg_LenghtRail;
+	                #Sts_Alms.%X0 := TRUE; // Alm Mover Motion Error
+	                #Sts_Idle := TRUE;
+	            END_IF;
+	            
+	        103:// Wait position worked
+	            IF #Sts_SeqOns THEN
+	                #Tmr_Pos_TO2(IN := FALSE,
+	                             PT := #Tmr_Pos_TO2.PT);
+	            END_IF;
+	            #Tmr_Pos_TO2(IN := (NOT #Sts_Mover_PosOk) AND (NOT #MoverIN.bIsMoving) AND ((NOT #Sts_Mover_ColAvoidFF) OR (#MoverIN.rPos >= #TargetPosition AND #Sts_Mover_OutOfAnticip)),
+	                         PT := #Par_TimeOut);
+	            IF #Tmr_Pos_TO2.Q THEN
+	                #Sts_Alms.%X0 := TRUE; // Alm Mover Motion Error
+	                #Sts_Idle := TRUE;
+	            END_IF;
+	            IF #Sync_PosToXTS[#Index_pos].Sts_Cycle AND #Sync_PosToXTS[#Index_pos].Cmd_Force_Index > 0 THEN
+	                #Mem_Force_Index := #Sync_PosToXTS[#Index_pos].Cmd_Force_Index;
+	                #Sync_PosFromXTS[#Index_pos].Cmd_Cycle := FALSE;
+	                #LastIndex_Pos := #Index_pos;
+	                #Pos_LastIndex_Pos := #MoverIN.rPos;
+	                IF (NOT #Sts_MD_Exec) THEN
+	                    #Sts_Idle := TRUE;
+	                ELSE
+	                    #Cmd_Seq := 100;
+	                END_IF;
+	            END_IF;
+	            
+	        110:// ExecManual  Begin - Switch to group BothWay
+	            IF #Sts_SeqOns THEN
+	                #MoverOUT.bStopMoving := FALSE;
+	                #MoverOUT.bGrpBothWay := TRUE;
+	                #Index_pos := #InterfaceHMi.Cmd_ForceIndex;
+	                #Mem_Index_pos := #Index_pos;
+	                IF #LastIndex_Pos <> -1 THEN
+	                    #Sts_MoverNb_Pos[#LastIndex_Pos] := 0;
+	                END_IF;
+	                #LastIndex_Pos := #Index_pos;
+	                #Pos_LastIndex_Pos := #MoverIN.rPos;
+	            ELSIF #Sts_TimeOut THEN
+	                #Sts_Alms.%X4 := TRUE; // Alm Mover Group Change
+	                #Sts_Idle := TRUE;
+	            ELSIF (NOT #MoverIN.bGroupFF) AND (NOT #MoverIN.bNoGroupCA) THEN
+	                #Cmd_Seq := 111;
+	            END_IF;
+	            
+	        111: // Start Mover to Position 
+	            IF #Sts_SeqOns THEN
+	                #Sts_MoverNb_Pos[#Index_pos] := #Cfg_MoverNumber;
+	                #MoverOUT.rDec := #Cfg_AccDec_During_Reset;
+	                #MoverOUT.rAcc := #Cfg_AccDec_During_Reset;
+	                #MoverOUT.rTargetSpeed := #Cfg_Speed_During_Reset;
+	                #MoverOUT.rTargetPosition := #TargetPosition;
+	                #Sts_ManExe := TRUE;
+	                #Sync_PosFromXTS[#Index_pos].Cmd_Cycle := TRUE;
+	            ELSIF #Sts_Mover_PosOk OR #Sts_Mover_ColAvoidFF OR #Sts_Mover_ColAvoidBW THEN
+	                #Sts_Idle := TRUE;
+	            END_IF;
+	            
+	    END_CASE;
+	END_REGION
+	
+	REGION Update Direction FOR motion
+	    #MoverOUT.bPositive_Direction := #Cfg_Positive_Direction;
+	END_REGION
+	
+	REGION New Motion
+	    IF (NOT #Cmd_NewRqst) THEN
+	        #ONS.%X0 := FALSE;
+	    END_IF;
+	    IF #Cmd_NewRqst AND (NOT #ONS.%X0) THEN
+	        #ONS.%X0 := TRUE;
+	        #Sts_NewMotionAck := FALSE;
+	        #Memo_NewMotionAck := (NOT #MoverIN.bNewMotionAck);
+	    END_IF;
+	END_REGION
+	
+	REGION Alarms management
+	    #Sts_AlmOns := #Sts_Alms <> 0 AND #Sts_NoAlm;
+	    IF #Sts_AlmOns THEN
+	        #MoverOUT.bStopMoving := TRUE;
+	    END_IF;
+	    #Sts_NoAlm := #Sts_Alms = 0;
+	END_REGION
+	
+	REGION Clear Status AND Command in Idle
+	IF #Sts_Idle THEN
+	    #Cmd_Seq := 0;
+	    #Sts_Seq := 0;
+	    #Cmd_Out := 0;
+	END_IF;
+	END_REGION
+	
+	REGION Save #Index_pos
+	    #Index_Pos_Mover[#Cfg_MoverNumber] := #Index_pos;
+	END_REGION
+	
+	REGION Loop
+	    IF (#Sts_Seq = 101 AND #Cmd_Seq = 102) OR (#Sts_Seq = 103 AND #Cmd_Seq = 100) THEN
+	        GOTO Loop;
+	    END_IF;
+	END_REGION
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+END_FUNCTION_BLOCK
+

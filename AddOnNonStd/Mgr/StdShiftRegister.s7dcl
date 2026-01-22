@@ -1,0 +1,135 @@
+﻿{
+    S7_Author := "JRE";
+    S7_BlockComment := "MLC_434";
+    S7_BlockTitle := "MLC_4jS";
+    S7_Family := "Standard";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "11.0"
+}
+FUNCTION_BLOCK "StdShiftRegister"
+    VAR_INPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg_Num_WPH : Int;
+    END_VAR
+    VAR_OUTPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        RETVAL : Int;
+    END_VAR
+    VAR_IN_OUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_Shift_Forward : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_Shift_Backward : Bool;
+        WPH : Variant;
+    END_VAR
+    VAR 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        WPH_Shift : Array[0..64] of _.Typ_WPH;
+    END_VAR
+    VAR_TEMP 
+        INT_Temp : Int;
+        UDINT_Temp : UDInt;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4FH"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Shift_Forward )
+            
+            Move(
+                in := #Cfg_Num_WPH, 
+                out1 => #UDINT_Temp
+            )
+            MoveBlockVariant(
+                src := #WPH, 
+                count := #UDINT_Temp, 
+                srcIndex := 1, 
+                dstIndex := 2, 
+                ret_val => #RETVAL, 
+                dst => #WPH_Shift
+            )
+            
+            Add(
+                in1 := #Cfg_Num_WPH, 
+                in2 := 1, 
+                out => #INT_Temp
+            )
+            MoveBlockVariant(
+                src := #WPH_Shift, 
+                count := 1, 
+                srcIndex := #INT_Temp, 
+                dstIndex := 1, 
+                ret_val => #RETVAL, 
+                dst => #WPH_Shift
+            )
+            MoveBlockVariant(
+                src := #WPH_Shift, 
+                count := #UDINT_Temp, 
+                srcIndex := 1, 
+                dstIndex := 1, 
+                ret_val => #RETVAL, 
+                dst => #WPH
+            )
+            R_Coil( #Cmd_Shift_Forward )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_nj"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Shift_Backward )
+            
+            Move(
+                in := #Cfg_Num_WPH, 
+                out1 => #UDINT_Temp
+            )
+            MoveBlockVariant(
+                src := #WPH, 
+                count := #UDINT_Temp, 
+                srcIndex := 1, 
+                dstIndex := 0, 
+                ret_val => #RETVAL, 
+                dst => #WPH_Shift
+            )
+            MoveBlockVariant(
+                src := #WPH_Shift, 
+                count := 1, 
+                srcIndex := 0, 
+                dstIndex := #Cfg_Num_WPH, 
+                ret_val => #RETVAL, 
+                dst => #WPH_Shift
+            )
+            MoveBlockVariant(
+                src := #WPH_Shift, 
+                count := #UDINT_Temp, 
+                srcIndex := 1, 
+                dstIndex := 1, 
+                ret_val => #RETVAL, 
+                dst => #WPH
+            )
+            R_Coil( #Cmd_Shift_Backward )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

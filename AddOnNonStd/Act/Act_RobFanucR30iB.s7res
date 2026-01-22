@@ -1,0 +1,153 @@
+﻿MultiLingualTexts:
+  - id: MLC_4hx
+    en-US: Act_RobFanucR30iB
+  - id: MLC_3mJ
+    en-US: Addon used for Siemens PLCs
+  - id: MLC_3wb
+    en-US: First Scan PLC
+  - id: MLC_UZ
+    en-US: Configurable instruction to disable any alarm
+  - id: MLC_xF
+    en-US: Config No Interlock for movement
+  - id: MLC_vW
+    en-US: Configuration to allow the robot to run programs continually during execute
+  - id: MLC_3iF
+    en-US: Configuration to allow the robot to run programs continually during reset
+  - id: MLC_nR
+    en-US: Config Slow Speed
+  - id: MLC_3b6
+    en-US: Command for alarm acknowledgement
+  - id: MLC_xN
+    en-US: Command to reset the statistic informations
+  - id: MLC_4nS
+    en-US: Command robot in Hold state
+  - id: MLC_4i8
+    en-US: Config code of instruction to do
+  - id: MLC_3ML
+    en-US: Command sent by the station sequence
+  - id: MLC_47f
+    en-US: TimeOut Parameter
+  - id: MLC_4d9
+    en-US: Hardware Inputs
+  - id: MLC_4Lf
+    en-US: Hardware Outputs
+  - id: MLC_569
+    en-US: Status to inform to replace battery
+  - id: MLC_sw
+    en-US: Status to inform alarm coming edge
+  - id: MLC_3Jz
+    en-US: Status to inform Process complete of command
+  - id: MLC_5Bt
+    en-US: Status to inform end of command
+  - id: MLC_4pX
+    en-US: Status to inform while no alarm pending
+  - id: MLC_4n5
+    en-US: Status No Interlock for movement
+  - id: MLC_3rx
+    en-US: Status to inform the robot is stopped and not movements stored
+  - id: MLC_fV
+    en-US: Reporting counter for failed actions since last clear
+  - id: MLC_48m
+    en-US: Reporting value to give current execution elapsed time
+  - id: MLC_37t
+    en-US: Status to inform the command ongoing
+  - id: MLC_5AF
+    en-US: Status to inform the type of alarm pending
+  - id: MLC_4aj
+    en-US: Get Input
+  - id: MLC_3hL
+    en-US: Set Output
+  - id: MLC_59Y
+    en-US: Acknowledge Memory
+  - id: MLC_34d
+    en-US: Status to inform once a sequence change
+  - id: MLC_3mA
+    en-US: Command to define next sequence value
+  - id: MLC_y7
+    en-US: Memo Previous Seq
+  - id: MLC_T3
+    en-US: Memo for one shot control
+  - id: MLC_3Tt
+    en-US: Program number from Robot
+  - id: MLC_Pp
+    en-US: Status to give current sequence value
+  - id: MLC_sc
+    en-US: Status to give previous sequence value
+  - id: MLC_4Sd
+    en-US: Reporting value to give current execution elapsed time of the sequence
+  - id: MLC_4xU
+    en-US: Auto Acknowledge Clock
+  - id: MLC_4vk
+    en-US: Timer used for reset
+  - id: MLC_43v
+    en-US: Timer of step sequence
+  - id: MLC_493
+    en-US: Timer of time out
+  - id: MLC_49Q
+    en-US: Hardware Inputs
+  - id: MLC_57p
+    en-US: First Scan
+  - id: MLC_4yv
+    en-US: Robot Get Input
+  - id: MLC_4wx
+    en-US: Alarm Reset
+  - id: MLC_4ef
+    en-US: Waiting For Command
+  - id: MLC_4L3
+    en-US: Sequencer management
+  - id: MLC_586
+    en-US: TimeOut Timer
+  - id: MLC_4n9
+    en-US: Cycle Step Timer
+  - id: MLC_3ds
+    en-US: Abort = 1, Stop Robot
+  - id: MLC_4x4
+    en-US: Reset=10, Reset Begin
+  - id: MLC_4BH
+    en-US: Reset=11, Wait Signals OK
+  - id: MLC_4Ev
+    en-US: Reset=12, Send Program Number
+  - id: MLC_3fU
+    en-US: Reset=13, Read Code / Start Robot
+  - id: MLC_3ax
+    en-US: 'Reset=14,Check Feedback: Program Number'
+  - id: MLC_3YM
+    en-US: 'Reset=15,Check Feedback: Robot In Prod Position'
+  - id: MLC_53u
+    en-US: Reset=16, Wait End Of Cycle OR Go to Pause
+  - id: MLC_xp
+    en-US: Execute=100, Exec Begin
+  - id: MLC_4L4
+    en-US: Execute=101, Ead Code Start Robot
+  - id: MLC_4He
+    en-US: 'Execute=102, Check Feedback: Program Number'
+  - id: MLC_3e6
+    en-US: 'Execute=103, Check Feedback: Prog Run'
+  - id: MLC_57H
+    en-US: Execute=104, Wait End Of Cycle OR Go To Pause
+  - id: MLC_3MA
+    en-US: Restart=200, Restart From Pause
+  - id: MLC_45s
+    en-US: Restart=201, Delay for Start Signal
+  - id: MLC_3EA
+    en-US: Robot is stopped and not movement stored
+  - id: MLC_xd
+    en-US: Update Alarm ID
+  - id: MLC_4ZB
+    en-US: Alarm
+  - id: MLC_3mu
+    en-US: Alarms Management
+  - id: MLC_xM
+    en-US: Sts_NoInterlock is used to enable command from HMI
+  - id: MLC_382
+    en-US: Clear Status and Command in idle
+  - id: MLC_3Zm
+    en-US: Statistic management
+  - id: MLC_3Tp
+    en-US: Automatic Mode Acknowledge
+  - id: MLC_32M
+    en-US: Robot Set Output
+  - id: MLC_Px
+    en-US: Hardware Outputs
+  - id: MLC_QX
+    en-US: Loop Jump

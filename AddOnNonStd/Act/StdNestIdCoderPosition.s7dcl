@@ -1,0 +1,204 @@
+﻿{
+    S7_Author := "JRE";
+    S7_BlockComment := "MLC_3md";
+    S7_BlockTitle := "MLC_3Ah";
+    S7_Family := "Standard";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "11.0"
+}
+FUNCTION_BLOCK "StdNestIdCoderPosition"
+    VAR_INPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_Nz";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg_Coder_ActualPosition : DInt;
+    END_VAR
+    VAR_INPUT RETAIN
+        { S7_MLC := "MLC_de" }
+        Cfg_Coder_Number_Position : DInt;
+        { S7_MLC := "MLC_5Aa" }
+        Cfg_Teach_Nest_Number : Int;
+    END_VAR
+    VAR_OUTPUT RETAIN
+        { S7_MLC := "MLC_54r" }
+        Sts_Actual_Position : Real;
+        { S7_MLC := "MLC_4SM" }
+        Sts_Actual_Nest_Number : Int;
+    END_VAR
+    VAR_IN_OUT RETAIN
+        { S7_MLC := "MLC_3fg" }
+        Cmd_Teach : Bool;
+        { S7_MLC := "MLC_4pN" }
+        Sts_Teached : Bool;
+    END_VAR
+    VAR RETAIN
+        { S7_MLC := "MLC_4Ya" }
+        Max_Points_Number : DInt;
+        { S7_MLC := "MLC_4ZR" }
+        Actual_PositionReal : Real;
+        { S7_MLC := "MLC_3CT" }
+        Actual_PositionDint : DInt;
+        { S7_MLC := "MLC_tB" }
+        OffsetConv : DInt;
+        { S7_MLC := "MLC_4X2" }
+        OffsetInp : Real;
+    END_VAR
+    VAR_TEMP 
+        Real_pos : Real;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4wr"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_Templates := "[SrcType := DInt, DestType := Real]"; 
+                S7_GenerateENO := "TRUE"
+            }
+            Convert(
+                in := #Cfg_Coder_ActualPosition, 
+                out => #Real_pos
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Tw"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Mul(
+                in1 := #Cfg_Coder_Number_Position, 
+                in2 := 360, 
+                out => #Max_Points_Number
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_e4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Teach )
+            wire#w1
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Real_pos, 
+                out1 => #OffsetInp
+            )
+            R_Coil( #Cmd_Teach )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := Int"; 
+                S7_Expression := "(IN1 - IN2) * IN3"
+            }
+            Calculate(
+                in1 := #Cfg_Teach_Nest_Number, 
+                in2 := 1, 
+                in3 := 360, 
+                out => #OffsetConv
+            )
+            S_Coil( #Sts_Teached )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_56u"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := Real"; 
+                S7_Expression := "IN1 - IN2 + IN3"
+            }
+            Calculate(
+                in1 := #Real_pos, 
+                in2 := #OffsetInp, 
+                in3 := #OffsetConv, 
+                out => #Actual_PositionReal
+            )
+            wire#w1
+            { S7_Templates := "SrcType := Real" }
+            LT_Contact(
+                in1 := #Actual_PositionReal, 
+                in2 := 0.0
+            )
+            
+            Add(
+                in1 := #Max_Points_Number, 
+                in2 := #Actual_PositionReal, 
+                out => #Actual_PositionReal
+            )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := Real" }
+            GE_Contact(
+                in1 := #Actual_PositionReal, 
+                in2 := #Max_Points_Number
+            )
+            
+            Sub(
+                in1 := #Actual_PositionReal, 
+                in2 := #Max_Points_Number, 
+                out => #Actual_PositionReal
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            {
+                S7_Templates := "[SrcType := Real, DestType := DInt]"
+            }
+            Trunc(
+                in := #Actual_PositionReal, 
+                out => #Actual_PositionDint
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3NL"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := Real"; 
+                S7_Expression := "IN1 / IN2 + IN3"
+            }
+            Calculate(
+                in1 := #Actual_PositionReal, 
+                in2 := 360.0, 
+                in3 := 1.0, 
+                out => #Actual_PositionReal
+            )
+            {
+                S7_Templates := "[SrcType := Real, DestType := Int]"
+            }
+            Trunc(
+                in := #Actual_PositionReal, 
+                out => #Sts_Actual_Nest_Number
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4zH"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Mod(
+                in1 := #Actual_PositionDint, 
+                in2 := 360, 
+                out => #Sts_Actual_Position
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

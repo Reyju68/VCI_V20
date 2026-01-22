@@ -1,0 +1,830 @@
+﻿{
+    S7_Author := "MIS";
+    S7_BlockComment := "MLC_53J";
+    S7_BlockTitle := "MLC_39k";
+    S7_Family := "Standard";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "11.0"
+}
+FUNCTION_BLOCK "Mgr_Alms"
+    VAR_INPUT 
+        { S7_MLC := "MLC_wz" }
+        Cmd_FirstScan : Bool;
+        { S7_MLC := "MLC_3Ea" }
+        Cfg_LocalAlm : Bool;
+        { S7_MLC := "MLC_4Ab" }
+        Cfg_NoRA_123 : Bool;
+        { S7_MLC := "MLC_wC" }
+        Cfg_NoRa_4567 : Bool;
+        { S7_MLC := "MLC_4F7" }
+        Cmd_Reset : Bool;
+    END_VAR
+    VAR_OUTPUT 
+        { S7_MLC := "MLC_3Dn" }
+        Sts_Abort : Bool;
+        { S7_MLC := "MLC_zt" }
+        Sts_Stop : Bool;
+        { S7_MLC := "MLC_L5" }
+        Sts_Idle : Bool;
+        { S7_MLC := "MLC_4ty" }
+        Sts_Hold : Bool;
+        { S7_MLC := "MLC_4YA" }
+        Sts_Susp : Bool;
+        { S7_MLC := "MLC_4NY" }
+        Sts_Warn : Bool;
+        { S7_MLC := "MLC_3mV" }
+        Sts_Help : Bool;
+        { S7_MLC := "MLC_3pY" }
+        Sts_NoAlm_123 : Bool;
+    END_VAR
+    VAR_IN_OUT 
+        Sts_Alms : _.Typ_AlarmLevel;
+        Struct_Alms : _.Typ_MgrAlms;
+    END_VAR
+    VAR 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_uN";
+            S7_Visibility := "Hidden := External"
+        }
+        ResetTime : IEC_TIMER;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        ResetTime_PT : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_bi";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        FSDelay : IEC_TIMER;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Setpoint := "True";
+            S7_Visibility := "Hidden := External"
+        }
+        FSDelay_PT : DInt;
+        Result : DInt;
+        temp : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        memRA1 : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        memRA2 : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        memRA3 : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        memRA4 : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        memRA5 : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        memRA6 : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        memRA7 : DInt;
+    END_VAR
+    VAR_TEMP 
+        "i" : Int;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4cR"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+            R_Coil( #Cfg_NoRA_123 )
+            R_Coil( #Cfg_NoRa_4567 )
+            wire#w1
+            { S7_Templates := "time_type := Time" }
+            #FSDelay.TON(
+                pt := T#5M, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #FSDelay.IN )
+            I_Contact( #FSDelay.Q )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Cfg_NoRA_123 )
+            wire#w2
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := -1, 
+                out1 => #Struct_Alms.RA1, 
+                out2 => #Struct_Alms.RA2, 
+                out3 => #Struct_Alms.RA3
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #FSDelay.Q )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #Cfg_NoRA_123 )
+            wire#w3
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := -1, 
+                out1 => #Struct_Alms.RA4, 
+                out2 => #Struct_Alms.RA5, 
+                out3 => #Struct_Alms.RA6, 
+                out4 => #Struct_Alms.RA7
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #FSDelay.Q )
+        END_RUNG wire#w3
+        RUNG wire#powerrail
+            Contact( #FSDelay.Q )
+            
+            Move(
+                in := 0, 
+                out1 => #Struct_Alms.L1, 
+                out2 => #Struct_Alms.L2, 
+                out3 => #Struct_Alms.L3, 
+                out4 => #Struct_Alms.L4, 
+                out5 => #Struct_Alms.L5, 
+                out6 => #Struct_Alms.L6, 
+                out7 => #Struct_Alms.L7
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3p8"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms."A1", 
+                in2 := 0
+            )
+            S_Coil( #Sts_Alms.Abort )
+            I_Contact( #Cfg_LocalAlm )
+            Coil( #Sts_Abort )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.A2, 
+                in2 := 0
+            )
+            S_Coil( #Sts_Alms.Stop )
+            I_Contact( #Cfg_LocalAlm )
+            Coil( #Sts_Stop )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.A3, 
+                in2 := 0
+            )
+            S_Coil( #Sts_Alms.Idle )
+            I_Contact( #Cfg_LocalAlm )
+            Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.A4, 
+                in2 := 0
+            )
+            S_Coil( #Sts_Alms.Hold )
+            I_Contact( #Cfg_LocalAlm )
+            Coil( #Sts_Hold )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.A5, 
+                in2 := 0
+            )
+            S_Coil( #Sts_Alms.Suspend )
+            I_Contact( #Cfg_LocalAlm )
+            Coil( #Sts_Susp )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.A6, 
+                in2 := 0
+            )
+            S_Coil( #Sts_Alms.Warning )
+            I_Contact( #Cfg_LocalAlm )
+            Coil( #Sts_Warn )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.A7, 
+                in2 := 0
+            )
+            S_Coil( #Sts_Alms.Help )
+            I_Contact( #Cfg_LocalAlm )
+            Coil( #Sts_Help )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4BL"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #ResetTime.Q )
+            I_Contact( #FSDelay.Q )
+            wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.L1, 
+                in2 := #Struct_Alms."A1"
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Struct_Alms."A1", 
+                out1 => #Struct_Alms.L1
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms."A1", 
+                in2 := #Struct_Alms.RA1, 
+                out => #Struct_Alms.RA1
+            )
+            Coil( #Struct_Alms.Reset_L1 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.L2, 
+                in2 := #Struct_Alms.A2
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Struct_Alms.A2, 
+                out1 => #Struct_Alms.L2
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A2, 
+                in2 := #Struct_Alms.RA2, 
+                out => #Struct_Alms.RA2
+            )
+            Coil( #Struct_Alms.Reset_L2 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.L3, 
+                in2 := #Struct_Alms.A3
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Struct_Alms.A3, 
+                out1 => #Struct_Alms.L3
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A3, 
+                in2 := #Struct_Alms.RA3, 
+                out => #Struct_Alms.RA3
+            )
+            Coil( #Struct_Alms.Reset_L3 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.L4, 
+                in2 := #Struct_Alms.A4
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Struct_Alms.A4, 
+                out1 => #Struct_Alms.L4
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A4, 
+                in2 := #Struct_Alms.RA4, 
+                out => #Struct_Alms.RA4
+            )
+            Coil( #Struct_Alms.Reset_L4 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.L5, 
+                in2 := #Struct_Alms.A5
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Struct_Alms.A5, 
+                out1 => #Struct_Alms.L5
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A5, 
+                in2 := #Struct_Alms.RA5, 
+                out => #Struct_Alms.RA5
+            )
+            Coil( #Struct_Alms.Reset_L5 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.L6, 
+                in2 := #Struct_Alms.A6
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Struct_Alms.A6, 
+                out1 => #Struct_Alms.L6
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A6, 
+                in2 := #Struct_Alms.RA6, 
+                out => #Struct_Alms.RA6
+            )
+            Coil( #Struct_Alms.Reset_L6 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Struct_Alms.L7, 
+                in2 := #Struct_Alms.A7
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Struct_Alms.A7, 
+                out1 => #Struct_Alms.L7
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A7, 
+                in2 := #Struct_Alms.RA7, 
+                out => #Struct_Alms.RA7
+            )
+            Coil( #Struct_Alms.Reset_L7 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Gt"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Reset )
+            wire#w1
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Inv(
+                in := #Struct_Alms.RA1, 
+                out => #memRA1
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms."A1", 
+                in2 := #memRA1, 
+                out => #Struct_Alms."A1"
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #FSDelay.Q )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+        END_RUNG wire#w1
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Inv(
+                in := #Struct_Alms.RA2, 
+                out => #memRA2
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A2, 
+                in2 := #memRA2, 
+                out => #Struct_Alms.A2
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Inv(
+                in := #Struct_Alms.RA3, 
+                out => #memRA3
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A3, 
+                in2 := #memRA3, 
+                out => #Struct_Alms.A3
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Inv(
+                in := #Struct_Alms.RA4, 
+                out => #memRA4
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A4, 
+                in2 := #memRA4, 
+                out => #Struct_Alms.A4
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Inv(
+                in := #Struct_Alms.RA5, 
+                out => #memRA5
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A5, 
+                in2 := #memRA5, 
+                out => #Struct_Alms.A5
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Inv(
+                in := #Struct_Alms.RA6, 
+                out => #memRA6
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A6, 
+                in2 := #memRA6, 
+                out => #Struct_Alms.A6
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Inv(
+                in := #Struct_Alms.RA7, 
+                out => #memRA7
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Struct_Alms.A7, 
+                in2 := #memRA7, 
+                out => #Struct_Alms.A7
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_sb"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Struct_Alms.Reset_L1 )
+            wire#w1
+            I_Contact( #Cmd_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #ResetTime.TOF(
+                pt := T#3s, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Struct_Alms.Reset_L2 )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Struct_Alms.Reset_L3 )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Struct_Alms.Reset_L4 )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Struct_Alms.Reset_L5 )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Struct_Alms.Reset_L6 )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Struct_Alms.Reset_L7 )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #FSDelay.Q )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_bt"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_Abort )
+            I_Contact( #Sts_Stop )
+            I_Contact( #Sts_Idle )
+            Coil( #Sts_NoAlm_123 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "SCL";
+        S7_NetworkTitle := "MLC_35g"
+    }
+    NETWORK
+        #Struct_Alms.L1_Bool[0] := #Struct_Alms.L1.%X0;
+        #Struct_Alms.L1_Bool[1] := #Struct_Alms.L1.%X1;
+        #Struct_Alms.L1_Bool[2] := #Struct_Alms.L1.%X2;
+        #Struct_Alms.L1_Bool[3] := #Struct_Alms.L1.%X3;
+        #Struct_Alms.L1_Bool[4] := #Struct_Alms.L1.%X4;
+        #Struct_Alms.L1_Bool[5] := #Struct_Alms.L1.%X5;
+        #Struct_Alms.L1_Bool[6] := #Struct_Alms.L1.%X6;
+        #Struct_Alms.L1_Bool[7] := #Struct_Alms.L1.%X7;
+        #Struct_Alms.L1_Bool[8] := #Struct_Alms.L1.%X8;
+        #Struct_Alms.L1_Bool[9] := #Struct_Alms.L1.%X9;
+        #Struct_Alms.L1_Bool[10] := #Struct_Alms.L1.%X10;
+        #Struct_Alms.L1_Bool[11] := #Struct_Alms.L1.%X11;
+        #Struct_Alms.L1_Bool[12] := #Struct_Alms.L1.%X12;
+        #Struct_Alms.L1_Bool[13] := #Struct_Alms.L1.%X13;
+        #Struct_Alms.L1_Bool[14] := #Struct_Alms.L1.%X14;
+        #Struct_Alms.L1_Bool[15] := #Struct_Alms.L1.%X15;
+        #Struct_Alms.L1_Bool[16] := #Struct_Alms.L1.%X16;
+        #Struct_Alms.L1_Bool[17] := #Struct_Alms.L1.%X17;
+        #Struct_Alms.L1_Bool[18] := #Struct_Alms.L1.%X18;
+        #Struct_Alms.L1_Bool[19] := #Struct_Alms.L1.%X19;
+        #Struct_Alms.L1_Bool[20] := #Struct_Alms.L1.%X20;
+        #Struct_Alms.L1_Bool[21] := #Struct_Alms.L1.%X21;
+        #Struct_Alms.L1_Bool[22] := #Struct_Alms.L1.%X22;
+        #Struct_Alms.L1_Bool[23] := #Struct_Alms.L1.%X23;
+        #Struct_Alms.L1_Bool[24] := #Struct_Alms.L1.%X24;
+        #Struct_Alms.L1_Bool[25] := #Struct_Alms.L1.%X25;
+        #Struct_Alms.L1_Bool[26] := #Struct_Alms.L1.%X26;
+        #Struct_Alms.L1_Bool[27] := #Struct_Alms.L1.%X27;
+        #Struct_Alms.L1_Bool[28] := #Struct_Alms.L1.%X28;
+        #Struct_Alms.L1_Bool[29] := #Struct_Alms.L1.%X29;
+        #Struct_Alms.L1_Bool[30] := #Struct_Alms.L1.%X30;
+        #Struct_Alms.L1_Bool[31] := #Struct_Alms.L1.%X31;
+        
+        #Struct_Alms.L2_Bool[0] := #Struct_Alms.L2.%X0;
+        #Struct_Alms.L2_Bool[1] := #Struct_Alms.L2.%X1;
+        #Struct_Alms.L2_Bool[2] := #Struct_Alms.L2.%X2;
+        #Struct_Alms.L2_Bool[3] := #Struct_Alms.L2.%X3;
+        #Struct_Alms.L2_Bool[4] := #Struct_Alms.L2.%X4;
+        #Struct_Alms.L2_Bool[5] := #Struct_Alms.L2.%X5;
+        #Struct_Alms.L2_Bool[6] := #Struct_Alms.L2.%X6;
+        #Struct_Alms.L2_Bool[7] := #Struct_Alms.L2.%X7;
+        #Struct_Alms.L2_Bool[8] := #Struct_Alms.L2.%X8;
+        #Struct_Alms.L2_Bool[9] := #Struct_Alms.L2.%X9;
+        #Struct_Alms.L2_Bool[10] := #Struct_Alms.L2.%X10;
+        #Struct_Alms.L2_Bool[11] := #Struct_Alms.L2.%X11;
+        #Struct_Alms.L2_Bool[12] := #Struct_Alms.L2.%X12;
+        #Struct_Alms.L2_Bool[13] := #Struct_Alms.L2.%X13;
+        #Struct_Alms.L2_Bool[14] := #Struct_Alms.L2.%X14;
+        #Struct_Alms.L2_Bool[15] := #Struct_Alms.L2.%X15;
+        #Struct_Alms.L2_Bool[16] := #Struct_Alms.L2.%X16;
+        #Struct_Alms.L2_Bool[17] := #Struct_Alms.L2.%X17;
+        #Struct_Alms.L2_Bool[18] := #Struct_Alms.L2.%X18;
+        #Struct_Alms.L2_Bool[19] := #Struct_Alms.L2.%X19;
+        #Struct_Alms.L2_Bool[20] := #Struct_Alms.L2.%X20;
+        #Struct_Alms.L2_Bool[21] := #Struct_Alms.L2.%X21;
+        #Struct_Alms.L2_Bool[22] := #Struct_Alms.L2.%X22;
+        #Struct_Alms.L2_Bool[23] := #Struct_Alms.L2.%X23;
+        #Struct_Alms.L2_Bool[24] := #Struct_Alms.L2.%X24;
+        #Struct_Alms.L2_Bool[25] := #Struct_Alms.L2.%X25;
+        #Struct_Alms.L2_Bool[26] := #Struct_Alms.L2.%X26;
+        #Struct_Alms.L2_Bool[27] := #Struct_Alms.L2.%X27;
+        #Struct_Alms.L2_Bool[28] := #Struct_Alms.L2.%X28;
+        #Struct_Alms.L2_Bool[29] := #Struct_Alms.L2.%X29;
+        #Struct_Alms.L2_Bool[30] := #Struct_Alms.L2.%X30;
+        #Struct_Alms.L2_Bool[31] := #Struct_Alms.L2.%X31;
+        
+        #Struct_Alms.L3_Bool[0] := #Struct_Alms.L3.%X0;
+        #Struct_Alms.L3_Bool[1] := #Struct_Alms.L3.%X1;
+        #Struct_Alms.L3_Bool[2] := #Struct_Alms.L3.%X2;
+        #Struct_Alms.L3_Bool[3] := #Struct_Alms.L3.%X3;
+        #Struct_Alms.L3_Bool[4] := #Struct_Alms.L3.%X4;
+        #Struct_Alms.L3_Bool[5] := #Struct_Alms.L3.%X5;
+        #Struct_Alms.L3_Bool[6] := #Struct_Alms.L3.%X6;
+        #Struct_Alms.L3_Bool[7] := #Struct_Alms.L3.%X7;
+        #Struct_Alms.L3_Bool[8] := #Struct_Alms.L3.%X8;
+        #Struct_Alms.L3_Bool[9] := #Struct_Alms.L3.%X9;
+        #Struct_Alms.L3_Bool[10] := #Struct_Alms.L3.%X10;
+        #Struct_Alms.L3_Bool[11] := #Struct_Alms.L3.%X11;
+        #Struct_Alms.L3_Bool[12] := #Struct_Alms.L3.%X12;
+        #Struct_Alms.L3_Bool[13] := #Struct_Alms.L3.%X13;
+        #Struct_Alms.L3_Bool[14] := #Struct_Alms.L3.%X14;
+        #Struct_Alms.L3_Bool[15] := #Struct_Alms.L3.%X15;
+        #Struct_Alms.L3_Bool[16] := #Struct_Alms.L3.%X16;
+        #Struct_Alms.L3_Bool[17] := #Struct_Alms.L3.%X17;
+        #Struct_Alms.L3_Bool[18] := #Struct_Alms.L3.%X18;
+        #Struct_Alms.L3_Bool[19] := #Struct_Alms.L3.%X19;
+        #Struct_Alms.L3_Bool[20] := #Struct_Alms.L3.%X20;
+        #Struct_Alms.L3_Bool[21] := #Struct_Alms.L3.%X21;
+        #Struct_Alms.L3_Bool[22] := #Struct_Alms.L3.%X22;
+        #Struct_Alms.L3_Bool[23] := #Struct_Alms.L3.%X23;
+        #Struct_Alms.L3_Bool[24] := #Struct_Alms.L3.%X24;
+        #Struct_Alms.L3_Bool[25] := #Struct_Alms.L3.%X25;
+        #Struct_Alms.L3_Bool[26] := #Struct_Alms.L3.%X26;
+        #Struct_Alms.L3_Bool[27] := #Struct_Alms.L3.%X27;
+        #Struct_Alms.L3_Bool[28] := #Struct_Alms.L3.%X28;
+        #Struct_Alms.L3_Bool[29] := #Struct_Alms.L3.%X29;
+        #Struct_Alms.L3_Bool[30] := #Struct_Alms.L3.%X30;
+        #Struct_Alms.L3_Bool[31] := #Struct_Alms.L3.%X31;
+        
+        #Struct_Alms.L4_Bool[0] := #Struct_Alms.L4.%X0;
+        #Struct_Alms.L4_Bool[1] := #Struct_Alms.L4.%X1;
+        #Struct_Alms.L4_Bool[2] := #Struct_Alms.L4.%X2;
+        #Struct_Alms.L4_Bool[3] := #Struct_Alms.L4.%X3;
+        #Struct_Alms.L4_Bool[4] := #Struct_Alms.L4.%X4;
+        #Struct_Alms.L4_Bool[5] := #Struct_Alms.L4.%X5;
+        #Struct_Alms.L4_Bool[6] := #Struct_Alms.L4.%X6;
+        #Struct_Alms.L4_Bool[7] := #Struct_Alms.L4.%X7;
+        #Struct_Alms.L4_Bool[8] := #Struct_Alms.L4.%X8;
+        #Struct_Alms.L4_Bool[9] := #Struct_Alms.L4.%X9;
+        #Struct_Alms.L4_Bool[10] := #Struct_Alms.L4.%X10;
+        #Struct_Alms.L4_Bool[11] := #Struct_Alms.L4.%X11;
+        #Struct_Alms.L4_Bool[12] := #Struct_Alms.L4.%X12;
+        #Struct_Alms.L4_Bool[13] := #Struct_Alms.L4.%X13;
+        #Struct_Alms.L4_Bool[14] := #Struct_Alms.L4.%X14;
+        #Struct_Alms.L4_Bool[15] := #Struct_Alms.L4.%X15;
+        #Struct_Alms.L4_Bool[16] := #Struct_Alms.L4.%X16;
+        #Struct_Alms.L4_Bool[17] := #Struct_Alms.L4.%X17;
+        #Struct_Alms.L4_Bool[18] := #Struct_Alms.L4.%X18;
+        #Struct_Alms.L4_Bool[19] := #Struct_Alms.L4.%X19;
+        #Struct_Alms.L4_Bool[20] := #Struct_Alms.L4.%X20;
+        #Struct_Alms.L4_Bool[21] := #Struct_Alms.L4.%X21;
+        #Struct_Alms.L4_Bool[22] := #Struct_Alms.L4.%X22;
+        #Struct_Alms.L4_Bool[23] := #Struct_Alms.L4.%X23;
+        #Struct_Alms.L4_Bool[24] := #Struct_Alms.L4.%X24;
+        #Struct_Alms.L4_Bool[25] := #Struct_Alms.L4.%X25;
+        #Struct_Alms.L4_Bool[26] := #Struct_Alms.L4.%X26;
+        #Struct_Alms.L4_Bool[27] := #Struct_Alms.L4.%X27;
+        #Struct_Alms.L4_Bool[28] := #Struct_Alms.L4.%X28;
+        #Struct_Alms.L4_Bool[29] := #Struct_Alms.L4.%X29;
+        #Struct_Alms.L4_Bool[30] := #Struct_Alms.L4.%X30;
+        #Struct_Alms.L4_Bool[31] := #Struct_Alms.L4.%X31;
+        
+        #Struct_Alms.L5_Bool[0] := #Struct_Alms.L5.%X0;
+        #Struct_Alms.L5_Bool[1] := #Struct_Alms.L5.%X1;
+        #Struct_Alms.L5_Bool[2] := #Struct_Alms.L5.%X2;
+        #Struct_Alms.L5_Bool[3] := #Struct_Alms.L5.%X3;
+        #Struct_Alms.L5_Bool[4] := #Struct_Alms.L5.%X4;
+        #Struct_Alms.L5_Bool[5] := #Struct_Alms.L5.%X5;
+        #Struct_Alms.L5_Bool[6] := #Struct_Alms.L5.%X6;
+        #Struct_Alms.L5_Bool[7] := #Struct_Alms.L5.%X7;
+        #Struct_Alms.L5_Bool[8] := #Struct_Alms.L5.%X8;
+        #Struct_Alms.L5_Bool[9] := #Struct_Alms.L5.%X9;
+        #Struct_Alms.L5_Bool[10] := #Struct_Alms.L5.%X10;
+        #Struct_Alms.L5_Bool[11] := #Struct_Alms.L5.%X11;
+        #Struct_Alms.L5_Bool[12] := #Struct_Alms.L5.%X12;
+        #Struct_Alms.L5_Bool[13] := #Struct_Alms.L5.%X13;
+        #Struct_Alms.L5_Bool[14] := #Struct_Alms.L5.%X14;
+        #Struct_Alms.L5_Bool[15] := #Struct_Alms.L5.%X15;
+        #Struct_Alms.L5_Bool[16] := #Struct_Alms.L5.%X16;
+        #Struct_Alms.L5_Bool[17] := #Struct_Alms.L5.%X17;
+        #Struct_Alms.L5_Bool[18] := #Struct_Alms.L5.%X18;
+        #Struct_Alms.L5_Bool[19] := #Struct_Alms.L5.%X19;
+        #Struct_Alms.L5_Bool[20] := #Struct_Alms.L5.%X20;
+        #Struct_Alms.L5_Bool[21] := #Struct_Alms.L5.%X21;
+        #Struct_Alms.L5_Bool[22] := #Struct_Alms.L5.%X22;
+        #Struct_Alms.L5_Bool[23] := #Struct_Alms.L5.%X23;
+        #Struct_Alms.L5_Bool[24] := #Struct_Alms.L5.%X24;
+        #Struct_Alms.L5_Bool[25] := #Struct_Alms.L5.%X25;
+        #Struct_Alms.L5_Bool[26] := #Struct_Alms.L5.%X26;
+        #Struct_Alms.L5_Bool[27] := #Struct_Alms.L5.%X27;
+        #Struct_Alms.L5_Bool[28] := #Struct_Alms.L5.%X28;
+        #Struct_Alms.L5_Bool[29] := #Struct_Alms.L5.%X29;
+        #Struct_Alms.L5_Bool[30] := #Struct_Alms.L5.%X30;
+        #Struct_Alms.L5_Bool[31] := #Struct_Alms.L5.%X31;
+        
+        #Struct_Alms.L6_Bool[0] := #Struct_Alms.L6.%X0;
+        #Struct_Alms.L6_Bool[1] := #Struct_Alms.L6.%X1;
+        #Struct_Alms.L6_Bool[2] := #Struct_Alms.L6.%X2;
+        #Struct_Alms.L6_Bool[3] := #Struct_Alms.L6.%X3;
+        #Struct_Alms.L6_Bool[4] := #Struct_Alms.L6.%X4;
+        #Struct_Alms.L6_Bool[5] := #Struct_Alms.L6.%X5;
+        #Struct_Alms.L6_Bool[6] := #Struct_Alms.L6.%X6;
+        #Struct_Alms.L6_Bool[7] := #Struct_Alms.L6.%X7;
+        #Struct_Alms.L6_Bool[8] := #Struct_Alms.L6.%X8;
+        #Struct_Alms.L6_Bool[9] := #Struct_Alms.L6.%X9;
+        #Struct_Alms.L6_Bool[10] := #Struct_Alms.L6.%X10;
+        #Struct_Alms.L6_Bool[11] := #Struct_Alms.L6.%X11;
+        #Struct_Alms.L6_Bool[12] := #Struct_Alms.L6.%X12;
+        #Struct_Alms.L6_Bool[13] := #Struct_Alms.L6.%X13;
+        #Struct_Alms.L6_Bool[14] := #Struct_Alms.L6.%X14;
+        #Struct_Alms.L6_Bool[15] := #Struct_Alms.L6.%X15;
+        #Struct_Alms.L6_Bool[16] := #Struct_Alms.L6.%X16;
+        #Struct_Alms.L6_Bool[17] := #Struct_Alms.L6.%X17;
+        #Struct_Alms.L6_Bool[18] := #Struct_Alms.L6.%X18;
+        #Struct_Alms.L6_Bool[19] := #Struct_Alms.L6.%X19;
+        #Struct_Alms.L6_Bool[20] := #Struct_Alms.L6.%X20;
+        #Struct_Alms.L6_Bool[21] := #Struct_Alms.L6.%X21;
+        #Struct_Alms.L6_Bool[22] := #Struct_Alms.L6.%X22;
+        #Struct_Alms.L6_Bool[23] := #Struct_Alms.L6.%X23;
+        #Struct_Alms.L6_Bool[24] := #Struct_Alms.L6.%X24;
+        #Struct_Alms.L6_Bool[25] := #Struct_Alms.L6.%X25;
+        #Struct_Alms.L6_Bool[26] := #Struct_Alms.L6.%X26;
+        #Struct_Alms.L6_Bool[27] := #Struct_Alms.L6.%X27;
+        #Struct_Alms.L6_Bool[28] := #Struct_Alms.L6.%X28;
+        #Struct_Alms.L6_Bool[29] := #Struct_Alms.L6.%X29;
+        #Struct_Alms.L6_Bool[30] := #Struct_Alms.L6.%X30;
+        #Struct_Alms.L6_Bool[31] := #Struct_Alms.L6.%X31;
+        
+        #Struct_Alms.L7_Bool[0] := #Struct_Alms.L7.%X0;
+        #Struct_Alms.L7_Bool[1] := #Struct_Alms.L7.%X1;
+        #Struct_Alms.L7_Bool[2] := #Struct_Alms.L7.%X2;
+        #Struct_Alms.L7_Bool[3] := #Struct_Alms.L7.%X3;
+        #Struct_Alms.L7_Bool[4] := #Struct_Alms.L7.%X4;
+        #Struct_Alms.L7_Bool[5] := #Struct_Alms.L7.%X5;
+        #Struct_Alms.L7_Bool[6] := #Struct_Alms.L7.%X6;
+        #Struct_Alms.L7_Bool[7] := #Struct_Alms.L7.%X7;
+        #Struct_Alms.L7_Bool[8] := #Struct_Alms.L7.%X8;
+        #Struct_Alms.L7_Bool[9] := #Struct_Alms.L7.%X9;
+        #Struct_Alms.L7_Bool[10] := #Struct_Alms.L7.%X10;
+        #Struct_Alms.L7_Bool[11] := #Struct_Alms.L7.%X11;
+        #Struct_Alms.L7_Bool[12] := #Struct_Alms.L7.%X12;
+        #Struct_Alms.L7_Bool[13] := #Struct_Alms.L7.%X13;
+        #Struct_Alms.L7_Bool[14] := #Struct_Alms.L7.%X14;
+        #Struct_Alms.L7_Bool[15] := #Struct_Alms.L7.%X15;
+        #Struct_Alms.L7_Bool[16] := #Struct_Alms.L7.%X16;
+        #Struct_Alms.L7_Bool[17] := #Struct_Alms.L7.%X17;
+        #Struct_Alms.L7_Bool[18] := #Struct_Alms.L7.%X18;
+        #Struct_Alms.L7_Bool[19] := #Struct_Alms.L7.%X19;
+        #Struct_Alms.L7_Bool[20] := #Struct_Alms.L7.%X20;
+        #Struct_Alms.L7_Bool[21] := #Struct_Alms.L7.%X21;
+        #Struct_Alms.L7_Bool[22] := #Struct_Alms.L7.%X22;
+        #Struct_Alms.L7_Bool[23] := #Struct_Alms.L7.%X23;
+        #Struct_Alms.L7_Bool[24] := #Struct_Alms.L7.%X24;
+        #Struct_Alms.L7_Bool[25] := #Struct_Alms.L7.%X25;
+        #Struct_Alms.L7_Bool[26] := #Struct_Alms.L7.%X26;
+        #Struct_Alms.L7_Bool[27] := #Struct_Alms.L7.%X27;
+        #Struct_Alms.L7_Bool[28] := #Struct_Alms.L7.%X28;
+        #Struct_Alms.L7_Bool[29] := #Struct_Alms.L7.%X29;
+        #Struct_Alms.L7_Bool[30] := #Struct_Alms.L7.%X30;
+        #Struct_Alms.L7_Bool[31] := #Struct_Alms.L7.%X31;
+    END_NETWORK
+END_FUNCTION_BLOCK

@@ -1,0 +1,93 @@
+﻿MultiLingualTexts:
+  - id: MLC_437
+    en-US: Mgr_Pucks
+  - id: MLC_3gJ
+    en-US: Pucks System Management
+  - id: MLC_qe
+    en-US: Conveyor Stop Parameter
+  - id: MLC_4sZ
+    en-US: Low Level Time Off Parameter
+  - id: MLC_W2
+    en-US: Low Level Time On Parameter
+  - id: MLC_3Nt
+    en-US: High Level Time Off Parameter
+  - id: MLC_3cT
+    en-US: High Level Time On Parameter
+  - id: MLC_4ps
+    en-US: Pucks Feeding Pulse Parameter
+  - id: MLC_3hC
+    en-US: Pucks Min Pulse Cycle Time Pararameter
+  - id: MLC_4nU
+    en-US: Machine States
+  - id: MLC_4KZ
+    en-US: Start Conveyor Status
+  - id: MLC_kd
+    en-US: Low Level Status
+  - id: MLC_4Tw
+    en-US: High Level Status
+  - id: MLC_32s
+    en-US: All Puck Tracks Idle Status - (Not used in the bloc, but used externaly)
+  - id: MLC_cM
+    en-US: Pucks No Alarm Status - (Not used in the bloc, but used externaly)
+  - id: MLC_3CR
+    en-US: Pucks Execute Allowed Status
+  - id: MLC_4Da
+    en-US: Pucks Execute In Progress Status
+  - id: MLC_44d
+    en-US: Command Edge of Pucks Execute
+  - id: MLC_48p
+    en-US: Puck Execute Configuration (Following the number of stations)
+  - id: MLC_4Eb
+    en-US: Puck Request Configuration
+  - id: MLC_3A4
+    en-US: Pucks Empty Detection Command
+  - id: MLC_Wc
+    en-US: Puck Execute Command
+  - id: MLC_4yE
+    en-US: Puck Recycling Command
+  - id: MLC_3ry
+    en-US: Start Conveyor Command
+  - id: MLC_sa
+    en-US: Command First Scan
+  - id: MLC_br
+    en-US: Conveyor Running Input
+  - id: MLC_4sC
+    en-US: Low Level Input
+  - id: MLC_37R
+    en-US: No High Level Input
+  - id: MLC_kE
+    en-US: Memo Start cycle
+  - id: MLC_4Us
+    en-US: ONS
+  - id: MLC_Vx
+    en-US: Timer Conveyor Off
+  - id: MLC_3ph
+    en-US: Timer Pucks Feeding Pulse
+  - id: MLC_xf
+    en-US: Timer High Level OFF
+  - id: MLC_4Rf
+    en-US: Timer High Level ON
+  - id: MLC_nn
+    en-US: Timer Low Level OFF
+  - id: MLC_38C
+    en-US: Timer Low Level ON
+  - id: MLC_rN
+    en-US: First Scan
+  - id: MLC_4SD
+    en-US: Clear Cmd Recycling if machine in aborted state
+  - id: MLC_3dG
+    en-US: Low Level Status
+  - id: MLC_4Gt
+    en-US: High Level Status
+  - id: MLC_ef
+    en-US: Start Conveyor
+  - id: MLC_3Nu
+    en-US: Pucks Execute Enable
+  - id: MLC_3nj
+    en-US: Pucks Recycling management
+  - id: MLC_36s
+    en-US: End Of Pucks Execute
+  - id: MLC_bb
+    en-US: Execute Puck tracks
+  - id: MLC_4h3
+    en-US: Clear Pucks Execute if Cycle Stop Request OR No config pucks request

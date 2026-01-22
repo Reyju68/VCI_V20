@@ -1,0 +1,36 @@
+﻿FUNCTION_BLOCK "Mgr_Cams"
+TITLE = Cams Management
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+AUTHOR : JRE
+FAMILY : 'Standard'
+VERSION : 11.00
+//08 Jan 2020
+//- New revision roles
+//(StdAddonsTIA_SCN_V002.docx)
+   VAR_INPUT 
+      Cfg_Slow : Bool;
+   END_VAR
+
+   VAR_IN_OUT 
+      Cams : Array[0..19] of "Typ_Cams";
+   END_VAR
+
+   VAR_TEMP 
+      n : Int;
+   END_VAR
+
+
+BEGIN
+	FOR #n := 0 TO 19 DO
+	    IF #Cfg_Slow THEN
+	        #Cams[#n].Value := #Cams[#n].Cfg_Cam;
+	    ELSE
+	        #Cams[#n].Value := (#Cams[#n].Cfg_Cam - #Cams[#n].Cfg_Ante) + 360;
+	        IF #Cams[#n].Value >= 360 THEN
+	            #Cams[#n].Value := #Cams[#n].Value - 360;
+	        END_IF;
+	    END_IF;
+	END_FOR;
+	
+END_FUNCTION_BLOCK
+

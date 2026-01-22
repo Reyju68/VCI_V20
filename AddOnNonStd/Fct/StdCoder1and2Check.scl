@@ -1,0 +1,52 @@
+﻿FUNCTION "StdCoder1and2Check" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Coder1_pos : Real;   // Actual position coder 1
+      Coder2_pos : Real;   // Actual position coder 2
+      Dif_max_coder1_2 : Real;   // Position difference max betwenn coder 1 coder 2
+   END_VAR
+
+   VAR_TEMP 
+      Dif_coder1_2 : Real;   // Position difference  betwenn coder 1 coder 2
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	// KOMAX System LCF SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: _Library_Std_v1.00
+	// Engineering: TIA Portal v13 SP1 upd9
+	// Restrictions: None
+	// Requirements: None
+	// Functionality: This function will check the angle difference between coder 1 and coder 2:
+	//                     
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	//-----------------------------------------------------------------------------
+	// Version       Date              Expert in charge           
+	// v0.0.1        2017-01-09       PILLONEL Gilbert         
+	// Changes applied:
+	// Creation
+	//-----------------------------------------------------------------------------
+	
+	//============================================================================
+	//
+	
+	#Dif_coder1_2 := #Coder1_pos - #Coder2_pos;
+	#Dif_coder1_2 := 180.0 - ABS_REAL(180.0 - ABS_REAL(#Dif_coder1_2));
+	
+	
+	IF #Dif_coder1_2 >= #Dif_max_coder1_2 THEN
+	    ENO := TRUE;
+	ELSE
+	    ENO := FALSE;
+	END_IF;
+	
+	
+END_FUNCTION
+

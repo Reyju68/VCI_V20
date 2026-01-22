@@ -1,0 +1,29 @@
+﻿MultiLingualTexts:
+  - id: MLC_4gf
+    en-US: Actuator statistics
+  - id: MLC_4Qu
+    en-US: |-
+      02 Sep. 2022
+       - New Revision Roles (StdAddonsTIA_SCN_V004.docx)
+
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+  - id: MLC_yN
+    en-US: Clear statistics command
+  - id: MLC_4xw
+    en-US: Status to inform command edge
+  - id: MLC_3Fm
+    en-US: Status to inform alarm coming edge
+  - id: MLC_4j3
+    en-US: Reporting counter for total executed actions since last clear
+  - id: MLC_4wG
+    en-US: Reporting counter for failed actions since last clear
+  - id: MLC_Qc
+    en-US: Reporting statistic informations
+  - id: MLC_4KV
+    en-US: Memory
+  - id: MLC_33h
+    en-US: Clear OEE
+  - id: MLC_3dR
+    en-US: Counters Update and calculation of the OEE

@@ -1,0 +1,18 @@
+﻿FUNCTION "Fc_TestBit" : Bool
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      IN_BoolToTest : USInt;
+      IN_Data : DInt;
+   END_VAR
+
+   VAR_TEMP 
+      Memo_Data : DInt;
+   END_VAR
+
+
+BEGIN
+	#Memo_Data := SHR(IN:=#IN_Data, N:=#IN_BoolToTest);
+	#Fc_TestBit := #Memo_Data.%X0;
+END_FUNCTION
+

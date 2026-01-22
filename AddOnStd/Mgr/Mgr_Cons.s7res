@@ -1,0 +1,50 @@
+﻿MultiLingualTexts:
+  - id: MLC_37N
+    en-US: Manage Consecutives Alarms
+  - id: MLC_3LK
+    en-US: |-
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+  - id: MLC_3Ci
+    en-US: Value of the number max of consecutive error allowed
+  - id: MLC_43R
+    en-US: Command to reset the statistic informations
+  - id: MLC_t3
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_3U8
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_5A7
+    en-US: Command send by the station sequence to trig the consecutive count
+  - id: MLC_38A
+    en-US: Reporting of the consecutive error number
+  - id: MLC_4Pd
+    en-US: Reporting Bad parts counter since last clear
+  - id: MLC_gT
+    en-US: Reporting Good parts counter since last clear
+  - id: MLC_4DX
+    en-US: Reporting Total parts counter since last clear
+  - id: MLC_4hz
+    en-US: Reporting statistic information
+  - id: MLC_4At
+    en-US: Status to inform if consecutive bad parts maximum is reached or not
+  - id: MLC_jY
+    en-US: Status to inform alarm coming edge
+  - id: MLC_492
+    en-US: Status to inform if current process has failed or not
+  - id: MLC_35W
+    en-US: Status to inform while no alarm pending
+  - id: MLC_NM
+    en-US: Local variable
+  - id: MLC_3L2
+    en-US: MANAGE CONSECUTIF STATISTICS / ALARMS
+  - id: MLC_dB
+    en-US: clear reporting
+  - id: MLC_4u5
+    en-US: update reporting and manage consecutive counter
+  - id: MLC_4ji
+    en-US: Report consecutives counter
+  - id: MLC_3SD
+    en-US: Update Status_NoAlarm
+  - id: MLC_4Bm
+    en-US: Update Mem_Bad

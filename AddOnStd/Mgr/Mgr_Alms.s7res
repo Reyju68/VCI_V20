@@ -1,0 +1,49 @@
+﻿MultiLingualTexts:
+  - id: MLC_39k
+    en-US: Manager alarms
+  - id: MLC_53J
+    en-US: "02 Sep. 2022\r\n - New Revision Roles (StdAddonsTIA_SCN_V004.docx)\r\n\r\n08 Jan 2020\r\n- New revision roles\r\n(StdAddonsTIA_SCN_V002.docx)\r\n\r\n23 Jun 2025\r\n- Added configuration \"Cfg_LocalAlm\" to not update alarms ID in case of station use in standalone\r\n- Split NoRA information\r\n(Refer to GitLab - Issues #16) "
+  - id: MLC_wz
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_3Ea
+    en-US: Config to Avoid Updating Alarm ID
+  - id: MLC_4Ab
+    en-US: Config No Remote-Acknowledgement for Alarm L1/L2/L3
+  - id: MLC_wC
+    en-US: Config No Remote-Acknowledgement for Alarm L4/L5/L6/L7
+  - id: MLC_4F7
+    en-US: Command to Reset Alarms
+  - id: MLC_3Dn
+    en-US: Status Alarms Abort
+  - id: MLC_zt
+    en-US: Status Alarms Stop
+  - id: MLC_L5
+    en-US: Status Alarms Idle
+  - id: MLC_4ty
+    en-US: Status Alarms Hold
+  - id: MLC_4YA
+    en-US: Status Alarms Suspend
+  - id: MLC_4NY
+    en-US: Status Alarms Warning
+  - id: MLC_3mV
+    en-US: Status Alarms Help
+  - id: MLC_3pY
+    en-US: Status No Alarms Level 1, 2 and 3
+  - id: MLC_uN
+    en-US: Reset Timer
+  - id: MLC_bi
+    en-US: Delay Remote Acknowledgement after PLC Startup
+  - id: MLC_4cR
+    en-US: Acknowledge all alarms on first scan
+  - id: MLC_3p8
+    en-US: Alarm status update
+  - id: MLC_4BL
+    en-US: Reset Alarms Abort
+  - id: MLC_3Gt
+    en-US: Reset alarms linked to a Remote acknowledge
+  - id: MLC_sb
+    en-US: Start Reset Timer after reset
+  - id: MLC_bt
+    en-US: Update for No  Alarms for Levels 1, 2 & 3 Only
+  - id: MLC_35g
+    en-US: Update HMI tag

@@ -1,0 +1,1914 @@
+﻿{
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Act_AxCoordinate"
+    VAR_INPUT 
+        { S7_MLC := "MLC_4BE" }
+        Cmd_JogMode : Bool;
+        { S7_MLC := "MLC_4Kq" }
+        Cmd_JogButton : Bool;
+        { S7_MLC := "MLC_56h" }
+        Cmd_PointByPointMode : Bool;
+        { S7_MLC := "MLC_3hG" }
+        Cfg_SpeedOverride : LReal;
+        { S7_MLC := "MLC_qt" }
+        Cfg_Scaling : LReal;
+        { S7_MLC := "MLC_4PV" }
+        Cmd_Execute : Bool;
+        Cmd_Ack : Bool;
+        Sts_EN : Bool;
+    END_VAR
+    VAR_OUTPUT 
+        { S7_MLC := "MLC_4Qs" }
+        Sts_IP : Bool;
+        { S7_MLC := "MLC_4cN" }
+        Sts_PC : Bool;
+        { S7_MLC := "MLC_pi" }
+        Sts_Hold : Bool;
+        { S7_MLC := "MLC_4zX" }
+        Sts_ER : Bool;
+        { S7_MLC := "MLC_N9" }
+        Rep_CurrentMove : DInt;
+        { S7_MLC := "MLC_Xv" }
+        Rep_ErrorCode : Word;
+        { S7_MLC := "MLC_4gi" }
+        Rep_ErrorMoveNbr : DInt;
+    END_VAR
+    VAR_IN_OUT 
+        { S7_MLC := "MLC_4Ms" }
+        Trajectory : _.Typ_AxCoordinate_Trajectory;
+        { S7_MLC := "MLC_rA" }
+        AxesGroup : TO_Kinematics;
+    END_VAR
+    VAR 
+        {
+            S7_MLC := "MLC_3X8";
+            S7_Setpoint := "False"
+        }
+        MI_Move : Array[0..20] of MC_MOVELINEARABSOLUTE;
+        { S7_MLC := "MLC_4tB" }
+        MC_GROUPSTOP : MC_GROUPSTOP;
+        MC_Interrupt : MC_GROUPINTERRUPT;
+        MC_Continue : MC_GROUPCONTINUE;
+        MC_Reset : MC_RESET;
+        { S7_MLC := "MLC_vD" }
+        Speed : Array[0..20] of LReal;
+        {
+            S7_MLC := "MLC_45i";
+            S7_Setpoint := "True"
+        }
+        Accel : Array[0..20] of LReal;
+        { S7_MLC := "MLC_54V" }
+        Decel : Array[0..20] of LReal;
+        { S7_MLC := "MLC_3vC" }
+        MI_WaitPoint : MC_MOVELINEARABSOLUTE;
+        { S7_Setpoint := "True" }
+        CfgIndex : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_P6";
+            S7_Visibility := "Hidden := External"
+        }
+        "Step" : DInt;
+        { S7_Setpoint := "True" }
+        StepP : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4yH";
+            S7_Visibility := "Hidden := External"
+        }
+        Step_old : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_L7";
+            S7_Visibility := "Hidden := External"
+        }
+        WaitPoint_Nbr : UDInt := 1;
+        { S7_MLC := "MLC_V3" }
+        MLA1_Toggle : Bool;
+        { S7_MLC := "MLC_3pB" }
+        MLA1_Select : Bool;
+        { S7_MLC := "MLC_4ay" }
+        MemoSpeedOverride : LReal;
+        { S7_MLC := "MLC_3Up" }
+        CurrentSpeedOverride : LReal;
+        { S7_MLC := "MLC_x6" }
+        SpeedCoef : LReal;
+        { S7_MLC := "MLC_4zD" }
+        ChangeSpeed : LReal;
+        { S7_MLC := "MLC_3ux" }
+        Stop : Bool;
+        Ons : Array[0..31] of Bool;
+    END_VAR
+    VAR_TEMP 
+        { S7_MLC := "MLC_3wm" }
+        MLA_Position : Array[1..6] of LReal;
+        { S7_MLC := "MLC_3g6" }
+        MLA_Transition : Array[1..5] of LReal;
+    END_VAR
+    VAR CONSTANT 
+        { S7_MLC := "MLC_4KH" }
+        DynamicAdaptation : Int := 2;
+        { S7_MLC := "MLC_3SR" }
+        BufferMode : Int := 5;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_4sK";
+        S7_NetworkTitle := "MLC_54S"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_EN )
+            
+            Move(
+                in := 0, 
+                out1 => #"Step", 
+                out2 => #Rep_CurrentMove, 
+                out3 => #WaitPoint_Nbr
+            )
+            R_Coil( #Sts_IP )
+            R_Coil( #Sts_PC )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_Ack )
+            wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Rep_ErrorCode, 
+                out2 => #Rep_ErrorMoveNbr
+            )
+            wire#w2
+            R_Coil( #Sts_ER )
+            R_Coil( #MI_Move[0].Error )
+            R_Coil( #MI_Move[1].Error )
+            R_Coil( #MI_Move[2].Error )
+            R_Coil( #MI_Move[3].Error )
+            R_Coil( #MI_Move[4].Error )
+        END_RUNG
+        RUNG wire#w2
+            R_Coil( #MI_Move[5].Error )
+            R_Coil( #MI_Move[6].Error )
+            R_Coil( #MI_Move[7].Error )
+            R_Coil( #MI_Move[8].Error )
+            R_Coil( #MI_Move[9].Error )
+            R_Coil( #MI_Move[10].Error )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #MI_Move[0].ErrorId, 
+                out2 => #MI_Move[1].ErrorId, 
+                out3 => #MI_Move[2].ErrorId, 
+                out4 => #MI_Move[3].ErrorId, 
+                out5 => #MI_Move[4].ErrorId
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #MI_Move[5].ErrorId, 
+                out2 => #MI_Move[6].ErrorId, 
+                out3 => #MI_Move[7].ErrorId, 
+                out4 => #MI_Move[8].ErrorId, 
+                out5 => #MI_Move[9].ErrorId, 
+                out6 => #MI_Move[10].ErrorId
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_4Z2";
+        S7_NetworkTitle := "MLC_xE"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Cfg_SpeedOverride, 
+                out1 => #CurrentSpeedOverride
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_34n";
+        S7_NetworkTitle := "MLC_38E"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #Cmd_Execute, 
+                bit := #Ons[1]
+            )
+            wire#w1
+            R_Coil( #Sts_Hold )
+            R_Coil( #Sts_IP )
+            R_Coil( #Sts_ER )
+            R_Coil( #MLA1_Toggle )
+            wire#w2
+            Contact( #MLA1_Select )
+            R_Coil( #MLA1_Select )
+            S_Coil( #MLA1_Toggle )
+        END_RUNG
+        RUNG wire#w2
+            I_Contact( #MLA1_Toggle )
+            I_Contact( #MLA1_Select )
+            S_Coil( #MLA1_Select )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := 1, 
+                out1 => #"Step"
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Rep_CurrentMove, 
+                out2 => #Rep_ErrorCode, 
+                out3 => #Rep_ErrorMoveNbr
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := -1.0, 
+                out1 => #MemoSpeedOverride
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Div(
+                in1 := #CurrentSpeedOverride, 
+                in2 := 100.0, 
+                out => #SpeedCoef
+            )
+            wire#w3
+            { S7_Templates := "SrcType := LReal" }
+            GT_Contact(
+                in1 := #SpeedCoef, 
+                in2 := 1.1
+            )
+            
+            Move(
+                in := 1.1, 
+                out1 => #SpeedCoef
+            )
+        END_RUNG
+        RUNG wire#w3
+            { S7_Templates := "SrcType := LReal" }
+            LE_Contact(
+                in1 := #SpeedCoef, 
+                in2 := 0.0
+            )
+            
+            Move(
+                in := 0.1, 
+                out1 => #SpeedCoef
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Mul(
+                in1 := #Trajectory.Point[1].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[1]
+            )
+            
+            Mul(
+                in1 := #Trajectory.Point[1].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[1]
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_55w";
+        S7_NetworkTitle := "MLC_3SM"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := LReal" }
+            NE_Contact(
+                in1 := #CurrentSpeedOverride, 
+                in2 := #MemoSpeedOverride
+            )
+            wire#w1
+            
+            Move(
+                in := 1, 
+                out1 => #CfgIndex
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #CurrentSpeedOverride, 
+                in2 := 100.0, 
+                out => #SpeedCoef
+            )
+            wire#w2
+            { S7_Templates := "SrcType := LReal" }
+            GT_Contact(
+                in1 := #SpeedCoef, 
+                in2 := 1.1
+            )
+            
+            Move(
+                in := 1.1, 
+                out1 => #SpeedCoef
+            )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := LReal" }
+            LE_Contact(
+                in1 := #SpeedCoef, 
+                in2 := 0.1
+            )
+            
+            Move(
+                in := 0.1, 
+                out1 => #SpeedCoef
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Velocity, 
+                in2 := #SpeedCoef, 
+                out => #Speed[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1.0, 
+                in2 := #CfgIndex, 
+                out => #CfgIndex
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Velocity, 
+                in2 := #SpeedCoef, 
+                out => #Speed[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1.0, 
+                in2 := #CfgIndex, 
+                out => #CfgIndex
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Velocity, 
+                in2 := #SpeedCoef, 
+                out => #Speed[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1.0, 
+                in2 := #CfgIndex, 
+                out => #CfgIndex
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Velocity, 
+                in2 := #SpeedCoef, 
+                out => #Speed[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1.0, 
+                in2 := #CfgIndex, 
+                out => #CfgIndex
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Velocity, 
+                in2 := #SpeedCoef, 
+                out => #Speed[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1.0, 
+                in2 := #CfgIndex, 
+                out => #CfgIndex
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Velocity, 
+                in2 := #SpeedCoef, 
+                out => #Speed[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1.0, 
+                in2 := #CfgIndex, 
+                out => #CfgIndex
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Velocity, 
+                in2 := #SpeedCoef, 
+                out => #Speed[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1.0, 
+                in2 := #CfgIndex, 
+                out => #CfgIndex
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Velocity, 
+                in2 := #SpeedCoef, 
+                out => #Speed[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1.0, 
+                in2 := #CfgIndex, 
+                out => #CfgIndex
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Velocity, 
+                in2 := #SpeedCoef, 
+                out => #Speed[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1.0, 
+                in2 := #CfgIndex, 
+                out => #CfgIndex
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Velocity, 
+                in2 := #SpeedCoef, 
+                out => #Speed[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Accel, 
+                in2 := #SpeedCoef, 
+                out => #Accel[#CfgIndex]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#CfgIndex].Decel, 
+                in2 := #SpeedCoef, 
+                out => #Decel[#CfgIndex]
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #CurrentSpeedOverride, 
+                out1 => #MemoSpeedOverride
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_3x6";
+        S7_NetworkTitle := "MLC_3Jt"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #"Step", 
+                in2 := 1
+            )
+            S_Coil( #Sts_IP )
+            wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis1_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[1]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis2_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[2]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis3_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[3]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis4_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[4]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis5_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[5]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis6_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[6]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#Step].Blending, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Transition[1]
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #MC_GROUPSTOP.Busy )
+            wire#w2
+            Contact( #MLA1_Select )
+            Coil( #MI_Move[1].Execute )
+        END_RUNG
+        RUNG wire#w2
+            I_Contact( #MLA1_Select )
+            Coil( #MI_Move[0].Execute )
+        END_RUNG
+        RUNG wire#w1
+            #MI_Move[0].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[1], 
+                Acceleration := #Accel[1], 
+                Deceleration := #Decel[1], 
+                Jerk := #Trajectory.Point[1].Jerk, 
+                DirectionA := #Trajectory.Point[1].DirectionA, 
+                CoordSystem := #Trajectory.Point[1].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+            #MI_Move[1].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[1], 
+                Acceleration := #Accel[1], 
+                Deceleration := #Decel[1], 
+                Jerk := #Trajectory.Point[1].Jerk, 
+                DirectionA := #Trajectory.Point[1].DirectionA, 
+                CoordSystem := #Trajectory.Point[1].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #MI_Move[1].Busy )
+            wire#w3
+            I_Contact( #Cmd_PointByPointMode )
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Trajectory.Point[#Step].Blending, 
+                in2 := 0
+            )
+            wire#w4
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Trajectory.Cfg_NbrOfPoints, 
+                in2 := 1
+            )
+            wire#w5
+            Contact( #MI_Move[1].Done )
+            wire#w6
+            S_Coil( #Sts_Hold )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #MI_Move[0].Busy )
+        END_RUNG wire#w3
+        RUNG wire#w1
+            Contact( #MI_Move[1].Done )
+        END_RUNG wire#w4
+        RUNG wire#w1
+            Contact( #MI_Move[0].Done )
+        END_RUNG wire#w4
+        RUNG wire#w5
+            Contact( #MI_Move[0].Done )
+        END_RUNG wire#w6
+        RUNG wire#w5
+            I_Contact( #Trajectory.Point[#Step].Cfg_WaitPoint )
+            R_Coil( #Sts_Hold )
+            
+            Move(
+                in := 2, 
+                out1 => #"Step"
+            )
+        END_RUNG
+        RUNG wire#w4
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Trajectory.Cfg_NbrOfPoints, 
+                in2 := 1
+            )
+            wire#w7
+            Contact( #MI_Move[1].Done )
+            wire#w8
+            S_Coil( #Sts_Hold )
+        END_RUNG
+        RUNG wire#w7
+            Contact( #MI_Move[0].Done )
+        END_RUNG wire#w8
+        RUNG wire#w8
+            I_Contact( #Trajectory.Point[#Step].Cfg_WaitPoint )
+            R_Coil( #Sts_Hold )
+            S_Coil( #Sts_PC )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Ht"
+    }
+    NETWORK
+        Label(Loop_Step)
+        RUNG wire#powerrail
+            
+            Move(
+                in := #"Step", 
+                out1 => #Step_old
+            )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Step_old, 
+                in2 := 0
+            )
+            
+            Move(
+                in := #Step_old, 
+                out1 => #StepP
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_ZL";
+        S7_NetworkTitle := "MLC_4Ux"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #"Step", 
+                in2 := 2
+            )
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #"Step", 
+                in2 := 10
+            )
+            wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis1_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[1]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis2_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[2]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis3_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[3]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis4_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[4]
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis5_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[5]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Trajectory.Point[#Step].Axis6_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[6]
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Mul(
+                in1 := #Trajectory.Point[#Step].Blending, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Transition[1]
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #MC_GROUPSTOP.Busy )
+            S_Coil( #MI_Move[#Step].Execute )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #MI_Move[#Step].Busy )
+            I_Contact( #Cmd_PointByPointMode )
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Trajectory.Point[#Step].Blending, 
+                in2 := 0
+            )
+            wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Trajectory.Cfg_NbrOfPoints, 
+                in2 := #"Step"
+            )
+            wire#w3
+            Contact( #MI_Move[#Step].Done )
+            S_Coil( #Sts_Hold )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #MI_Move[#Step].Done )
+        END_RUNG wire#w2
+        RUNG wire#w3
+            I_Contact( #Trajectory.Point[#Step].Cfg_WaitPoint )
+            R_Coil( #Sts_Hold )
+            { S7_Templates := "SrcType := DInt" }
+            LT_Contact(
+                in1 := #"Step", 
+                in2 := 10
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1, 
+                in2 := #"Step", 
+                out => #"Step"
+            )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Trajectory.Cfg_NbrOfPoints, 
+                in2 := #"Step"
+            )
+            Contact( #MI_Move[#Step].Done )
+            wire#w4
+            S_Coil( #Sts_Hold )
+        END_RUNG
+        RUNG wire#w4
+            I_Contact( #Trajectory.Point[#Step].Cfg_WaitPoint )
+            R_Coil( #Sts_Hold )
+            S_Coil( #Sts_PC )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_4ye";
+        S7_NetworkTitle := "MLC_4CU"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            #MI_Move[2].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[2], 
+                Acceleration := #Accel[2], 
+                Deceleration := #Decel[2], 
+                Jerk := #Trajectory.Point[2].Jerk, 
+                DirectionA := #Trajectory.Point[2].DirectionA, 
+                CoordSystem := #Trajectory.Point[2].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+            #MI_Move[3].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[3], 
+                Acceleration := #Accel[3], 
+                Deceleration := #Decel[3], 
+                Jerk := #Trajectory.Point[3].Jerk, 
+                DirectionA := #Trajectory.Point[3].DirectionA, 
+                CoordSystem := #Trajectory.Point[3].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+            #MI_Move[4].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[4], 
+                Acceleration := #Accel[4], 
+                Deceleration := #Decel[4], 
+                Jerk := #Trajectory.Point[4].Jerk, 
+                DirectionA := #Trajectory.Point[4].DirectionA, 
+                CoordSystem := #Trajectory.Point[4].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            #MI_Move[5].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[5], 
+                Acceleration := #Accel[5], 
+                Deceleration := #Decel[5], 
+                Jerk := #Trajectory.Point[5].Jerk, 
+                DirectionA := #Trajectory.Point[5].DirectionA, 
+                CoordSystem := #Trajectory.Point[5].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+            #MI_Move[6].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[6], 
+                Acceleration := #Accel[6], 
+                Deceleration := #Decel[6], 
+                Jerk := #Trajectory.Point[6].Jerk, 
+                DirectionA := #Trajectory.Point[6].DirectionA, 
+                CoordSystem := #Trajectory.Point[6].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+            #MI_Move[7].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[7], 
+                Acceleration := #Accel[7], 
+                Deceleration := #Decel[7], 
+                Jerk := #Trajectory.Point[7].Jerk, 
+                DirectionA := #Trajectory.Point[7].DirectionA, 
+                CoordSystem := #Trajectory.Point[7].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            #MI_Move[8].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[8], 
+                Acceleration := #Accel[8], 
+                Deceleration := #Decel[8], 
+                Jerk := #Trajectory.Point[8].Jerk, 
+                DirectionA := #Trajectory.Point[8].DirectionA, 
+                CoordSystem := #Trajectory.Point[8].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+            #MI_Move[9].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[9], 
+                Acceleration := #Accel[9], 
+                Deceleration := #Decel[9], 
+                Jerk := #Trajectory.Point[9].Jerk, 
+                DirectionA := #Trajectory.Point[9].DirectionA, 
+                CoordSystem := #Trajectory.Point[9].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+            #MI_Move[10].MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Speed[10], 
+                Acceleration := #Accel[10], 
+                Deceleration := #Decel[10], 
+                Jerk := #Trajectory.Point[10].Jerk, 
+                DirectionA := #Trajectory.Point[10].DirectionA, 
+                CoordSystem := #Trajectory.Point[10].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #MI_Move[#StepP].Execute )
+            R_Coil( #MI_Move[#StepP].Execute )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_nc"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #"Step", 
+                in2 := #Step_old
+            )
+            JumpCoil( Loop_Step )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3YB"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            #MC_Interrupt.MC_GROUPINTERRUPT(
+                AxesGroup := #AxesGroup, 
+                Execute := wire#w1, 
+                Mode :=  , 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_JogMode )
+            I_Contact( #Cmd_JogButton )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #"Step", 
+                in2 := 1
+            )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4LS"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            #MC_Continue.MC_GROUPCONTINUE(
+                AxesGroup := #AxesGroup, 
+                Execute := wire#w1, 
+                Done =>  , 
+                Busy =>  , 
+                Error =>  , 
+                ErrorId =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_JogMode )
+            Contact( #Cmd_JogButton )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #"Step", 
+                in2 := 1
+            )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_3dv";
+        S7_NetworkTitle := "MLC_3va"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #MI_Move[1].Busy, 
+                bit := #Ons[3]
+            )
+            
+            Move(
+                in := 1, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #MI_Move[2].Busy, 
+                bit := #Ons[4]
+            )
+            
+            Move(
+                in := 2, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #MI_Move[3].Busy, 
+                bit := #Ons[5]
+            )
+            
+            Move(
+                in := 3, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #MI_Move[4].Busy, 
+                bit := #Ons[6]
+            )
+            
+            Move(
+                in := 4, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #MI_Move[5].Busy, 
+                bit := #Ons[7]
+            )
+            
+            Move(
+                in := 5, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #MI_Move[6].Busy, 
+                bit := #Ons[8]
+            )
+            
+            Move(
+                in := 6, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #MI_Move[7].Busy, 
+                bit := #Ons[9]
+            )
+            
+            Move(
+                in := 7, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #MI_Move[8].Busy, 
+                bit := #Ons[10]
+            )
+            
+            Move(
+                in := 8, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #MI_Move[9].Busy, 
+                bit := #Ons[11]
+            )
+            
+            Move(
+                in := 9, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #MI_Move[10].Busy, 
+                bit := #Ons[12]
+            )
+            
+            Move(
+                in := 10, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_4TM";
+        S7_NetworkTitle := "MLC_4hm"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Trajectory.Point[9].Cfg_WaitPoint )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_CurrentMove, 
+                in2 := 9
+            )
+            
+            Move(
+                in := 9, 
+                out1 => #WaitPoint_Nbr
+            )
+            wire#w1
+            Contact( #Sts_Hold )
+            wire#w2
+            P_Trig( #Ons[2] )
+            S_Coil( #Stop )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Trajectory.Point[8].Cfg_WaitPoint )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_CurrentMove, 
+                in2 := 8
+            )
+            
+            Move(
+                in := 8, 
+                out1 => #WaitPoint_Nbr
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Trajectory.Point[7].Cfg_WaitPoint )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_CurrentMove, 
+                in2 := 7
+            )
+            
+            Move(
+                in := 7, 
+                out1 => #WaitPoint_Nbr
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Trajectory.Point[6].Cfg_WaitPoint )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_CurrentMove, 
+                in2 := 6
+            )
+            
+            Move(
+                in := 6, 
+                out1 => #WaitPoint_Nbr
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Trajectory.Point[5].Cfg_WaitPoint )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_CurrentMove, 
+                in2 := 5
+            )
+            
+            Move(
+                in := 5, 
+                out1 => #WaitPoint_Nbr
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Trajectory.Point[4].Cfg_WaitPoint )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_CurrentMove, 
+                in2 := 4
+            )
+            
+            Move(
+                in := 4, 
+                out1 => #WaitPoint_Nbr
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Trajectory.Point[3].Cfg_WaitPoint )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_CurrentMove, 
+                in2 := 3
+            )
+            
+            Move(
+                in := 3, 
+                out1 => #WaitPoint_Nbr
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Trajectory.Point[2].Cfg_WaitPoint )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_CurrentMove, 
+                in2 := 2
+            )
+            
+            Move(
+                in := 2, 
+                out1 => #WaitPoint_Nbr
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Trajectory.Point[1].Cfg_WaitPoint )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_CurrentMove, 
+                in2 := 1
+            )
+            
+            Move(
+                in := 1, 
+                out1 => #WaitPoint_Nbr
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #MI_Move[1].Error )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[2].Error )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[3].Error )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[4].Error )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[5].Error )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[6].Error )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[7].Error )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[8].Error )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[9].Error )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[10].Error )
+        END_RUNG wire#w2
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_47z";
+        S7_NetworkTitle := "MLC_4Y8"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Stop )
+            I_Contact( #MC_GROUPSTOP.Error )
+            Coil( #MC_GROUPSTOP.Execute )
+        END_RUNG
+        RUNG wire#powerrail
+            #MC_GROUPSTOP.MC_GROUPSTOP(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Mode :=  , 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #MC_GROUPSTOP.Done )
+            
+            Move(
+                in := 20, 
+                out1 => #"Step"
+            )
+            wire#w1
+            R_Coil( #Stop )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #MC_GROUPSTOP.Error )
+            
+            Move(
+                in := 0, 
+                out1 => #"Step"
+            )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_56T";
+        S7_NetworkTitle := "MLC_3Y7"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #"Step", 
+                in2 := 20
+            )
+            wire#w1
+            
+            Div(
+                in1 := #Trajectory.Point[#WaitPoint_Nbr].Axis1_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[1]
+            )
+            
+            Div(
+                in1 := #Trajectory.Point[#WaitPoint_Nbr].Axis2_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[2]
+            )
+            
+            Div(
+                in1 := #Trajectory.Point[#WaitPoint_Nbr].Axis3_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[3]
+            )
+            
+            Div(
+                in1 := #Trajectory.Point[#WaitPoint_Nbr].Axis4_Pos, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Position[4]
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Mul(
+                in1 := #Trajectory.Point[#WaitPoint_Nbr].Blending, 
+                in2 := #Cfg_Scaling, 
+                out => #MLA_Transition[1]
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #MC_GROUPSTOP.Done )
+            I_Contact( #MI_WaitPoint.Error )
+            Coil( #MI_WaitPoint.Execute )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #MI_WaitPoint.Done )
+            S_Coil( #Sts_Hold )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #MI_WaitPoint.Active )
+            wire#w2
+            
+            Move(
+                in := #WaitPoint_Nbr, 
+                out1 => #Rep_CurrentMove
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #MI_WaitPoint.Done )
+        END_RUNG wire#w2
+        RUNG wire#w2
+            I_Contact( #Trajectory.Point[#WaitPoint_Nbr].Cfg_WaitPoint )
+            R_Coil( #Sts_Hold )
+            
+            Move(
+                in := #WaitPoint_Nbr, 
+                out1 => #"Step"
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_4EH";
+        S7_NetworkTitle := "MLC_4z6"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            #MI_WaitPoint.MC_MOVELINEARABSOLUTE(
+                AxesGroup := #AxesGroup, 
+                Execute :=  , 
+                Position := #MLA_Position, 
+                Velocity := #Trajectory.Point[#WaitPoint_Nbr].Velocity, 
+                Acceleration := #Trajectory.Point[#WaitPoint_Nbr].Accel, 
+                Deceleration := #Trajectory.Point[#WaitPoint_Nbr].Decel, 
+                Jerk := #Trajectory.Point[#WaitPoint_Nbr].Jerk, 
+                DirectionA := #Trajectory.Point[#WaitPoint_Nbr].DirectionA, 
+                CoordSystem := #Trajectory.Point[#WaitPoint_Nbr].CoordSystem, 
+                BufferMode := #BufferMode, 
+                TransitionParameter := #MLA_Transition, 
+                DynamicAdaption := #DynamicAdaptation, 
+                Done =>  , 
+                Busy =>  , 
+                Active =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  , 
+                RemainingDistance =>  
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_3Fv";
+        S7_NetworkTitle := "MLC_3zA"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #MI_Move[0].Error )
+            
+            Move(
+                in := #MI_Move[0].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+            wire#w1
+            
+            Move(
+                in := 1, 
+                out1 => #Rep_ErrorMoveNbr
+            )
+            wire#w2
+            S_Coil( #Sts_ER )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #MI_Move[1].Error )
+            
+            Move(
+                in := #MI_Move[1].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #MI_Move[2].Error )
+            
+            Move(
+                in := #MI_Move[2].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+            
+            Move(
+                in := 2, 
+                out1 => #Rep_ErrorMoveNbr
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[3].Error )
+            
+            Move(
+                in := #MI_Move[3].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+            
+            Move(
+                in := 3, 
+                out1 => #Rep_ErrorMoveNbr
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[4].Error )
+            
+            Move(
+                in := #MI_Move[4].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+            
+            Move(
+                in := 4, 
+                out1 => #Rep_ErrorMoveNbr
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[5].Error )
+            
+            Move(
+                in := #MI_Move[5].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+            
+            Move(
+                in := 5, 
+                out1 => #Rep_ErrorMoveNbr
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[6].Error )
+            
+            Move(
+                in := #MI_Move[6].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+            
+            Move(
+                in := 6, 
+                out1 => #Rep_ErrorMoveNbr
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[7].Error )
+            
+            Move(
+                in := #MI_Move[7].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+            
+            Move(
+                in := 7, 
+                out1 => #Rep_ErrorMoveNbr
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[8].Error )
+            
+            Move(
+                in := #MI_Move[8].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+            
+            Move(
+                in := 8, 
+                out1 => #Rep_ErrorMoveNbr
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[9].Error )
+            
+            Move(
+                in := #MI_Move[9].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+            
+            Move(
+                in := 9, 
+                out1 => #Rep_ErrorMoveNbr
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #MI_Move[10].Error )
+            
+            Move(
+                in := #MI_Move[10].ErrorId, 
+                out1 => #Rep_ErrorCode
+            )
+            
+            Move(
+                in := 10, 
+                out1 => #Rep_ErrorMoveNbr
+            )
+        END_RUNG wire#w2
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_335"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            #MC_Reset.MC_RESET(
+                Axis := #AxesGroup, 
+                Execute := #Cmd_Ack, 
+                Restart :=  , 
+                Done =>  , 
+                Busy =>  , 
+                CommandAborted =>  , 
+                Error =>  , 
+                ErrorId =>  
+            )
+            R_Coil( #Cmd_Ack )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

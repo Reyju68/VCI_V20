@@ -1,0 +1,63 @@
+﻿FUNCTION "Fct_AllArrayBits_Config" : Void
+TITLE = Array Of Bits at 1
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//This ADD-On is used to check if all bits of an Array Of Bits are at 1
+   VAR_IN_OUT 
+      Array_A : Array[*] of Bool;
+      Array_Synchronious : Array[*] of Bool;
+   END_VAR
+
+   VAR_TEMP 
+      I : SInt;
+      ArrLowerBound : DInt;
+      ArrUpperBound : DInt;
+      ArrSync_LowerBound : DInt;
+      ArrSync_UpperBound : DInt;
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	// IMA Automation SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: _Library_Std_v1.00
+	// Engineering: TIA Portal v17
+	// Restrictions: None
+	// Requirements: None
+	// Functionality: This ADD-On is used to check if all bits of an Array Of Bits are at 1
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	//-----------------------------------------------------------------------------
+	// Version       Date              Expert in charge           
+	// v0.1        2022-Jan-14       REY Julien          
+	// Changes applied:
+	// Creation
+	//-----------------------------------------------------------------------------
+	
+	// Variable Assignment
+	ENO := 1;
+	
+	// Search Upper and Lower Bound of the Array
+	#ArrLowerBound := LOWER_BOUND(ARR := #Array_A, DIM := 1);
+	#ArrUpperBound := UPPER_BOUND(ARR := #Array_A, DIM := 1);
+	#ArrSync_LowerBound := LOWER_BOUND(ARR := #Array_Synchronious, DIM := 1);
+	#ArrSync_UpperBound := UPPER_BOUND(ARR := #Array_Synchronious, DIM := 1);
+	
+	// FOR Loop
+	FOR #I:= #ArrSync_LowerBound TO #ArrSync_UpperBound DO
+	    
+	    IF NOT #Array_Synchronious[#I]  THEN
+	            // Statement section FOR
+	            IF NOT #Array_A[#I] THEN
+	                // Statement section IF
+	                ENO := 0;
+	            END_IF;
+	    END_IF;
+	END_FOR;
+	    
+END_FUNCTION
+

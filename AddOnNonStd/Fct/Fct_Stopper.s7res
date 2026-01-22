@@ -1,0 +1,37 @@
+﻿MultiLingualTexts:
+  - id: MLC_3PX
+    en-US: Function stopper
+  - id: MLC_3aB
+    en-US: Function for managing conveyor stoppers
+  - id: MLC_3Ai
+    en-US: Input going high each time a puck passes
+  - id: MLC_3YE
+    en-US: High level of pucks on conveyor
+  - id: MLC_3ei
+    en-US: First Scan PLC
+  - id: MLC_4yf
+    en-US: Maximum of pucks that can pass the stopper after conveyor is full
+  - id: MLC_3kP
+    en-US: Filtering of Hlv signal
+  - id: MLC_M9
+    en-US: Output for stopper
+  - id: MLC_3G2
+    en-US: Oneshot of Ctp input
+  - id: MLC_3yk
+    en-US: Oneshot of High Level Off
+  - id: MLC_4J3
+    en-US: Cont of puck passing the stopper
+  - id: MLC_32a
+    en-US: Timing of No High Level
+  - id: MLC_528
+    en-US: 'FCT_ Stopper:'
+  - id: MLC_4Mv
+    en-US: |-
+      A stopper has 2 sensors: Hlv (high level of puck on conveyor and Ctp (to count number of puck that can stil get passed the stopper when Hlv.
+      The Output (Out) = 1 will stop the pucks
+  - id: MLC_4Ju
+    en-US: 'FCT_ Stopper:'
+  - id: MLC_pJ
+    en-US: |-
+      A stopper has 2 sensors: Hlv (high level of puck on conveyor and Ctp (to count number of puck that can stil get passed the stopper when Hlv.
+      The Output (Out) = 1 will stop the pucks

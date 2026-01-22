@@ -1,0 +1,240 @@
+﻿MultiLingualTexts:
+  - id: MLC_3B2
+    en-US: Actuator Vision Cognex Firmware V5
+  - id: MLC_4VG
+    en-US: |-
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.doc
+  - id: MLC_UR
+    en-US: Parameter to define the ideal execution time
+  - id: MLC_53h
+    en-US: Parameter to define the ideal Change Job time
+  - id: MLC_3Qb
+    en-US: Parameter to define the Current Fixture Number, NestID
+  - id: MLC_3wV
+    en-US: Parameter to define the Current Nest Number
+  - id: MLC_3sZ
+    en-US: Parameter to define the Job Code
+  - id: MLC_4m5
+    en-US: Parameter for User Data 4 (optional)
+  - id: MLC_3J6
+    en-US: Parameter for User Data 5 (optional)
+  - id: MLC_3hP
+    en-US: Parameter for User Data 6 (optional)
+  - id: MLC_3Xd
+    en-US: Parameter for User Data 7 (optional)
+  - id: MLC_sG
+    en-US: Config RR Enable
+  - id: MLC_3TM
+    en-US: Configurable instruction to clear the OEE reports
+  - id: MLC_hA
+    en-US: Check Inspection complet toggle
+  - id: MLC_wQ
+    en-US: Request to load job on next cycle
+  - id: MLC_4Ze
+    en-US: Module has been seen in fault
+  - id: MLC_3wD
+    en-US: Status to inform while no alarm pending
+  - id: MLC_4J7
+    en-US: Alarm Trigger error
+  - id: MLC_3gs
+    en-US: Alarm Acquisition
+  - id: MLC_47T
+    en-US: Alarm inspection error
+  - id: MLC_RC
+    en-US: Alarm Not OffLine
+  - id: MLC_Mf
+    en-US: Alarm Jod Load error
+  - id: MLC_3TA
+    en-US: Alarm Not Online error
+  - id: MLC_4Zh
+    en-US: Not used
+  - id: MLC_q3
+    en-US: Alarms Status
+  - id: MLC_3BA
+    en-US: Status to inform that timeout has been reached
+  - id: MLC_4wm
+    en-US: Status to inform about or to emulate physical input
+  - id: MLC_4u8
+    en-US: Inspection Results
+  - id: MLC_wS
+    en-US: Inspection Status
+  - id: MLC_3pk
+    en-US: Fail Code
+  - id: MLC_4rY
+    en-US: Current job loaded Vision
+  - id: MLC_3eT
+    en-US: Sequencer
+  - id: MLC_4kH
+    en-US: Status to control physical output
+  - id: MLC_qM
+    en-US: Counter PartFail
+  - id: MLC_uM
+    en-US: Counter System Fail
+  - id: MLC_3fS
+    en-US: Counter Pass Status
+  - id: MLC_WV
+    en-US: Counter Pixel Size Fail
+  - id: MLC_dc
+    en-US: Counter Light Level Fail
+  - id: MLC_3Q6
+    en-US: Counter Focus Level Fail
+  - id: MLC_4ux
+    en-US: Counter Revision Mismatch Fail
+  - id: MLC_3ub
+    en-US: Counter Input Communication Fail
+  - id: MLC_4FX
+    en-US: Counter Output Communication Fail
+  - id: MLC_Xh
+    en-US: Counter System Fail
+  - id: MLC_4qn
+    en-US: Counter Specific Fail Code 2
+  - id: MLC_3E2
+    en-US: Counter Specific Fail Code 3
+  - id: MLC_4ra
+    en-US: Counter Specific Fail Code 4
+  - id: MLC_3sT
+    en-US: Counter Specific Fail Code 5
+  - id: MLC_4Dr
+    en-US: Counter Specific Fail Code 6
+  - id: MLC_4KV
+    en-US: Counter Specific Fail Code 7
+  - id: MLC_3KC
+    en-US: Counter Specific Fail Code 8
+  - id: MLC_sz
+    en-US: Counter Specific Fail Code 9
+  - id: MLC_4wD
+    en-US: Counter Specific Fail Code 10
+  - id: MLC_4Jj
+    en-US: Counter Specific Fail Code 11
+  - id: MLC_yQ
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_Si
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_3gf
+    en-US: Command reset counter
+  - id: MLC_37T
+    en-US: Command  New request job load
+  - id: MLC_37H
+    en-US: Command
+  - id: MLC_4XX
+    en-US: Acquisition ID  memorize1
+  - id: MLC_ZJ
+    en-US: Acquisition ID  memorize2
+  - id: MLC_4CG
+    en-US: Vision Inputs
+  - id: MLC_4B2
+    en-US: Vision Outputs
+  - id: MLC_4AU
+    en-US: Acquisition Status
+  - id: MLC_4es
+    en-US: Get Diag Results
+  - id: MLC_44Q
+    en-US: Status to inform command edge
+  - id: MLC_55i
+    en-US: Timer of Time Out
+  - id: MLC_3JY
+    en-US: Value of Time Out Timer
+  - id: MLC_wr
+    en-US: Timer for clear value
+  - id: MLC_4zM
+    en-US: Return Value of DPRD_DAT for Acqisition Status
+  - id: MLC_4TX
+    en-US: Return Value of DPRD_DAT for Inspection Status
+  - id: MLC_4P3
+    en-US: Return Value of DPRD_DAT for Job ID
+  - id: MLC_3cT
+    en-US: Return Value of DPRD_DAT for Results Status
+  - id: MLC_3Dt
+    en-US: Return Value of DPWR_DAT for Acqisition Control
+  - id: MLC_3yU
+    en-US: Return Value of DPWR_DAT for Inspection Control
+  - id: MLC_Wi
+    en-US: Return Value of DPWR_DAT for Job Control
+  - id: MLC_3NE
+    en-US: Return Value of DPWR_DAT for SoftEvent Control
+  - id: MLC_52W
+    en-US: Return Value of DPWR_DAT for User Data
+  - id: MLC_3nu
+    en-US: Return Value of Get Diag
+  - id: MLC_3fZ
+    en-US: Return Value of Get Diag Reserved by Simens
+  - id: MLC_34n
+    en-US: Read Inputs
+  - id: MLC_uU
+    en-US: Acqusition ID
+  - id: MLC_4pp
+    en-US: Input Communication Failure
+  - id: MLC_3Gc
+    en-US: Load Data
+  - id: MLC_57u
+    en-US: Get Module Diagnostic
+  - id: MLC_4YG
+    en-US: Clear Reporting
+  - id: MLC_47i
+    en-US: Reset Alarms
+  - id: MLC_hV
+    en-US: New Command Detected
+  - id: MLC_4QF
+    en-US: Status Done
+  - id: MLC_4bm
+    en-US: Wait Command Abort or Reset
+  - id: MLC_tr
+    en-US: Clear Command and Status
+  - id: MLC_3Je
+    en-US: 'Step 1: RESET - Check vision online'
+  - id: MLC_3Ae
+    en-US: 'Step 0: Wait Command Execute Or Load Job'
+  - id: MLC_34Y
+    en-US: 'Step 10: EXECUTE - Trig vision'
+  - id: MLC_4wA
+    en-US: 'Step 11: Wait vision triggered '
+  - id: MLC_Qu
+    en-US: 'Step 12: Check aquisition done increment of 1'
+  - id: MLC_35Q
+    en-US: 'Step 13: Wait vision triggered OFF'
+  - id: MLC_38G
+    en-US: 'Step 14 : Update Reults and Counter'
+  - id: MLC_3Lq
+    en-US: 'Step 30: LOADJOB Begin'
+  - id: MLC_3FU
+    en-US: 'Step 31: Write Job Number'
+  - id: MLC_3su
+    en-US: send JOB by message
+  - id: MLC_54X
+    en-US: 'Step 32: Execute Load Job'
+  - id: MLC_4R4
+    en-US: send JOB by message
+  - id: MLC_48i
+    en-US: 'Step 40: Execute Test Run - Check Ready'
+  - id: MLC_4T7
+    en-US: 'Step 41: Execute Test Run'
+  - id: MLC_44B
+    en-US: Rep, Couter Alarm
+  - id: MLC_e9
+    en-US: 'Update Status_NoAlm '
+  - id: MLC_mY
+    en-US: 'Step 90 : ALARM STATE'
+  - id: MLC_4H4
+    en-US: Detect if the camera was set offline OR the module has been seen in fault to load the job on the next vision cycle
+  - id: MLC_3sh
+    en-US: Send R&R enable to the vision
+  - id: MLC_4V7
+    en-US: Reporting of Quality
+  - id: MLC_4cH
+    en-US: Update Report_dT
+  - id: MLC_3gN
+    en-US: Clear Command
+  - id: MLC_3Gb
+    en-US: Write Output
+  - id: MLC_3TL
+    en-US: Consecutive counter
+  - id: MLC_3aP
+    en-US: Output Communication Failure
+  - id: MLC_4XE
+    en-US: Current Job Loaded
+  - id: MLC_3i7
+    en-US: Update Alarm state
+  - id: MLC_494
+    en-US: Update Alarm state

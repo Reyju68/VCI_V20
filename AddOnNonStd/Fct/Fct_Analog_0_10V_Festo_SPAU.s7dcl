@@ -1,0 +1,230 @@
+﻿{
+    S7_Author := "PKO";
+    S7_BlockComment := "MLC_34A";
+    S7_BlockTitle := "MLC_3q3";
+    S7_Family := "Standard";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "11.0"
+}
+FUNCTION_BLOCK "Fct_Analog_0_10V_Festo_SPAU"
+    VAR_INPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_xG";
+            S7_Visibility := "Hidden := External"
+        }
+        "IW_AnalogicSignal_0-10V" : UInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3FX";
+            S7_Visibility := "Hidden := External"
+        }
+        Scale_Val_Max : Real;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_33P";
+            S7_Visibility := "Hidden := External"
+        }
+        Scale_Val_Min : Real;
+    END_VAR
+    VAR_OUTPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4Re";
+            S7_Visibility := "Hidden := External"
+        }
+        Process_Value : Real;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        CheckVal_Volt : Real;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Error_Device : Bool;
+    END_VAR
+    VAR_TEMP 
+        W_14_HigherBits : Word;
+        W_14_LowerBits : Word;
+        W_Temp3 : Word;
+        UInt_Temp4 : UInt;
+        R_Temp5 : Real;
+        R_Temp6 : Real;
+        "a" : Real;
+        "b" : Real;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_zu"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_MLC := "MLC_QW"; 
+                S7_Templates := "SrcType := Word"
+            }
+            And(
+                in1 := #"IW_AnalogicSignal_0-10V", 
+                in2 := 2#1111111111111100, 
+                out => #W_14_HigherBits
+            )
+            {
+                S7_MLC := "MLC_py"; 
+                S7_Templates := "SrcType := UInt"
+            }
+            Div(
+                in1 := #W_14_HigherBits, 
+                in2 := 4, 
+                out => #W_14_LowerBits
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_hD"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #W_14_LowerBits, 
+                out1 => #UInt_Temp4
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Mul(
+                in1 := #UInt_Temp4, 
+                in2 := 1.0, 
+                out => #R_Temp6
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_pK";
+        S7_NetworkTitle := "MLC_3WU"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := Real"; 
+                S7_Expression := "((IN2-IN3) *IN1/(IN4-IN5))+IN3"
+            }
+            Calculate(
+                in1 := #R_Temp6, 
+                in2 := 10.0, 
+                in3 := 0.0, 
+                in4 := 16384.0, 
+                in5 := 0.0, 
+                out => #CheckVal_Volt
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3q7"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Real" }
+            LT_Contact(
+                in1 := #Scale_Val_Min, 
+                in2 := #Scale_Val_Max
+            )
+            {
+                S7_Templates := "SrcType := Real"; 
+                S7_Expression := "(IN1-IN2)/(IN3-IN4)"
+            }
+            Calculate(
+                in1 := #Scale_Val_Max, 
+                in2 := #Scale_Val_Min, 
+                in3 := 10.0, 
+                in4 := 0.0, 
+                out => #"a"
+            )
+            {
+                S7_Templates := "SrcType := Real"; 
+                S7_Expression := "IN1-(IN5*IN3)"
+            }
+            Calculate(
+                in1 := #Scale_Val_Max, 
+                in2 := #Scale_Val_Min, 
+                in3 := 10.0, 
+                in4 := 0.0, 
+                in5 := #"a", 
+                out => #"b"
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Tc"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Real" }
+            LT_Contact(
+                in1 := #Scale_Val_Min, 
+                in2 := #Scale_Val_Max
+            )
+            {
+                S7_Templates := "SrcType := Real"; 
+                S7_Expression := "(IN2*IN1)+IN3"
+            }
+            Calculate(
+                in1 := #CheckVal_Volt, 
+                in2 := #"a", 
+                in3 := #"b", 
+                out => #Process_Value
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Xv"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := Word"
+            }
+            And(
+                in1 := #"IW_AnalogicSignal_0-10V", 
+                in2 := 2#0000000000000011, 
+                out => #W_Temp3
+            )
+            wire#w1
+            Contact( #W_Temp3.%X0 )
+            wire#w2
+            
+            Move(
+                in := 0.0, 
+                out1 => #Process_Value
+            )
+            Coil( #Error_Device )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #W_Temp3.%X1 )
+        END_RUNG wire#w2
+        RUNG wire#w1
+            { S7_Templates := "SrcType := Real" }
+            GE_Contact(
+                in1 := #Scale_Val_Min, 
+                in2 := #Scale_Val_Max
+            )
+        END_RUNG wire#w2
+        RUNG wire#w1
+            { S7_Templates := "SrcType := UInt" }
+            EQ_Contact(
+                in1 := #"IW_AnalogicSignal_0-10V", 
+                in2 := 16#0000
+            )
+        END_RUNG wire#w2
+    END_NETWORK
+END_FUNCTION_BLOCK

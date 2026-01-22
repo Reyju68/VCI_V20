@@ -1,0 +1,2440 @@
+﻿{
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Act_AxisLinear"
+    VAR_INPUT 
+        { S7_MLC := "MLC_3QS" }
+        Cfg_Clock_1Hz : Bool;
+        { S7_MLC := "MLC_3bu" }
+        Cfg_NoRefInterlock : Bool;
+        { S7_MLC := "MLC_44Q" }
+        Cfg_NoInterlock : Bool;
+        { S7_MLC := "MLC_52x" }
+        Cfg_HR1 : Bool;
+        { S7_MLC := "MLC_4Vz" }
+        Cfg_Scaling : DInt;
+        { S7_MLC := "MLC_3Uh" }
+        Cfg_SftyMode : DInt;
+        { S7_MLC := "MLC_tk" }
+        Cfg_SftyOn : Bool;
+        { S7_MLC := "MLC_4AE" }
+        Cfg_Slow : Bool;
+        Cfg_StatOff : Bool;
+        Cfg_EnblStat : Bool;
+        { S7_MLC := "MLC_4zY" }
+        Cmd_Ack : Bool;
+        { S7_MLC := "MLC_4CM" }
+        Cmd_ClrStat : Bool;
+    END_VAR
+    VAR_INPUT DB_SPECIFIC
+        { S7_MLC := "MLC_3vz" }
+        Cmd_Out : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd : STRUCT
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            "res24-31" : Byte;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve16 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve17 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve18 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve19 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            CmdExecForwardInc : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            CmdExecBackwardInc : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve22 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve23 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            "res8-15" : Byte;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_5Af";
+                S7_Visibility := "Hidden := External"
+            }
+            CmdAbort : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_4Gk";
+                S7_Visibility := "Hidden := External"
+            }
+            CmdReset : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_42F";
+                S7_Visibility := "Hidden := External"
+            }
+            CmdExecute : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve3 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve4 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve5 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve6 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Reserve7 : Bool;
+        END_STRUCT;
+    END_VAR
+    VAR_INPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4xL"
+        }
+        EnableIn : Bool;
+        { S7_MLC := "MLC_3Cc" }
+        Par_TimeOut : DInt;
+        { S7_MLC := "MLC_436" }
+        Cmd_FirstScan : Bool;
+        { S7_MLC := "MLC_iM" }
+        Cmd_Halt : Bool;
+        { S7_MLC := "MLC_324" }
+        HomingValue : DInt;
+        { S7_MLC := "MLC_4bT" }
+        HomeType : Int;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        TorqueData_In : PD_TEL750_IN;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Telegram_In : PD_TEL105_IN;
+    END_VAR
+    VAR_OUTPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_yd"
+        }
+        EnableOut : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_at"
+        }
+        Rep_CtrAlm : DInt;
+        { S7_MLC := "MLC_M5" }
+        Rep_dT : DInt;
+        { S7_MLC := "MLC_4RJ" }
+        Sts_ActualPos : DInt;
+        { S7_MLC := "MLC_UP" }
+        Sts_AlmOns : Bool;
+    END_VAR
+    VAR_OUTPUT DB_SPECIFIC
+        { S7_MLC := "MLC_3GJ" }
+        Sts_Alms : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Alms : STRUCT
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            res3 : Byte;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            res2 : Byte;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            res1 : Byte;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_Lk";
+                S7_Visibility := "Hidden := External"
+            }
+            AlmDrive : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_35K";
+                S7_Visibility := "Hidden := External"
+            }
+            AlmMotion : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_4hG";
+                S7_Visibility := "Hidden := External"
+            }
+            AlmInterlock : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_46W";
+                S7_Visibility := "Hidden := External"
+            }
+            AlmHomed : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_Qh";
+                S7_Visibility := "Hidden := External"
+            }
+            AlmRefInterlock : Bool;
+        END_STRUCT;
+    END_VAR
+    VAR_OUTPUT 
+        { S7_MLC := "MLC_WJ" }
+        Sts_Approach : Bool;
+        { S7_MLC := "MLC_5AU" }
+        Sts_CmdDone : Bool;
+        { S7_MLC := "MLC_bg" }
+        Sts_Idle : Bool := TRUE;
+        { S7_MLC := "MLC_562" }
+        Sts_NoAlm : Bool;
+        { S7_MLC := "MLC_49z" }
+        Sts_NoRefInterlock : Bool;
+        { S7_MLC := "MLC_kR" }
+        Sts_NoInterlock : Bool;
+        { S7_MLC := "MLC_5AF" }
+        Sts_Out : DInt;
+        { S7_MLC := "MLC_4t4" }
+        Sts_OpenHoldingBrake : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Telegram_out : PD_TEL105_OUT;
+        Rep_AxisActualVelocity : LReal;
+        Maint_Config : Array[0..7] of Bool;
+    END_VAR
+    VAR_IN_OUT 
+        { S7_MLC := "MLC_4WU" }
+        Cfg_Motion : _.Typ_AxLinearMotion;
+        { S7_MLC := "MLC_yH" }
+        Cfg_SafeJog : _.Typ_AxSafeJogMotion;
+        { S7_MLC := "MLC_W5" }
+        InterfaceHMi : _.Typ_AxSiHMi;
+        { S7_MLC := "MLC_3qw" }
+        MotionGroup : TO_PositioningAxis;
+    END_VAR
+    VAR 
+        { S7_Setpoint := "False" }
+        AxAdm : _.Typ_AxAdm;
+        {
+            S7_MLC := "MLC_4vn";
+            S7_Setpoint := "False"
+        }
+        AxHome : MC_HOME;
+        {
+            S7_MLC := "MLC_rD";
+            S7_Setpoint := "False"
+        }
+        AxLinearAbs : MC_MOVEABSOLUTE;
+        {
+            S7_MLC := "MLC_4jf";
+            S7_Setpoint := "False"
+        }
+        AxLinearRel : MC_MOVERELATIVE;
+        {
+            S7_MLC := "MLC_53n";
+            S7_Setpoint := "False"
+        }
+        AxPower : MC_POWER;
+        {
+            S7_MLC := "MLC_ri";
+            S7_Setpoint := "False"
+        }
+        AxSafeJog : MC_MOVEJOG;
+        {
+            S7_MLC := "MLC_Sz";
+            S7_Setpoint := "False"
+        }
+        AxHalt : MC_HALT;
+        {
+            S7_MLC := "MLC_fL";
+            S7_Setpoint := "False"
+        }
+        AxReset : MC_RESET;
+        {
+            S7_MLC := "MLC_X5";
+            S7_Setpoint := "False"
+        }
+        Axstop : MC_STOP;
+        { S7_MLC := "MLC_4aa" }
+        Cmd_Seq : DInt;
+        Cmd_Home : Bool;
+        { S7_MLC := "MLC_Zi" }
+        Cfg_MoveType : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg_MotionHaltPos : LReal;
+        Ctr_AvgCycle : DInt;
+        Ctr_AvgCyclePosMvt : DInt;
+        Ctr_AvgCycleNegMvt : DInt;
+        Maint_AvgTorqueReferenceNegMvt : Real;
+        Maint_AvgTorqueReferencePosMvt : Real;
+        Maint_AvgPositionErrorNegMvt : Real;
+        Maint_AvgPositionErrorPosMvt : Real;
+        Maint_MaxPositionErrorPosMvt : Real;
+        Maint_MaxPositionErrorNegMvt : Real;
+        Maint_MaxTorqueReferencePosMvt : Real;
+        Maint_MaxTorqueReferenceNegMvt : Real;
+        Memo_AlmCycle : Bool;
+        Memo_NegativeMvt : Bool;
+        Memo_PositiveMvt : Bool;
+        ONS : Array[0..31] of Bool;
+        { S7_Setpoint := "True" }
+        Rep_PositionError : Real;
+        Rep_TorqueReference : Real;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Reset_TmrTO : Bool;
+        { S7_MLC := "MLC_4aG" }
+        Sts_ApproachHiLim : DInt;
+        { S7_MLC := "MLC_NJ" }
+        Sts_ApproachLoLim : DInt;
+        { S7_MLC := "MLC_39R" }
+        Sts_MemoError : Bool;
+        { S7_MLC := "MLC_3ah" }
+        Sts_Seq : DInt;
+        { S7_MLC := "MLC_4pf" }
+        Sts_SeqOns : Bool;
+        { S7_MLC := "MLC_4sR" }
+        Sts_Seqp : DInt;
+        { S7_MLC := "MLC_3ZZ" }
+        Sts_SeqT : DInt;
+        { S7_MLC := "MLC_3Tn" }
+        Sts_TimeOut : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_NewValueHalt : Bool;
+        Sts_MemoRelHalt : DInt;
+        Sts_RelHaltDelta : LReal;
+        Sts_PosVelocityStandstill : DInt;
+        Sts_NegVelocityStandstill : DInt;
+        Sts_MvtInProgress : Bool;
+        Tmp_AvgTorqueReferenceNegMvt : Real;
+        Tmp_AvgTorqueReferencePosMvt : Real;
+        Tmp_AvgPositionErrorNegMvt : Real;
+        Tmp_AvgPositionErrorPosMvt : Real;
+        Tmp_PositionError : Real;
+        Tmp_TorqueReference : Real;
+        Tmp_MaxPositionErrorPosMvt : Real;
+        Tmp_MaxPositionErrorNegMvt : Real;
+        Tmp_MaxTorqueReferencePosMvt : Real;
+        Tmp_MaxTorqueReferenceNegMvt : Real;
+        { S7_MLC := "MLC_532" }
+        Tmp_BrakeControl : DInt;
+        {
+            S7_MLC := "MLC_4dW";
+            S7_Setpoint := "False"
+        }
+        Tmr_Cmd : IEC_TIMER;
+        {
+            S7_MLC := "MLC_3Eu";
+            S7_Setpoint := "False"
+        }
+        Tmr_TO : IEC_TIMER;
+    END_VAR
+    VAR_TEMP 
+        PredMaint_Datas : Real;
+        ActualTorque : DWord;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_47V"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+            wire#w1
+            S_Coil( #Cmd_Ack )
+            S_Coil( #Sts_Idle )
+            R_Coil( #Sts_Approach )
+            R_Coil( #Sts_MemoError )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Cfg_StatOff )
+            R_Coil( #AxReset.Restart )
+            R_Coil( #InterfaceHMi.Cmd_IncBackward )
+            R_Coil( #InterfaceHMi.Cmd_IncForward )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq, 
+                out2 => #Sts_Seq, 
+                out3 => #Cmd_Out
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0.0, 
+                out1 => #InterfaceHMi.Cfg_IncrementalPos
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Mul(
+                in1 := #MotionGroup.Homing.HomePosition, 
+                in2 := #Cfg_Scaling, 
+                out => #InterfaceHMi.Sts_HomingOffset
+            )
+        END_RUNG
+        RUNG wire#w1
+            S_Coil( #Cfg_EnblStat )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Abs(
+                in := #MotionGroup.StandstillSignal.VelocityThreshold, 
+                out => #Sts_PosVelocityStandstill
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Mul(
+                in1 := #Sts_PosVelocityStandstill, 
+                in2 := -1, 
+                out => #Sts_NegVelocityStandstill
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3jZ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Idle )
+            I_Contact( #Cfg_HR1 )
+            Contact( #AxPower.Enable )
+            S_Coil( #Cmd.CmdAbort )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_L4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Ack )
+            wire#w1
+            R_Coil( #AxHome.Error )
+            R_Coil( #AxLinearAbs.Error )
+            R_Coil( #AxPower.Error )
+            R_Coil( #AxLinearRel.Error )
+            R_Coil( #AxHalt.Error )
+            R_Coil( #Axstop.Error )
+        END_RUNG
+        RUNG wire#w1
+            R_Coil( #Sts_NewValueHalt )
+            R_Coil( #Axstop.Execute )
+            S_Coil( #AxReset.Execute )
+            Coil( #Reset_TmrTO )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Sts_Alms
+            )
+            R_Coil( #Cmd_Ack )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3yv"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Idle )
+            wire#w1
+            Contact( #InterfaceHMi.Cmd_IncBackward )
+            S_Coil( #Cmd.CmdExecBackwardInc )
+            R_Coil( #InterfaceHMi.Cmd_IncBackward )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #InterfaceHMi.Cmd_IncForward )
+            S_Coil( #Cmd.CmdExecForwardInc )
+            R_Coil( #InterfaceHMi.Cmd_IncForward )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_48n"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Cfg_SftyOn )
+            wire#w1
+            R_Coil( #InterfaceHMi.Cmd_SafeJogMove )
+            R_Coil( #InterfaceHMi.Cmd_IncForward )
+            R_Coil( #InterfaceHMi.Cmd_IncBackward )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #InterfaceHMi.Cmd_Home )
+            { S7_Templates := "SrcType := Int" }
+            NE_Contact(
+                in1 := #HomeType, 
+                in2 := 0
+            )
+            R_Coil( #InterfaceHMi.Cmd_Home )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Sts_Idle )
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Cmd_Out, 
+                in2 := 1
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Out
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_Idle )
+            I_Contact( #Sts_Out.%X0 )
+            S_Coil( #Cmd_Out.%X0 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_39D"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Out, 
+                in2 := 0
+            )
+            wire#w1
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Cmd_Out, 
+                out1 => #Sts_Out
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Sts_Idle )
+            wire#w2
+            Contact( #Cmd.CmdExecBackwardInc )
+            wire#w3
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 200, 
+                out1 => #Cmd_Seq
+            )
+            RT_Coil( #Tmr_Cmd )
+            R_Coil( #Sts_Idle )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Approach )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cmd.CmdExecForwardInc )
+        END_RUNG wire#w3
+        RUNG wire#w2
+            Contact( #Cmd.CmdExecute )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 100, 
+                out1 => #Cmd_Seq
+            )
+            RT_Coil( #Tmr_Cmd )
+            R_Coil( #Sts_Idle )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Approach )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cmd.CmdReset )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 10, 
+                out1 => #Cmd_Seq
+            )
+            RT_Coil( #Tmr_Cmd )
+            R_Coil( #Sts_Idle )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Approach )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cmd.CmdAbort )
+            wire#w4
+            Contact( #Sts_Idle )
+            wire#w5
+            RT_Coil( #Tmr_Cmd )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 1, 
+                out1 => #Cmd_Seq
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 1, 
+                out1 => #Cmd_Out
+            )
+            RT_Coil( #Tmr_Cmd )
+            R_Coil( #Sts_Idle )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Approach )
+        END_RUNG
+        RUNG wire#w4
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 9
+            )
+        END_RUNG wire#w5
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Cmd_Out, 
+                in2 := 0
+            )
+            Contact( #Sts_Idle )
+            RT_Coil( #Tmr_TO )
+            Contact( #InterfaceHMi.Cmd_Home )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 50, 
+                out1 => #Cmd_Seq
+            )
+            RT_Coil( #Tmr_Cmd )
+            R_Coil( #Sts_Idle )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Approach )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_k5"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Seq, 
+                in2 := 0
+            )
+            wire#w1
+            Contact( #Sts_NoAlm )
+            wire#w2
+            Coil( #Sts_SeqOns )
+            
+            Move(
+                in := #Sts_Seq, 
+                out1 => #Sts_Seqp
+            )
+            
+            Move(
+                in := #Cmd_Seq, 
+                out1 => #Sts_Seq
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq
+            )
+            R_Coil( #Reset_TmrTO )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cmd.CmdAbort )
+        END_RUNG wire#w2
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_45P"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_Idle )
+            wire#w1
+            
+            Move(
+                in := T#3s, 
+                out1 => #Tmr_TO.PT
+            )
+            wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Cmd_Out, 
+                in2 := 3
+            )
+            wire#w3
+            
+            Move(
+                in := #Par_TimeOut, 
+                out1 => #Tmr_TO.PT
+            )
+            Contact( #Cfg_Slow )
+            
+            Mul(
+                in1 := #Par_TimeOut, 
+                in2 := 10, 
+                out => #Tmr_TO.PT
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cmd_Home )
+        END_RUNG wire#w3
+        RUNG wire#w1
+            I_Contact( #Cmd_Halt )
+            wire#w4
+            I_Contact( #Cmd_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr_TO.TONR(
+                r := #Reset_TmrTO, 
+                pt := #Tmr_TO.PT, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w4
+            
+            Move(
+                in := #Tmr_TO.ET, 
+                out1 => #Sts_SeqT
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Cmd_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr_Cmd.TON(
+                pt := T#16M_39S_999MS, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Tmr_Cmd.ET, 
+                out1 => #Rep_dT
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Tmr_TO.Q )
+            Coil( #Sts_TimeOut )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_33s"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #InterfaceHMi.Cmd_SafeJogMove )
+            Contact( #InterfaceHMi.Cmd_SafeJogDirection.%X0 )
+            wire#w1
+            Coil( #AxSafeJog.JogBackward )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_Home )
+            I_Contact( #InterfaceHMi.Cmd_SafeJogMove )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #InterfaceHMi.Cmd_SafeJogMove )
+            I_Contact( #InterfaceHMi.Cmd_SafeJogDirection.%X0 )
+            Coil( #AxSafeJog.JogForward )
+        END_RUNG
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Cfg_SafeJog.Velocity, 
+                out1 => #AxSafeJog.Velocity
+            )
+            
+            Move(
+                in := #Cfg_SafeJog.AccelRate, 
+                out1 => #AxSafeJog.Acceleration
+            )
+            
+            Move(
+                in := #Cfg_SafeJog.DecelRate, 
+                out1 => #AxSafeJog.Deceleration
+            )
+            
+            Move(
+                in := #Cfg_SafeJog.Jerk, 
+                out1 => #AxSafeJog.Jerk
+            )
+            R_Coil( #AxSafeJog.PositionControlled )
+            Contact( #Cmd_Home )
+            S_Coil( #AxSafeJog.PositionControlled )
+        END_RUNG
+        RUNG wire#powerrail
+            #AxSafeJog.MC_MOVEJOG(
+                Axis := #MotionGroup, 
+                JogForward := #AxSafeJog.JogForward, 
+                JogBackward := #AxSafeJog.JogBackward, 
+                Velocity := #AxSafeJog.Velocity, 
+                Acceleration := #AxSafeJog.Acceleration, 
+                Deceleration := #AxSafeJog.Deceleration, 
+                Jerk := #AxSafeJog.Jerk, 
+                PositionControlled := #AxSafeJog.PositionControlled, 
+                InVelocity => #AxSafeJog.InVelocity, 
+                Busy => #AxSafeJog.Busy, 
+                CommandAborted => #AxSafeJog.CommandAborted, 
+                Error => #AxSafeJog.Error, 
+                ErrorId => #AxSafeJog.ErrorId
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3g9"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #InterfaceHMi.Cmd_EngageBrake )
+            wire#w1
+            R_Coil( #Sts_OpenHoldingBrake )
+            R_Coil( #InterfaceHMi.Cmd_EngageBrake )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #AxPower.Status )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #InterfaceHMi.Cmd_ReleaseBrake )
+            S_Coil( #Sts_OpenHoldingBrake )
+            R_Coil( #InterfaceHMi.Cmd_ReleaseBrake )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3x3"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_Templates := "[SrcType := DInt, DestType := LReal]"
+            }
+            Convert(
+                in := #HomingValue, 
+                out => #AxHome.Position
+            )
+            
+            Move(
+                in := #HomeType, 
+                out1 => #AxHome.Mode
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cfg_NoRefInterlock )
+            #AxHome.MC_HOME(
+                Axis := #MotionGroup, 
+                Execute := #AxHome.Execute, 
+                Position := #AxHome.Position, 
+                Mode := #AxHome.Mode, 
+                Sensor :=  , 
+                ReferenceMarkPosition => #AxHome.ReferenceMarkPosition, 
+                Done => #AxHome.Done, 
+                Busy => #AxHome.Busy, 
+                CommandAborted => #AxHome.CommandAborted, 
+                Error => #AxHome.Error, 
+                ErrorId => #AxHome.ErrorId
+            )
+            wire#w1
+            Contact( #AxHome.Done )
+            R_Coil( #InterfaceHMi.Cmd_Home )
+            R_Coil( #AxHome.Execute )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #AxHome.Error )
+            S_Coil( #Alms.AlmDrive )
+            R_Coil( #InterfaceHMi.Cmd_Home )
+            R_Coil( #AxHome.Execute )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #InterfaceHMi.Cmd_Home )
+            I_Contact( #Cfg_NoRefInterlock )
+            S_Coil( #Alms.AlmRefInterlock )
+            R_Coil( #InterfaceHMi.Cmd_Home )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_nR"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 1, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            wire#w2
+            R_Coil( #Reset_TmrTO )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Approach )
+            R_Coil( #Sts_MemoError )
+            Contact( #AxPower.Status )
+            S_Coil( #Axstop.Execute )
+        END_RUNG
+        RUNG wire#w2
+            S_Coil( #InterfaceHMi.Cmd_EngageBrake )
+            R_Coil( #InterfaceHMi.Cmd_SafeJogMove )
+            R_Coil( #AxLinearAbs.Execute )
+            R_Coil( #AxLinearRel.Execute )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w3
+            Contact( #Axstop.Done )
+            wire#w4
+            
+            Move(
+                in := 2, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_SeqT, 
+                in2 := 1000
+            )
+        END_RUNG wire#w4
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3wV"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 2, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            R_Coil( #Axstop.Execute )
+            wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cfg_SftyMode, 
+                in2 := 2
+            )
+            wire#w3
+            R_Coil( #AxPower.Enable )
+        END_RUNG
+        RUNG wire#w2
+            I_Contact( #Cfg_HR1 )
+        END_RUNG wire#w3
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w4
+            I_Contact( #AxPower.Status )
+            wire#w5
+            S_Coil( #Sts_CmdDone )
+            S_Coil( #Reset_TmrTO )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w4
+            Contact( #Cfg_HR1 )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Cfg_SftyMode, 
+                in2 := 2
+            )
+        END_RUNG wire#w5
+        RUNG wire#w4
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_SeqT, 
+                in2 := 1000
+            )
+            S_Coil( #Reset_TmrTO )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_bp"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 10, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            wire#w2
+            R_Coil( #Reset_TmrTO )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Approach )
+            S_Coil( #InterfaceHMi.Cmd_EngageBrake )
+            R_Coil( #InterfaceHMi.Cmd_SafeJogMove )
+        END_RUNG
+        RUNG wire#w2
+            S_Coil( #AxReset.Execute )
+            R_Coil( #AxPower.Enable )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w3
+            Contact( #AxReset.Done )
+            R_Coil( #AxReset.Execute )
+            I_Contact( #AxReset.Execute )
+            I_Contact( #AxReset.Error )
+            
+            Move(
+                in := 11, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_TimeOut )
+            R_Coil( #AxReset.Execute )
+            S_Coil( #Alms.AlmDrive )
+            S_Coil( #Axstop.Execute )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3tw"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 11, 
+                in2 := #Sts_Seq
+            )
+            I_Contact( #Sts_SeqOns )
+            wire#w1
+            Contact( #MotionGroup.StatusWord.%X5 )
+            wire#w2
+            I_Contact( #AxReset.Execute )
+            I_Contact( #AxReset.Error )
+            
+            Move(
+                in := 12, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := UDInt" }
+            EQ_Contact(
+                in1 := #MotionGroup.VirtualAxis.Mode, 
+                in2 := 1
+            )
+        END_RUNG wire#w2
+        RUNG wire#w1
+            { S7_Templates := "SrcType := UDInt" }
+            NE_Contact(
+                in1 := #MotionGroup.VirtualAxis.Mode, 
+                in2 := 1
+            )
+            I_Contact( #MotionGroup.StatusWord.%X5 )
+            R_Coil( #AxPower.Enable )
+            S_Coil( #Alms.AlmHomed )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_vH"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 12, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #AxPower.Enable )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            Contact( #AxPower.Status )
+            S_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_MemoError )
+            S_Coil( #Reset_TmrTO )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Sts_TimeOut )
+            wire#w3
+            Contact( #Sts_MemoError )
+            S_Coil( #Alms.AlmDrive )
+            S_Coil( #Axstop.Execute )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w3
+            I_Contact( #Sts_Idle )
+            S_Coil( #Sts_MemoError )
+            S_Coil( #Reset_TmrTO )
+            
+            Move(
+                in := 10, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3R4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 50, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #AxPower.Enable )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            Contact( #AxPower.Status )
+            
+            Move(
+                in := 51, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Sts_TimeOut )
+            S_Coil( #Alms.AlmDrive )
+            S_Coil( #Axstop.Execute )
+            R_Coil( #AxPower.Enable )
+            S_Coil( #Sts_Idle )
+            R_Coil( #InterfaceHMi.Cmd_Home )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4fa"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 51, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #Cmd_Home )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            I_Contact( #Telegram_In.G1_ZSW.Probe1Deflected )
+            
+            Move(
+                in := 52, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Sts_TimeOut )
+            S_Coil( #Alms.AlmDrive )
+            S_Coil( #Axstop.Execute )
+            S_Coil( #Sts_Idle )
+            R_Coil( #Cmd_Home )
+            R_Coil( #InterfaceHMi.Cmd_Home )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_wB"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 52, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #AxHome.Execute )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            
+            Move(
+                in := 53, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Mn"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 53, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            R_Coil( #Cmd_Home )
+            R_Coil( #InterfaceHMi.Cmd_Home )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            S_Coil( #Sts_CmdDone )
+            S_Coil( #Reset_TmrTO )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3tK"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 100, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            R_Coil( #Reset_TmrTO )
+            R_Coil( #Axstop.Execute )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            R_Coil( #Cfg_MoveType )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Cfg_Motion.MoveType, 
+                in2 := 1
+            )
+            S_Coil( #Cfg_MoveType )
+        END_RUNG
+        RUNG wire#w2
+            R_Coil( #Sts_Approach )
+            
+            Sub(
+                in1 := #Cfg_Motion.Position, 
+                in2 := #Cfg_Motion.Approach, 
+                out => #Sts_ApproachLoLim
+            )
+            
+            Add(
+                in1 := #Cfg_Motion.Position, 
+                in2 := #Cfg_Motion.Approach, 
+                out => #Sts_ApproachHiLim
+            )
+        END_RUNG
+        RUNG wire#w2
+            I_Contact( #Cfg_MoveType )
+            S_Coil( #AxLinearAbs.Execute )
+            R_Coil( #Sts_CmdDone )
+            
+            Move(
+                in := 101, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cfg_MoveType )
+            S_Coil( #AxLinearRel.Execute )
+            R_Coil( #Sts_CmdDone )
+            
+            Move(
+                in := 101, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_32f"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #AxLinearAbs.Execute )
+            wire#w1
+            I_Contact( #Cfg_NoInterlock )
+            S_Coil( #Alms.AlmInterlock )
+            R_Coil( #AxLinearAbs.Execute )
+            R_Coil( #AxLinearRel.Execute )
+            S_Coil( #Axstop.Execute )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #AxLinearRel.Execute )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Alms.AlmMotion )
+            R_Coil( #AxLinearAbs.Execute )
+            R_Coil( #AxLinearRel.Execute )
+            S_Coil( #Axstop.Execute )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #AxLinearAbs.Execute )
+            Contact( #Cfg_NoInterlock )
+            Contact( #Cmd.CmdExecute )
+            wire#w2
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Cfg_Motion.Position, 
+                in2 := #Cfg_Scaling, 
+                out => #AxLinearAbs.Position
+            )
+            {
+                S7_Templates := "[SrcType := DInt, DestType := LReal]"
+            }
+            Convert(
+                in := #Cfg_Motion.AccelRate, 
+                out => #AxLinearAbs.Acceleration
+            )
+            {
+                S7_Templates := "[SrcType := DInt, DestType := LReal]"
+            }
+            Convert(
+                in := #Cfg_Motion.Velocity, 
+                out => #AxLinearAbs.Velocity
+            )
+        END_RUNG
+        RUNG wire#w2
+            {
+                S7_Templates := "[SrcType := DInt, DestType := LReal]"
+            }
+            Convert(
+                in := #Cfg_Motion.DecelRate, 
+                out => #AxLinearAbs.Deceleration
+            )
+            {
+                S7_Templates := "[SrcType := DInt, DestType := LReal]"
+            }
+            Convert(
+                in := #Cfg_Motion.Jerk, 
+                out => #AxLinearAbs.Jerk
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            #AxLinearAbs.MC_MOVEABSOLUTE(
+                Axis := #MotionGroup, 
+                Execute := #AxLinearAbs.Execute, 
+                Position := #AxLinearAbs.Position, 
+                Velocity := #AxLinearAbs.Velocity, 
+                Acceleration := #AxLinearAbs.Acceleration, 
+                Deceleration := #AxLinearAbs.Deceleration, 
+                Jerk := #AxLinearAbs.Jerk, 
+                Direction := #AxLinearAbs.Direction, 
+                BufferMode :=  , 
+                Done => #AxLinearAbs.Done, 
+                Busy => #AxLinearAbs.Busy, 
+                Active =>  , 
+                CommandAborted => #AxLinearAbs.CommandAborted, 
+                Error => #AxLinearAbs.Error, 
+                ErrorId => #AxLinearAbs.ErrorId
+            )
+            Contact( #AxLinearAbs.Error )
+            S_Coil( #Alms.AlmMotion )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #AxLinearRel.Execute )
+            wire#w3
+            Contact( #Cfg_NoInterlock )
+            Contact( #Cmd.CmdExecute )
+            wire#w4
+            I_Contact( #Sts_NewValueHalt )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Cfg_Motion.Distance, 
+                in2 := #Cfg_Scaling, 
+                out => #AxLinearRel.Distance
+            )
+            {
+                S7_Templates := "[SrcType := DInt, DestType := LReal]"
+            }
+            Convert(
+                in := #Cfg_Motion.AccelRate, 
+                out => #AxLinearRel.Acceleration
+            )
+            {
+                S7_Templates := "[SrcType := DInt, DestType := LReal]"
+            }
+            Convert(
+                in := #Cfg_Motion.Velocity, 
+                out => #AxLinearRel.Velocity
+            )
+        END_RUNG
+        RUNG wire#w4
+            Contact( #Sts_NewValueHalt )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Div(
+                in1 := #Cfg_MotionHaltPos, 
+                in2 := #Cfg_Scaling, 
+                out => #AxLinearRel.Distance
+            )
+        END_RUNG
+        RUNG wire#w4
+            {
+                S7_Templates := "[SrcType := DInt, DestType := LReal]"
+            }
+            Convert(
+                in := #Cfg_Motion.DecelRate, 
+                out => #AxLinearRel.Deceleration
+            )
+            {
+                S7_Templates := "[SrcType := DInt, DestType := LReal]"
+            }
+            Convert(
+                in := #Cfg_Motion.Jerk, 
+                out => #AxLinearRel.Jerk
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Cmd.CmdExecForwardInc )
+            {
+                S7_Templates := "[SrcType := Real, DestType := LReal]"
+            }
+            Convert(
+                in := #InterfaceHMi.Cfg_IncrementalPos, 
+                out => #AxLinearRel.Distance
+            )
+            
+            Move(
+                in := #Cfg_SafeJog.Velocity, 
+                out1 => #AxLinearRel.Velocity
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Cmd.CmdExecBackwardInc )
+            
+            Mul(
+                in1 := #InterfaceHMi.Cfg_IncrementalPos, 
+                in2 := -1.0, 
+                out => #AxLinearRel.Distance
+            )
+            
+            Move(
+                in := #Cfg_SafeJog.Velocity, 
+                out1 => #AxLinearRel.Velocity
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            #AxLinearRel.MC_MOVERELATIVE(
+                Axis := #MotionGroup, 
+                Execute := #AxLinearRel.Execute, 
+                Distance := #AxLinearRel.Distance, 
+                Velocity := #AxLinearRel.Velocity, 
+                Acceleration := #AxLinearRel.Acceleration, 
+                Deceleration := #AxLinearRel.Deceleration, 
+                Jerk := #AxLinearRel.Jerk, 
+                BufferMode :=  , 
+                Done => #AxLinearRel.Done, 
+                Busy => #AxLinearRel.Busy, 
+                Active =>  , 
+                CommandAborted => #AxLinearRel.CommandAborted, 
+                Error => #AxLinearRel.Error, 
+                ErrorId => #AxLinearRel.ErrorId
+            )
+            Contact( #AxLinearRel.Error )
+            S_Coil( #Alms.AlmMotion )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_599"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 101, 
+                in2 := #Sts_Seq
+            )
+            I_Contact( #Sts_SeqOns )
+            wire#w1
+            Contact( #Sts_TimeOut )
+            I_Contact( #Cmd_Halt )
+            S_Coil( #Alms.AlmMotion )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Alms.AlmMotion )
+            wire#w2
+            R_Coil( #AxLinearAbs.Execute )
+            R_Coil( #AxLinearRel.Execute )
+            S_Coil( #Axstop.Execute )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Cmd.CmdExecute )
+        END_RUNG wire#w2
+        RUNG wire#w1
+            Contact( #AxLinearAbs.Busy )
+            wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Cfg_Motion.MoveType, 
+                in2 := 0
+            )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #Sts_ActualPos, 
+                in2 := #Sts_ApproachLoLim
+            )
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Sts_ActualPos, 
+                in2 := #Sts_ApproachHiLim
+            )
+            S_Coil( #Sts_Approach )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #AxLinearRel.Busy )
+        END_RUNG wire#w3
+        RUNG wire#w1
+            Contact( #Cmd_Halt )
+            S_Coil( #AxHalt.Execute )
+            
+            Move(
+                in := 102, 
+                out1 => #Cmd_Seq
+            )
+            R_Coil( #Sts_NewValueHalt )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #AxLinearAbs.Done )
+            wire#w4
+            I_Contact( #Cmd_Halt )
+            wire#w5
+            S_Coil( #Sts_Approach )
+            S_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_NewValueHalt )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #AxLinearRel.Done )
+        END_RUNG wire#w4
+        RUNG wire#w5
+            R_Coil( #AxLinearAbs.Execute )
+            R_Coil( #AxLinearRel.Execute )
+            S_Coil( #Reset_TmrTO )
+            
+            Move(
+                in := #Sts_ActualPos, 
+                out1 => #Sts_MemoRelHalt
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Alms.AlmMotion )
+            I_Contact( #AxLinearAbs.Execute )
+            I_Contact( #AxLinearRel.Execute )
+            R_Coil( #Sts_NewValueHalt )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_u6"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 102, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            Contact( #Cmd_Halt )
+            R_Coil( #AxLinearAbs.Execute )
+            R_Coil( #AxLinearRel.Execute )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            I_Contact( #Cmd_Halt )
+            R_Coil( #AxHalt.Execute )
+            
+            Move(
+                in := 100, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cfg_MoveType )
+            wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            LT_Contact(
+                in1 := #Cfg_Motion.Distance, 
+                in2 := 0
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Sub(
+                in1 := #Sts_MemoRelHalt, 
+                in2 := #Sts_ActualPos, 
+                out => #Sts_RelHaltDelta
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Add(
+                in1 := #Sts_RelHaltDelta, 
+                in2 := #Cfg_Motion.Distance, 
+                out => #Cfg_MotionHaltPos
+            )
+            S_Coil( #Sts_NewValueHalt )
+            R_Coil( #AxLinearAbs.Execute )
+            R_Coil( #AxLinearRel.Execute )
+        END_RUNG
+        RUNG wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Cfg_Motion.Distance, 
+                in2 := 0
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Sub(
+                in1 := #Sts_MemoRelHalt, 
+                in2 := #Sts_ActualPos, 
+                out => #Sts_RelHaltDelta
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Add(
+                in1 := #Sts_RelHaltDelta, 
+                in2 := #Cfg_Motion.Distance, 
+                out => #Cfg_MotionHaltPos
+            )
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Abs(
+                in := #Cfg_MotionHaltPos, 
+                out => #Cfg_MotionHaltPos
+            )
+            S_Coil( #Sts_NewValueHalt )
+            R_Coil( #AxLinearAbs.Execute )
+            R_Coil( #AxLinearRel.Execute )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_ZG"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 200, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            wire#w2
+            S_Coil( #Cfg_MoveType )
+            
+            Move(
+                in := #Cfg_SafeJog.AccelRate, 
+                out1 => #AxLinearRel.Acceleration
+            )
+            
+            Move(
+                in := #Cfg_SafeJog.DecelRate, 
+                out1 => #AxLinearRel.Deceleration
+            )
+            
+            Move(
+                in := #Cfg_SafeJog.Jerk, 
+                out1 => #AxLinearRel.Jerk
+            )
+        END_RUNG
+        RUNG wire#w2
+            S_Coil( #AxLinearRel.Execute )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w3
+            Contact( #Sts_TimeOut )
+            S_Coil( #Alms.AlmMotion )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Alms.AlmMotion )
+            wire#w4
+            R_Coil( #AxLinearRel.Execute )
+        END_RUNG
+        RUNG wire#w3
+            I_Contact( #Cfg_NoInterlock )
+            { S7_Templates := "SrcType := Real" }
+            GE_Contact(
+                in1 := #InterfaceHMi.Cfg_IncrementalPos, 
+                in2 := 5.0
+            )
+        END_RUNG wire#w4
+        RUNG wire#w3
+            Contact( #AxLinearRel.Done )
+            wire#w5
+            S_Coil( #Sts_Idle )
+            R_Coil( #AxLinearRel.Execute )
+            R_Coil( #Cmd.CmdExecBackwardInc )
+            R_Coil( #Cmd.CmdExecForwardInc )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Alms.AlmMotion )
+        END_RUNG wire#w5
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4GS"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := 0, 
+                out1 => #AxPower.StartMode
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #AxPower.StopMode
+            )
+            #AxPower.MC_POWER(
+                Axis := #MotionGroup, 
+                Enable := #AxPower.Enable, 
+                StartMode := #AxPower.StartMode, 
+                StopMode := #AxPower.StopMode, 
+                Status => #AxPower.Status, 
+                Busy => #AxPower.Busy, 
+                Error => #AxPower.Error, 
+                ErrorId => #AxPower.ErrorId
+            )
+            I_Contact( #Sts_Out.%X0 )
+            I_Contact( #AxPower.Enable )
+            Contact( #AxPower.Error )
+            S_Coil( #Sts_Alms.%X0 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_t9"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            #AxReset.MC_RESET(
+                Axis := #MotionGroup, 
+                Execute := #AxReset.Execute, 
+                Restart := #AxReset.Restart, 
+                Done => #AxReset.Done, 
+                Busy => #AxReset.Busy, 
+                CommandAborted => #AxReset.CommandAborted, 
+                Error => #AxReset.Error, 
+                ErrorId => #AxReset.ErrorId
+            )
+            R_Coil( #AxReset.Execute )
+            R_Coil( #AxReset.Restart )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_39K"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            #Axstop.MC_STOP(
+                Axis := #MotionGroup, 
+                Execute := #Axstop.Execute, 
+                Mode := 2, 
+                Deceleration := 10000.0, 
+                Jerk :=  , 
+                AbortAcceleration := 1, 
+                Done => #Axstop.Done, 
+                Busy => #Axstop.Busy, 
+                CommandAborted => #Axstop.CommandAborted, 
+                Error => #Axstop.Error, 
+                ErrorId => #Axstop.ErrorId
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_bf"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := -1.0, 
+                out1 => #AxHalt.Deceleration
+            )
+            
+            Move(
+                in := -1.0, 
+                out1 => #AxHalt.Jerk
+            )
+            #AxHalt.MC_HALT(
+                Axis := #MotionGroup, 
+                Execute := #AxHalt.Execute, 
+                Deceleration := #AxHalt.Deceleration, 
+                Jerk := #AxHalt.Jerk, 
+                AbortAcceleration := #AxHalt.AbortAcceleration, 
+                Mode :=  , 
+                Done => #AxHalt.Done, 
+                Busy => #AxHalt.Busy, 
+                CommandAborted => #AxHalt.CommandAborted, 
+                Error => #AxHalt.Error, 
+                ErrorId => #AxHalt.ErrorId
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3dM"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Mul(
+                in1 := #MotionGroup.ActualPosition, 
+                in2 := #Cfg_Scaling, 
+                out => #Sts_ActualPos
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            
+            Move(
+                in := #MotionGroup.ActualVelocity, 
+                out1 => #Rep_AxisActualVelocity
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Telegram_In.MELDW.DriveReady )
+            Coil( #AxAdm.Sts_AxisReady )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #Telegram_In.MELDW.ControllerEnable )
+            Coil( #AxAdm.Sts_AxisLoopDisabled )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Telegram_In.MELDW.ControllerEnable )
+            Coil( #AxAdm.Sts_AxisLoopEnabled )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #MotionGroup.StatusDrive.Error )
+            wire#w1
+            Coil( #AxAdm.Sts_AxisFault )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Telegram_In.ZSW1.FaultPresent )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Telegram_In.ZSW1.AlarmPresent )
+            Coil( #AxAdm.Sts_AxisAlarm )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #MotionGroup.StatusWord.%X5 )
+            Coil( #AxAdm.Sts_AxisHomed )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #AxAdm.Cmd_EnableLoop )
+            I_Contact( #AxAdm.Cmd_DisableLoop )
+            wire#w2
+            S_Coil( #AxPower.Enable )
+            R_Coil( #AxAdm.Cmd_EnableLoop )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #AxPower.Enable )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #AxAdm.Cmd_DisableLoop )
+            I_Contact( #AxAdm.Cmd_EnableLoop )
+            wire#w3
+            R_Coil( #AxPower.Enable )
+            R_Coil( #AxAdm.Cmd_DisableLoop )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #AxPower.Enable )
+        END_RUNG wire#w3
+        RUNG wire#powerrail
+            Contact( #AxAdm.Cmd_FaultReset )
+            S_Coil( #AxReset.Execute )
+            R_Coil( #AxAdm.Cmd_FaultReset )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3NX"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_Alms, 
+                in2 := 0
+            )
+            Contact( #Sts_NoAlm )
+            Coil( #Sts_AlmOns )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Alms, 
+                in2 := 0
+            )
+            Coil( #Sts_NoAlm )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_39q"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cfg_NoInterlock )
+            Coil( #Sts_NoInterlock )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_357"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cfg_NoRefInterlock )
+            Coil( #Sts_NoRefInterlock )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_vu"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Idle )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Sts_Seq
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Out
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3AA"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_ClrStat )
+            
+            Move(
+                in := 0, 
+                out1 => #Rep_CtrAlm
+            )
+            R_Coil( #Cmd_ClrStat )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_AlmOns )
+            
+            Add(
+                in1 := #Rep_CtrAlm, 
+                in2 := 1, 
+                out => #Rep_CtrAlm
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4JD"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Cfg_StatOff )
+            Coil( #Maint_Config[0] )
+        END_RUNG
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := LReal"
+            }
+            Abs(
+                in := #MotionGroup.StatusPositioning.FollowingError, 
+                out => #Rep_PositionError
+            )
+            
+            Move(
+                in := #TorqueData_In.ActualTorque, 
+                out1 => #ActualTorque
+            )
+            {
+                S7_Templates := "[SrcType := DWord, DestType := Real]"
+            }
+            Convert(
+                in := #ActualTorque, 
+                out => #Rep_TorqueReference
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4jV"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := LReal" }
+            GT_Contact(
+                in1 := #MotionGroup.ActualVelocity, 
+                in2 := #Sts_PosVelocityStandstill
+            )
+            wire#w1
+            Coil( #Sts_MvtInProgress )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := LReal" }
+            LT_Contact(
+                in1 := #MotionGroup.ActualVelocity, 
+                in2 := #Sts_NegVelocityStandstill
+            )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Ni"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Maint_Config[0] )
+            Contact( #Sts_MvtInProgress )
+            P_Trig( #ONS[2] )
+            wire#w1
+            
+            Move(
+                in := 0.0, 
+                out1 => #Tmp_PositionError, 
+                out2 => #Tmp_TorqueReference
+            )
+        END_RUNG
+        RUNG wire#w1
+            R_Coil( #Memo_AlmCycle )
+            R_Coil( #Memo_NegativeMvt )
+            R_Coil( #Memo_PositiveMvt )
+            wire#w2
+            { S7_Templates := "SrcType := LReal" }
+            GT_Contact(
+                in1 := #MotionGroup.ActualVelocity, 
+                in2 := 0.0
+            )
+            S_Coil( #Memo_PositiveMvt )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := LReal" }
+            LT_Contact(
+                in1 := #MotionGroup.ActualVelocity, 
+                in2 := 0.0
+            )
+            S_Coil( #Memo_NegativeMvt )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3vU"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Maint_Config[0] )
+            Contact( #Sts_MvtInProgress )
+            wire#w1
+            { S7_Templates := "SrcType := Real" }
+            GT_Contact(
+                in1 := #Rep_PositionError, 
+                in2 := #Tmp_PositionError
+            )
+            
+            Move(
+                in := #Rep_PositionError, 
+                out1 => #Tmp_PositionError
+            )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := Real" }
+            GT_Contact(
+                in1 := #Rep_TorqueReference, 
+                in2 := #Tmp_TorqueReference
+            )
+            
+            Move(
+                in := #Rep_TorqueReference, 
+                out1 => #Tmp_TorqueReference
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_NoAlm )
+            S_Coil( #Memo_AlmCycle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4WL"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_ClrStat )
+            wire#w1
+            
+            Move(
+                in := #Tmp_MaxPositionErrorPosMvt, 
+                out1 => #Maint_MaxPositionErrorPosMvt
+            )
+            
+            Move(
+                in := #Tmp_MaxTorqueReferencePosMvt, 
+                out1 => #Maint_MaxTorqueReferencePosMvt
+            )
+            wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Ctr_AvgCyclePosMvt, 
+                in2 := 0
+            )
+            
+            Move(
+                in := 0.0, 
+                out1 => #Maint_AvgPositionErrorPosMvt, 
+                out2 => #Maint_AvgTorqueReferencePosMvt
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Ctr_AvgCycle, 
+                in2 := 10000
+            )
+        END_RUNG wire#w1
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Ctr_AvgCyclePosMvt, 
+                in2 := 0
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Div(
+                in1 := #Tmp_AvgPositionErrorPosMvt, 
+                in2 := #Ctr_AvgCyclePosMvt, 
+                out => #Maint_AvgPositionErrorPosMvt
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Div(
+                in1 := #Tmp_AvgTorqueReferencePosMvt, 
+                in2 := #Ctr_AvgCyclePosMvt, 
+                out => #Maint_AvgTorqueReferencePosMvt
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Tmp_MaxPositionErrorNegMvt, 
+                out1 => #Maint_MaxPositionErrorNegMvt
+            )
+            
+            Move(
+                in := #Tmp_MaxTorqueReferenceNegMvt, 
+                out1 => #Maint_MaxTorqueReferenceNegMvt
+            )
+            wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Ctr_AvgCycleNegMvt, 
+                in2 := 0
+            )
+            
+            Move(
+                in := 0.0, 
+                out1 => #Maint_AvgPositionErrorNegMvt, 
+                out2 => #Maint_AvgTorqueReferenceNegMvt
+            )
+        END_RUNG
+        RUNG wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Ctr_AvgCycleNegMvt, 
+                in2 := 0
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Div(
+                in1 := #Tmp_AvgPositionErrorNegMvt, 
+                in2 := #Ctr_AvgCycleNegMvt, 
+                out => #Maint_AvgPositionErrorNegMvt
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Div(
+                in1 := #Tmp_AvgTorqueReferenceNegMvt, 
+                in2 := #Ctr_AvgCycleNegMvt, 
+                out => #Maint_AvgTorqueReferenceNegMvt
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Ctr_AvgCycle, 
+                out2 => #Ctr_AvgCyclePosMvt, 
+                out3 => #Ctr_AvgCycleNegMvt
+            )
+            
+            Move(
+                in := 0.0, 
+                out1 => #Tmp_MaxPositionErrorPosMvt, 
+                out2 => #Tmp_MaxPositionErrorNegMvt, 
+                out3 => #Tmp_MaxTorqueReferencePosMvt, 
+                out4 => #Tmp_MaxTorqueReferenceNegMvt
+            )
+            
+            Move(
+                in := 0.0, 
+                out1 => #Tmp_AvgTorqueReferencePosMvt, 
+                out2 => #Tmp_AvgTorqueReferenceNegMvt, 
+                out3 => #Tmp_AvgPositionErrorPosMvt, 
+                out4 => #Tmp_AvgPositionErrorNegMvt
+            )
+            R_Coil( #Cmd_ClrStat )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_57p"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Maint_Config[0] )
+            I_Contact( #Sts_MvtInProgress )
+            P_Trig( #ONS[3] )
+            wire#w1
+            S_Coil( #Maint_Config[1] )
+            { S7_Templates := "SrcType := Real" }
+            EQ_Contact(
+                in1 := #Tmp_PositionError, 
+                in2 := 0.0
+            )
+            R_Coil( #Maint_Config[1] )
+        END_RUNG
+        RUNG wire#w1
+            S_Coil( #Maint_Config[2] )
+            { S7_Templates := "SrcType := Real" }
+            EQ_Contact(
+                in1 := #Tmp_TorqueReference, 
+                in2 := 0.0
+            )
+            R_Coil( #Maint_Config[2] )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Memo_AlmCycle )
+            Contact( #Cfg_EnblStat )
+            wire#w2
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := #Ctr_AvgCycle, 
+                in2 := 1, 
+                out => #Ctr_AvgCycle
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Memo_PositiveMvt )
+            wire#w3
+            { S7_Templates := "SrcType := Real" }
+            GT_Contact(
+                in1 := #Tmp_PositionError, 
+                in2 := #Tmp_MaxPositionErrorPosMvt
+            )
+            
+            Move(
+                in := #Tmp_PositionError, 
+                out1 => #Tmp_MaxPositionErrorPosMvt
+            )
+        END_RUNG
+        RUNG wire#w3
+            { S7_Templates := "SrcType := Real" }
+            GT_Contact(
+                in1 := #Tmp_TorqueReference, 
+                in2 := #Tmp_MaxTorqueReferencePosMvt
+            )
+            
+            Move(
+                in := #Tmp_TorqueReference, 
+                out1 => #Tmp_MaxTorqueReferencePosMvt
+            )
+        END_RUNG
+        RUNG wire#w3
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1, 
+                in2 := #Ctr_AvgCyclePosMvt, 
+                out => #Ctr_AvgCyclePosMvt
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Add(
+                in1 := #Tmp_AvgPositionErrorPosMvt, 
+                in2 := #Tmp_PositionError, 
+                out => #Tmp_AvgPositionErrorPosMvt
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Add(
+                in1 := #Tmp_AvgTorqueReferencePosMvt, 
+                in2 := #Tmp_TorqueReference, 
+                out => #Tmp_AvgTorqueReferencePosMvt
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Memo_NegativeMvt )
+            wire#w4
+            { S7_Templates := "SrcType := Real" }
+            GT_Contact(
+                in1 := #Tmp_PositionError, 
+                in2 := #Tmp_MaxPositionErrorNegMvt
+            )
+            
+            Move(
+                in := #Tmp_PositionError, 
+                out1 => #Tmp_MaxPositionErrorNegMvt
+            )
+        END_RUNG
+        RUNG wire#w4
+            { S7_Templates := "SrcType := Real" }
+            GT_Contact(
+                in1 := #Tmp_TorqueReference, 
+                in2 := #Tmp_MaxTorqueReferenceNegMvt
+            )
+            
+            Move(
+                in := #Tmp_TorqueReference, 
+                out1 => #Tmp_MaxTorqueReferenceNegMvt
+            )
+        END_RUNG
+        RUNG wire#w4
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Add(
+                in1 := 1, 
+                in2 := #Ctr_AvgCycleNegMvt, 
+                out => #Ctr_AvgCycleNegMvt
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Add(
+                in1 := #Tmp_AvgPositionErrorNegMvt, 
+                in2 := #Tmp_PositionError, 
+                out => #Tmp_AvgPositionErrorNegMvt
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Add(
+                in1 := #Tmp_AvgTorqueReferenceNegMvt, 
+                in2 := #Tmp_TorqueReference, 
+                out => #Tmp_AvgTorqueReferenceNegMvt
+            )
+        END_RUNG
+    END_NETWORK
+    { S7_Language := "LAD" }
+    NETWORK
+        RUNG wire#powerrail
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

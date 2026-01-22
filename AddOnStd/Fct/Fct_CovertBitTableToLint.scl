@@ -1,0 +1,112 @@
+﻿FUNCTION "Fct_CovertBitTableToLint" : Void
+TITLE = Array Of Bits at 1
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//This ADD-On is used to check if all bits of an Array Of Bits are at 1
+   VAR_OUTPUT 
+      Value : LInt;
+   END_VAR
+
+   VAR_IN_OUT 
+      Array_A : Array[0..63] of Bool;
+   END_VAR
+
+   VAR_TEMP 
+      I : SInt;
+      ArrLowerBound : DInt;
+      ArrUpperBound : DInt;
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	// IMA Automation SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: _Library_Std_v1.00
+	// Engineering: TIA Portal v17
+	// Restrictions: None
+	// Requirements: None
+	// Functionality: This ADD-On is used to check if all bits of an Array Of Bits are at 1
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	//-----------------------------------------------------------------------------
+	// Version       Date              Expert in charge           
+	// v0.1        2022-Jan-14       REY Julien          
+	// Changes applied:
+	// Creation
+	//-----------------------------------------------------------------------------
+	
+	// Variable Assignment
+	ENO := 1;
+	
+	// Bit Assignment
+	#Value.%X0 := #Array_A[0];
+	#Value.%X1 := #Array_A[1];
+	#Value.%X2 := #Array_A[2];
+	#Value.%X3 := #Array_A[3];
+	#Value.%X4 := #Array_A[4];
+	#Value.%X5 := #Array_A[5];
+	#Value.%X6 := #Array_A[6];
+	#Value.%X7 := #Array_A[7];
+	#Value.%X8 := #Array_A[8];
+	#Value.%X9 := #Array_A[9];
+	#Value.%X10 := #Array_A[10];
+	#Value.%X11 := #Array_A[11];
+	#Value.%X12 := #Array_A[12];
+	#Value.%X13 := #Array_A[13];
+	#Value.%X14 := #Array_A[14];
+	#Value.%X15 := #Array_A[15];
+	#Value.%X16 := #Array_A[16];
+	#Value.%X17 := #Array_A[17];
+	#Value.%X18 := #Array_A[18];
+	#Value.%X19 := #Array_A[19];
+	#Value.%X20 := #Array_A[20];
+	#Value.%X21 := #Array_A[21];
+	#Value.%X22 := #Array_A[22];
+	#Value.%X23 := #Array_A[23];
+	#Value.%X24 := #Array_A[24];
+	#Value.%X25 := #Array_A[25];
+	#Value.%X26 := #Array_A[26];
+	#Value.%X27 := #Array_A[27];
+	#Value.%X28 := #Array_A[28];
+	#Value.%X29 := #Array_A[29];
+	#Value.%X30 := #Array_A[30];
+	#Value.%X31 := #Array_A[31];
+	#Value.%X32 := #Array_A[32];
+	#Value.%X33 := #Array_A[33];
+	#Value.%X34 := #Array_A[34];
+	#Value.%X35 := #Array_A[35];
+	#Value.%X36 := #Array_A[36];
+	#Value.%X37 := #Array_A[37];
+	#Value.%X38 := #Array_A[38];
+	#Value.%X39 := #Array_A[39];
+	#Value.%X40 := #Array_A[40];
+	#Value.%X41 := #Array_A[41];
+	#Value.%X42 := #Array_A[42];
+	#Value.%X43 := #Array_A[43];
+	#Value.%X44 := #Array_A[44];
+	#Value.%X45 := #Array_A[45];
+	#Value.%X46 := #Array_A[46];
+	#Value.%X47 := #Array_A[47];
+	#Value.%X48 := #Array_A[48];
+	#Value.%X49 := #Array_A[49];
+	#Value.%X50 := #Array_A[50];
+	#Value.%X51 := #Array_A[51];
+	#Value.%X52 := #Array_A[52];
+	#Value.%X53 := #Array_A[53];
+	#Value.%X54 := #Array_A[54];
+	#Value.%X55 := #Array_A[55];
+	#Value.%X56 := #Array_A[56];
+	#Value.%X57 := #Array_A[57];
+	#Value.%X58 := #Array_A[58];
+	#Value.%X59 := #Array_A[59];
+	#Value.%X60 := #Array_A[60];
+	#Value.%X61 := #Array_A[61];
+	#Value.%X62 := #Array_A[62];
+	#Value.%X63 := #Array_A[63];
+	
+END_FUNCTION
+

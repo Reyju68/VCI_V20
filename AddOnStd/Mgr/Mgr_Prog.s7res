@@ -1,0 +1,47 @@
+﻿MultiLingualTexts:
+  - id: MLC_4jA
+    en-US: Manager Sequenced Program Logic
+  - id: MLC_uN
+    en-US: |-
+      02 Sep. 2022
+       - New Revision Roles (StdAddonsTIA_SCN_V004.docx)
+
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+      - Modif Rung 5
+
+      23 Jun 2025
+      - Added last steps history
+      - Added Cmd_Idle
+      (Refer to GitLab - Issues 22)
+  - id: MLC_3At
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_xZ
+    en-US: Reference to the machine program manager
+  - id: MLC_3WW
+    en-US: Configuration instruction to request step-by-step mode
+  - id: MLC_4x6
+    en-US: Command Idle - End of sequence
+  - id: MLC_Zd
+    en-US: WORK ON THE SEQUENCER
+  - id: MLC_54C
+    en-US: |-
+      If a changing state on the command of the sequencer (Cmd_Seq) is detected and if all working conditions are good, update the Status of the sequencer (Sts_Seq) to allow the execution of the next step of the sequencer
+      Note: Step by step management is also manage here
+  - id: MLC_34g
+    en-US: Rest of the commands of the sequencer and state (Cmd_Seq & Cmd_State) at the end of the execution (Sts_Idle==1)
+  - id: MLC_3St
+    en-US: Configuration instruction to request step-by-step mode
+  - id: MLC_3jQ
+    en-US: Update of the general execution elapsed time
+  - id: MLC_nZ
+    en-US: Update Memo_Idle
+  - id: MLC_gq
+    en-US: Timeout management of the bloc execution
+  - id: MLC_4pN
+    en-US: Update of the execution elapsed time of the sequence
+  - id: MLC_xn
+    en-US: Sts_NoInterlock is used to enable command from HMI
+  - id: MLC_46V
+    en-US: Update Steps history

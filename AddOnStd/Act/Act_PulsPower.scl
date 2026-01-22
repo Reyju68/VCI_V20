@@ -1,0 +1,134 @@
+﻿FUNCTION_BLOCK "Act_PulsPower"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_MasterType : SInt;   // Type of master: 0=BALLUFF;1=MURR
+      Cfg_PortNbr : SInt;   // Number of IoLink port on Master (0..7)
+      Cfg_OuputNbr : SInt;   // Number of output connected (1-4)
+      Cfg_OutputEnable : SInt;   // To Define if the output is used (Cfg_OutputEnable.1= Channel 1 / .2=Channel 2 / ...)
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts_ER : DInt;   // Status errors have occured
+      Sts_AllChannelsOK : Bool;   // Status of all channels ready
+   END_VAR
+
+   VAR_IN_OUT 
+      PulsFormat : "Typ_PulsPower";   // Formated output data
+      ProcDataIn : "Typ_PulsPowerInp";   // IoLink Master DataBlock (ex: M11_KA10.I:Data)
+   END_VAR
+
+   VAR 
+      FS : Bool := TRUE;   // FirstScan
+      count : Int;
+      MasterCfgError : Bool;
+      OuputNbCfgrError : Bool;
+      PortCfgError : Bool;
+      StartAddress : DInt;
+      index : Word;
+      ResultReal : Array[0..5] of Real;
+   END_VAR
+
+   VAR_TEMP 
+      tmpDint : DInt;
+   END_VAR
+
+   VAR CONSTANT 
+      "false" : Bool := FALSE;
+      "True" : Bool := TRUE;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	    //===============================================================================
+	    // IMA Automation Switzerland / (c)Copyright 2022
+	    //-------------------------------------------------------------------------------
+	    // Title:            Act_PulsPower
+	    // Function:         Interface function for Act_PulsPower PowerDuppéy
+	    // Library:          Mechatronic RA
+	    // Author:           RJA
+	    // Tested with:      CPU 1517TF-3 PN/DP
+	    // Engineering:      TIA Portal V18
+	    // Restrictions:     S7-1200/1500
+	    // Requirements:     --
+	    //-------------------------------------------------------------------------------
+	    // Change log table:
+	    // Version  | Date       | Expert in charge       | Changes applied
+	    //----------|------------|------------------------|------------------------------
+	    // 00.00.01 | 01.06.2025 | RJA                    | First release for TIA Portal V18
+	    //          |            |                        | 
+	    //          |            |                        | 
+	    //          |            |                        | 
+	    //          |            |                        | 
+	    //===============================================================================
+	END_REGION
+	
+	REGION //First scan
+	    IF #FS THEN
+	        #Sts_ER := 0;
+	        // Clear alls channels state during first scan
+	        #PulsFormat.Ch[0].Current := 0;
+	        #PulsFormat.Ch[0].State := 0;
+	        #PulsFormat.Ch[0].Tripped := 0;
+	        #PulsFormat.Ch[0].Shorted := 0;
+	        FOR #count := 1 TO 4 DO
+	            #PulsFormat.Ch[#count] := #PulsFormat.Ch[0];
+	        END_FOR;
+	        // Force Output Configuration during first scan
+	        #Cfg_OuputNbr := 4;
+	        #Cfg_OutputEnable := 0;
+	        #Cfg_OutputEnable.%X1 := 1;
+	        #Cfg_OutputEnable.%X2 := 1;
+	        #Cfg_OutputEnable.%X3 := 1;
+	        #Cfg_OutputEnable.%X4 := 1;
+	    END_IF;
+	END_REGION
+	REGION //Check Port number and Master type
+	    #PortCfgError := #Cfg_PortNbr < 0 OR #Cfg_PortNbr > 7;
+	    #MasterCfgError := #Cfg_MasterType <> 0 AND #Cfg_MasterType <> 1;
+	    #OuputNbCfgrError := #Cfg_OuputNbr < 1 OR #Cfg_OuputNbr > 4;
+	END_REGION
+	REGION //Format Data
+	    IF NOT #PortCfgError AND NOT #MasterCfgError AND NOT #OuputNbCfgrError THEN
+	        FOR #count := 0 TO 5 DO
+	            #tmpDint := 0;
+	            #tmpDint.%B1 := #ProcDataIn.Inp[2 * #count];
+	            #tmpDint.%B0 := #ProcDataIn.Inp[2 * #count + 1];
+	            #ResultReal[#count] := #tmpDint / 256.0;
+	        END_FOR;
+	        
+	        #PulsFormat.TotalCurrent := #ResultReal[0];
+	        #PulsFormat.OutputVoltage := #ResultReal[1];
+	        #PulsFormat.AllChannelsOK := 1;
+	        
+	        #StartAddress := 4 + (#Cfg_OuputNbr * 2); // Calculate Start Adress to read the Fuse state, tripped state and shorted state according to the number of outputs
+	        #index := 1;
+	        FOR #count := 1 TO #Cfg_OuputNbr DO
+	            #PulsFormat.Ch[#count].Current := #ResultReal[#count + 1];
+	            #PulsFormat.Ch[#count].State := 0 <> (#ProcDataIn.Inp[#StartAddress] AND #index);
+	            #PulsFormat.Ch[#count].Tripped := 0 <> (#ProcDataIn.Inp[#StartAddress + 1] AND #index);
+	            #PulsFormat.Ch[#count].Shorted := 0 <> (#ProcDataIn.Inp[#StartAddress + 2] AND #index);
+	            IF (NOT #PulsFormat.Ch[#count].State OR #PulsFormat.Ch[#count].Tripped OR #PulsFormat.Ch[#count].Shorted) AND
+	                (0 <> (SINT_TO_WORD(#Cfg_OutputEnable) AND (#index * 2))) AND
+	                NOT #FS THEN
+	                #PulsFormat.AllChannelsOK := #false;
+	            END_IF;
+	            #index := #index * 2;
+	        END_FOR;
+	    END_IF;
+	END_REGION
+	
+	REGION //Update Output Status All Channels OK
+	    #Sts_AllChannelsOK := #PulsFormat.AllChannelsOK;
+	END_REGION
+	 
+	REGION //Update Error Status
+	    #Sts_ER.%X0 := #MasterCfgError;
+	    #Sts_ER.%X1 := #PortCfgError;
+	    #Sts_ER.%X2 := #OuputNbCfgrError;
+	END_REGION
+	
+	#FS := #false;
+END_FUNCTION_BLOCK
+

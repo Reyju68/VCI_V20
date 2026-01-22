@@ -1,0 +1,90 @@
+﻿FUNCTION_BLOCK "Mgr_InterfaceHMI"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cmd_FirstScan { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Command to reset the block during the first scan PLC
+      CmdHMI_ContCycle : Bool;   // HMI Command to Execute Station Cycle Continuously
+      CmdHMI_Dry : Bool;   // HMI Command to Enable Dry Cycle In the Station
+      CmdHMI_Exec : Bool;   // HMI Command to Execute Station Cycle
+      CmdHMI_ResetFault : Bool;   // HMI Command to Reset Station Fault
+      CmdHMI_SlowSpeed : Bool;   // HMI Command to Enable Slow Speed In the Station
+      CmdHMI_SpecCycle : Bool;   // HMI Command to Enable Specific Cycle Execution In the Station
+      Station { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "Typ_StationMgtXTS";   // Station XTS status
+      Sys { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "Typ_SiAdm";   // System Interface - Admin Tags
+   END_VAR
+
+   VAR_OUTPUT 
+      Cfg_ContCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Configuration Execute Station Cycle Continuously
+      Cfg_Dry { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Configuration Dry Cycle Enabled In the Station
+      Cfg_DryIMA { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Command Dry Cycle IMA Enabled In the Station
+      Cfg_SlowSpeed { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Configuration Slow Speed Enabled In the Station
+      Cfg_SpecCycle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Configuration Execute Specific Station Cycle
+      Cmd_Exec { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Command Execute Station Cycle
+      Cmd_ResetFault { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;   // Command Reset Station Fault
+   END_VAR
+
+   VAR_IN_OUT 
+      Prog : "Typ_MgrProg";
+   END_VAR
+
+   VAR 
+      ONS {InstructionName := 'R_TRIG'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : Array[0..9] of R_TRIG;
+   END_VAR
+
+
+BEGIN
+	// Clear HMI Interface
+	IF #Cmd_FirstScan THEN
+	    #Prog.Cfg_BtnNoInterlock.%X0 := TRUE;
+	    #Prog.Cfg_BtnNoInterlock.%X1 := TRUE;
+	END_IF;
+	IF (NOT #Sys.SubModeUser.Standalone) OR #Cmd_FirstScan THEN
+	    #CmdHMI_ContCycle := FALSE;
+	    #CmdHMI_Exec := FALSE;
+	    #CmdHMI_ResetFault := FALSE;
+	    #CmdHMI_Dry := FALSE;
+	    #CmdHMI_SlowSpeed := FALSE;
+	    #CmdHMI_SpecCycle := FALSE;
+	END_IF;
+	
+	// Clear Commands
+	IF (NOT #Station.Cfg_ContCycle) OR #Sys.Sts_State <> 4 OR #ONS[0].Q OR #Prog.Cmd_State.%X0 OR #Prog.Cmd_State.%X1 THEN
+	    #CmdHMI_ContCycle := FALSE;
+	    #CmdHMI_Exec := FALSE;
+	END_IF;
+	IF #Prog.Cmd_State.%X2 AND (NOT #CmdHMI_ContCycle) THEN
+	    #CmdHMI_Exec := FALSE;
+	END_IF;
+	
+	// Station Tag Update
+	#Cmd_Exec := #CmdHMI_Exec;
+	#Cfg_ContCycle := #CmdHMI_ContCycle;
+	#Cfg_SpecCycle := #CmdHMI_SpecCycle;
+	#Cfg_SlowSpeed := (#Sys.SubModeUser.Standalone AND #CmdHMI_SlowSpeed) OR ((NOT #Sys.SubModeUser.Standalone) AND #Sys.Mode.Manu);
+	#Cmd_ResetFault := (#Sys.SubModeUser.Standalone AND #CmdHMI_ResetFault) OR ((NOT #Sys.SubModeUser.Standalone) AND #Sys.Cmd_Reset);
+	IF #Cmd_ResetFault THEN
+	    #CmdHMI_ResetFault := FALSE;
+	END_IF;
+	#Cfg_DryIMA := (#Sys.SubModeUser.Standalone AND #CmdHMI_Dry) OR ((#Sys.SubModeUser.Standalone) AND #Sys.SubMode.NoPuckNoMover);
+	#Cfg_Dry := (#Sys.SubModeUser.Standalone AND #CmdHMI_Dry) OR #Sys.SubMode.Dry;
+	
+	// Interlock (.12 Exec / .13 Reset Fault / .14 Dry / .15 ContCycle / .16 SlowSpeed / .17 Specific Cycle)
+	#Prog.Cfg_BtnNoInterlock.%X13 := #Sys.SubModeUser.Standalone;
+	#Prog.Cfg_BtnNoInterlock.%X15 := #Sys.SubModeUser.Standalone;
+	#Prog.Cfg_BtnNoInterlock.%X16 := #Sys.SubModeUser.Standalone;
+	IF #Sys.SubModeUser.Standalone AND ((#Prog.Sts_State.%X1 AND #Station.Sts_NoAlm) OR #Prog.Sts_State.%X2) THEN
+	    #Prog.Cfg_BtnNoInterlock.%X12 := TRUE;
+	ELSE
+	    #Prog.Cfg_BtnNoInterlock.%X12 := FALSE;
+	END_IF;
+	IF #Sys.SubModeUser.Standalone AND (NOT #Station.Cmd_Exec) AND (NOT #Station.Cfg_ContCycle) THEN
+	    #Prog.Cfg_BtnNoInterlock.%X14 := TRUE;
+	    #Prog.Cfg_BtnNoInterlock.%X17 := TRUE;
+	ELSE
+	    #Prog.Cfg_BtnNoInterlock.%X14 := FALSE;
+	    #Prog.Cfg_BtnNoInterlock.%X17 := FALSE;
+	END_IF;
+	
+	
+END_FUNCTION_BLOCK
+

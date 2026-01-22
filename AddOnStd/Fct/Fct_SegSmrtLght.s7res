@@ -1,0 +1,47 @@
+﻿MultiLingualTexts:
+  - id: MLC_4KB
+    en-US: Fct_SegSmrtLght
+  - id: MLC_3HB
+    en-US: _01_Adm_11_LightTreeSeg4
+  - id: MLC_54c
+    en-US: First Scan PLC
+  - id: MLC_4xJ
+    en-US: Command Light Green
+  - id: MLC_4Nj
+    en-US: Command Light Red
+  - id: MLC_3aa
+    en-US: Command Light Yellow
+  - id: MLC_3ZN
+    en-US: Command Light Blue
+  - id: MLC_dq
+    en-US: Command Light Orange
+  - id: MLC_3Nd
+    en-US: Command Light Defined by User
+  - id: MLC_4bB
+    en-US: Command Light White
+  - id: MLC_ze
+    en-US: Command Blink
+  - id: MLC_3QH
+    en-US: Output Color - Bit 0
+  - id: MLC_tF
+    en-US: Output Color - Bit 1
+  - id: MLC_dK
+    en-US: Output Color - Bit 3
+  - id: MLC_4DD
+    en-US: Output Blink Mode
+  - id: MLC_mY
+    en-US: 'PLC First Scan : Reset All Command'
+  - id: MLC_4W7
+    en-US: LtTC1
+  - id: MLC_R4
+    en-US: Green
+  - id: MLC_3Lr
+    en-US: LtTC2
+  - id: MLC_472
+    en-US: Red
+  - id: MLC_3yi
+    en-US: LtTC3
+  - id: MLC_3cY
+    en-US: Blue
+  - id: MLC_di
+    en-US: Segment Blink/ Sts_Out_LtBlink

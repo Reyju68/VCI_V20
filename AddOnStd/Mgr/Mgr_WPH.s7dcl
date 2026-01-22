@@ -1,0 +1,252 @@
+﻿{
+    S7_BlockComment := "MLC_35e";
+    S7_BlockTitle := "MLC_4jZ";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Mgr_WPH"
+    VAR_INPUT 
+        Cfg_Station : DInt;
+        NumOfNest : DInt;
+    END_VAR
+    VAR_OUTPUT 
+        Sts_Fail : DInt;
+        Sts_SetBadCycle : Bool;
+    END_VAR
+    VAR_IN_OUT 
+        WPH : _.Typ_WPH;
+    END_VAR
+    VAR_TEMP 
+        n : DInt;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3sE"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #NumOfNest, 
+                in2 := 5
+            )
+            
+            Move(
+                in := 4, 
+                out1 => #NumOfNest
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1 - IN2"
+            }
+            Calculate(
+                in1 := #NumOfNest, 
+                in2 := 1, 
+                out => #n
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Sts_Fail
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            R_Coil( #WPH.Nest[0].Sts_NotInProd )
+            R_Coil( #WPH.Nest[0].Sts_Full )
+            R_Coil( #WPH.Nest[0].Sts_Good )
+            R_Coil( #WPH.Nest[0].Sts_Bad )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_56E"
+    }
+    NETWORK
+        Label(Begin)
+        RUNG wire#powerrail
+            Contact( #WPH.Nest[0].Cmd_ClrStat )
+            S_Coil( #WPH.Nest[#n].Cmd_ClrStat )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #WPH.Nest[0].Cmd_Clear )
+            S_Coil( #WPH.Nest[#n].Cmd_Clear )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #WPH.Nest[0].Cmd_RejectPart )
+            S_Coil( #WPH.Nest[#n].Cmd_RejectPart )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #WPH.Nest[0].Sts_Enable )
+            S_Coil( #WPH.Nest[#n].Sts_Enable )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #WPH.Nest[#n].Sts_NotInProd )
+            S_Coil( #WPH.Nest[0].Sts_NotInProd )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #WPH.Nest[#n].Sts_Full )
+            S_Coil( #WPH.Nest[0].Sts_Full )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #WPH.Nest[#n].Sts_Good )
+            S_Coil( #WPH.Nest[0].Sts_Good )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #WPH.Nest[#n].Sts_Bad )
+            I_Contact( #WPH.Nest[0].Sts_Bad )
+            S_Coil( #WPH.Nest[0].Sts_Good )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #WPH.Nest[#n].Sts_Bad )
+            R_Coil( #WPH.Nest[0].Sts_Good )
+            S_Coil( #WPH.Nest[0].Sts_Bad )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3tk"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #n, 
+                in2 := 0
+            )
+            wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #WPH.Nest[#n].Sts_PartID, 
+                in2 := 0
+            )
+            Contact( #WPH.Nest[#n].Sts_Full )
+            
+            Move(
+                in := #WPH.Nest[#n].Sts_PartID, 
+                out1 => #WPH.Nest[0].Sts_PartID
+            )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #WPH.Nest[0].Sts_PartID, 
+                in2 := 0
+            )
+            
+            Move(
+                in := #WPH.Nest[0].Sts_PartID, 
+                out1 => #WPH.Nest[#n].Sts_PartID
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #WPH.Nest[#n].Sts_Full )
+            
+            Move(
+                in := 0, 
+                out1 => #WPH.Nest[#n].Sts_PartID
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_t9"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #WPH.Nest[0].Cfg_RejectCause, 
+                in2 := 0
+            )
+            
+            Move(
+                in := #WPH.Nest[0].Cfg_RejectCause, 
+                out1 => #WPH.Nest[#n].Cfg_RejectCause
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #WPH.Nest[#n].Cfg_RejectCause, 
+                in2 := 0
+            )
+            S_Coil( #WPH.Nest[#n].Cmd_RejectPart )
+            Contact( #WPH.Nest[#n].Sts_Good )
+            I_Contact( #Sts_SetBadCycle )
+            
+            Move(
+                in := #WPH.Nest[#n].Cfg_RejectCause, 
+                out1 => #Sts_Fail
+            )
+            S_Coil( #Sts_SetBadCycle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_52K"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #n, 
+                in2 := 0
+            )
+            
+            Add(
+                in1 := #WPH.Nest[0].Rep_CtrTotal, 
+                in2 := #WPH.Nest[#n].Rep_CtrTotal, 
+                out => #WPH.Nest[0].Rep_CtrTotal
+            )
+            
+            Add(
+                in1 := #WPH.Nest[0].Rep_CtrGood, 
+                in2 := #WPH.Nest[#n].Rep_CtrGood, 
+                out => #WPH.Nest[0].Rep_CtrGood
+            )
+            
+            Add(
+                in1 := #WPH.Nest[0].Rep_CtrBad, 
+                in2 := #WPH.Nest[#n].Rep_CtrBad, 
+                out => #WPH.Nest[0].Rep_CtrBad
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_bW"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            "Mgr_Nest"(
+                Cfg_Station := #Cfg_Station, 
+                Mgr_Nest := #WPH.Nest[#n]
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4XY"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Sub(
+                in1 := #n, 
+                in2 := 1, 
+                out => #n
+            )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #n, 
+                in2 := 0
+            )
+            JumpCoil( Begin )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

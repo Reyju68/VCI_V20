@@ -1,0 +1,1197 @@
+﻿{
+    S7_Author := "MIS";
+    S7_BlockComment := "MLC_55k";
+    S7_BlockTitle := "MLC_44b";
+    S7_Family := "Standard";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "11.0"
+}
+FUNCTION_BLOCK "Rep_StationAlms"
+    VAR_INPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4US";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg_AllStHoldSuspend : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3jg";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg_StNbr : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3SM";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_FisrtScan : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_re";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_Clr : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_N5";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_DownTimeOn : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_56p";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_Hold : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_5BV";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_Susp : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_ft";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_WaitTimeOn : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_Qs";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Abort : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3zV";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Idle : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_48D";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_MachState : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_g9";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Stop : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4sN";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_TrnspMoving : Bool;
+    END_VAR
+    VAR_OUTPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3cx";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Hold : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_59i";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Susp : Bool;
+    END_VAR
+    VAR_OUTPUT RETAIN
+        { S7_MLC := "MLC_3eB" }
+        Reps : _.Typ_StationAlms;
+    END_VAR
+    VAR_IN_OUT 
+        { S7_MLC := "MLC_548" }
+        Sts_GlobStHold : Array[0..1] of DInt;
+        { S7_MLC := "MLC_P3" }
+        Sts_GlobStSuspd : Array[0..1] of DInt;
+    END_VAR
+    VAR 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3V6";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_AbortCause : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3HT";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_AlmsDownTime : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4j9";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_AlmsWaitTime : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_as";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_HoldCause : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4Yt";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_IdleCause : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_gv";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_StopCause : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_e9";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_SuspCause : Bool;
+    END_VAR
+    VAR RETAIN
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3MM";
+            S7_Visibility := "Hidden := External"
+        }
+        Temp_TmrStsAbort : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_ki";
+            S7_Visibility := "Hidden := External"
+        }
+        Temp_TmrStsHold : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3Qi";
+            S7_Visibility := "Hidden := External"
+        }
+        Temp_TmrStsIdle : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_5AX";
+            S7_Visibility := "Hidden := External"
+        }
+        Temp_TmrStsStop : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3sR";
+            S7_Visibility := "Hidden := External"
+        }
+        Temp_TmrStsSusp : DInt;
+    END_VAR
+    VAR 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_VR";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg_CtrLimit : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3d8";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg_TimeLimit : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3Tj";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg_TimeScale : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3TZ";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg_TmrPreset : DInt;
+    END_VAR
+    VAR DB_SPECIFIC
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3Qx";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_LocMskHgh : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        ATSts_LocMskHigh : Array[0..31] of Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3PX";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_LocMskLow : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        ATSts_LocMskLow : Array[0..31] of Bool;
+    END_VAR
+    VAR 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4hz";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_LocStIdx : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3Yh";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_LocStHold : Array[0..1] of DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4xL";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_LocStSuspd : Array[0..1] of DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_39q";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Ons : Array[0..31] of Bool;
+    END_VAR
+    VAR RETAIN
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3M8";
+            S7_Visibility := "Hidden := External"
+        }
+        Tmr_StsAbort : IEC_TIMER;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4fL";
+            S7_Visibility := "Hidden := External"
+        }
+        Tmr_StsHold : IEC_TIMER;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_fb";
+            S7_Visibility := "Hidden := External"
+        }
+        Tmr_StsIdle : IEC_TIMER;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4zb";
+            S7_Visibility := "Hidden := External"
+        }
+        Tmr_StsStop : IEC_TIMER;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3er";
+            S7_Visibility := "Hidden := External"
+        }
+        Tmr_StsSusp : IEC_TIMER;
+    END_VAR
+    VAR 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        "ATSts_GlobStHold[0]" : Array[0..31] of Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        "ATSts_GlobStHold[1]" : Array[0..31] of Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        "ATSts_GlobStSuspd[0]" : Array[0..31] of Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        "ATSts_GlobStSuspd[1]" : Array[0..31] of Bool;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4dF"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_FisrtScan )
+            wire#w1
+            
+            Move(
+                in := 2000000000, 
+                out1 => #Cfg_TmrPreset, 
+                out2 => #Cfg_CtrLimit
+            )
+            
+            Move(
+                in := 100, 
+                out1 => #Cfg_TimeScale
+            )
+            
+            Move(
+                in := 1892160000, 
+                out1 => #Cfg_TimeLimit
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Cfg_TmrPreset, 
+                out1 => #Tmr_StsAbort.PT, 
+                out2 => #Tmr_StsStop.PT, 
+                out3 => #Tmr_StsIdle.PT, 
+                out4 => #Tmr_StsHold.PT, 
+                out5 => #Tmr_StsSusp.PT
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := 16#ffff_ffff, 
+                out1 => #Sts_LocMskLow, 
+                out2 => #Sts_LocMskHgh
+            )
+            wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            LT_Contact(
+                in1 := #Cfg_StNbr, 
+                in2 := 32
+            )
+            
+            Move(
+                in := #Cfg_StNbr, 
+                out1 => #Sts_LocStIdx
+            )
+            R_Coil( #ATSts_LocMskLow[#Sts_LocStIdx] )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #Cfg_StNbr, 
+                in2 := 32
+            )
+            
+            Mod(
+                in1 := #Cfg_StNbr, 
+                in2 := 32, 
+                out => #Sts_LocStIdx
+            )
+            R_Coil( #ATSts_LocMskHigh[#Sts_LocStIdx] )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3v4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Clr )
+            R_Coil( #Cmd_Clr )
+            wire#w1
+            RT_Coil( #Tmr_StsAbort )
+            RT_Coil( #Tmr_StsStop )
+            RT_Coil( #Tmr_StsIdle )
+            RT_Coil( #Tmr_StsHold )
+            RT_Coil( #Tmr_StsSusp )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Temp_TmrStsAbort, 
+                out2 => #Temp_TmrStsStop, 
+                out3 => #Temp_TmrStsIdle, 
+                out4 => #Temp_TmrStsHold, 
+                out5 => #Temp_TmrStsSusp
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Reps.Rep_TmrStsDown, 
+                out2 => #Reps.Rep_TmrStsWait, 
+                out3 => #Reps.Rep_TmrStsAbort, 
+                out4 => #Reps.Rep_TmrStsStop, 
+                out5 => #Reps.Rep_TmrStsIdle, 
+                out6 => #Reps.Rep_TmrStsHold, 
+                out7 => #Reps.Rep_TmrStsSusp
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Reps.Rep_CtrStsDown, 
+                out2 => #Reps.Rep_CtrStsWait, 
+                out3 => #Reps.Rep_CtrStsAbort, 
+                out4 => #Reps.Rep_CtrStsStop, 
+                out5 => #Reps.Rep_CtrStsIdle, 
+                out6 => #Reps.Rep_CtrStsHold, 
+                out7 => #Reps.Rep_CtrStsSusp
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3jv"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_Abort )
+            I_Contact( #Sts_Stop )
+            I_Contact( #Sts_Idle )
+            R_Coil( #Sts_AlmsDownTime )
+            R_Coil( #Sts_AbortCause )
+            R_Coil( #Sts_StopCause )
+            R_Coil( #Sts_IdleCause )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_AlmsDownTime )
+            wire#w1
+            Contact( #Sts_AbortCause )
+            I_Contact( #Sts_Abort )
+            R_Coil( #Sts_AbortCause )
+            R_Coil( #Sts_AlmsDownTime )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Sts_StopCause )
+            I_Contact( #Sts_Stop )
+            R_Coil( #Sts_StopCause )
+            R_Coil( #Sts_AlmsDownTime )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Sts_IdleCause )
+            I_Contact( #Sts_Idle )
+            R_Coil( #Sts_IdleCause )
+            R_Coil( #Sts_AlmsDownTime )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #Sts_AlmsDownTime )
+            wire#w2
+            Contact( #Sts_Abort )
+            S_Coil( #Sts_AbortCause )
+            S_Coil( #Sts_AlmsDownTime )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Sts_Stop )
+            S_Coil( #Sts_StopCause )
+            S_Coil( #Sts_AlmsDownTime )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Sts_Idle )
+            S_Coil( #Sts_IdleCause )
+            S_Coil( #Sts_AlmsDownTime )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_44D"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_DownTimeOn )
+            Contact( #Sts_AbortCause )
+            wire#w1
+            P_Trig( #Sts_Ons[1] )
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_CtrStsAbort, 
+                in2 := #Cfg_CtrLimit
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Reps.Rep_CtrStsAbort )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_TmrStsAbort, 
+                in2 := #Cfg_TimeLimit
+            )
+            wire#w2
+            { S7_Templates := "time_type := Time" }
+            #Tmr_StsAbort.TONR(
+                r :=  , 
+                pt := #Tmr_StsAbort.PT, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Tmr_StsAbort.Q )
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+(IN2/IN3)"
+            }
+            Calculate(
+                in1 := #Temp_TmrStsAbort, 
+                in2 := #Cfg_TmrPreset, 
+                in3 := #Cfg_TimeScale, 
+                out => #Temp_TmrStsAbort
+            )
+            RT_Coil( #Tmr_StsAbort )
+        END_RUNG
+        RUNG wire#w2
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+(IN2/IN3)"
+            }
+            Calculate(
+                in1 := #Temp_TmrStsAbort, 
+                in2 := #Tmr_StsAbort.ET, 
+                in3 := #Cfg_TimeScale, 
+                out => #Reps.Rep_TmrStsAbort
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_px"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_DownTimeOn )
+            Contact( #Sts_StopCause )
+            wire#w1
+            P_Trig( #Sts_Ons[2] )
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_CtrStsStop, 
+                in2 := #Cfg_CtrLimit
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Reps.Rep_CtrStsStop )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_TmrStsStop, 
+                in2 := #Cfg_TimeLimit
+            )
+            wire#w2
+            { S7_Templates := "time_type := Time" }
+            #Tmr_StsStop.TONR(
+                r :=  , 
+                pt := #Tmr_StsStop.PT, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Tmr_StsStop.Q )
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+(IN2/IN3)"
+            }
+            Calculate(
+                in1 := #Temp_TmrStsStop, 
+                in2 := #Cfg_TmrPreset, 
+                in3 := #Cfg_TimeScale, 
+                out => #Temp_TmrStsStop
+            )
+            RT_Coil( #Tmr_StsStop )
+        END_RUNG
+        RUNG wire#w2
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+(IN2/IN3)"
+            }
+            Calculate(
+                in1 := #Temp_TmrStsStop, 
+                in2 := #Tmr_StsStop.ET, 
+                in3 := #Cfg_TimeScale, 
+                out => #Reps.Rep_TmrStsStop
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3r7"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_DownTimeOn )
+            Contact( #Sts_IdleCause )
+            wire#w1
+            P_Trig( #Sts_Ons[3] )
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_CtrStsIdle, 
+                in2 := #Cfg_CtrLimit
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Reps.Rep_CtrStsIdle )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_TmrStsIdle, 
+                in2 := #Cfg_TimeLimit
+            )
+            wire#w2
+            { S7_Templates := "time_type := Time" }
+            #Tmr_StsIdle.TONR(
+                r :=  , 
+                pt := #Tmr_StsIdle.PT, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Tmr_StsIdle.Q )
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+(IN2/IN3)"
+            }
+            Calculate(
+                in1 := #Temp_TmrStsIdle, 
+                in2 := #Cfg_TmrPreset, 
+                in3 := #Cfg_TimeScale, 
+                out => #Temp_TmrStsIdle
+            )
+            RT_Coil( #Tmr_StsIdle )
+        END_RUNG
+        RUNG wire#w2
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+(IN2/IN3)"
+            }
+            Calculate(
+                in1 := #Temp_TmrStsIdle, 
+                in2 := #Tmr_StsIdle.ET, 
+                in3 := #Cfg_TimeScale, 
+                out => #Reps.Rep_TmrStsIdle
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Wc"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_AlmsDownTime )
+            wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_TmrStsDown, 
+                in2 := #Cfg_TimeLimit
+            )
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+IN2+IN3"
+            }
+            Calculate(
+                in1 := #Reps.Rep_TmrStsAbort, 
+                in2 := #Reps.Rep_TmrStsStop, 
+                in3 := #Reps.Rep_TmrStsIdle, 
+                out => #Reps.Rep_TmrStsDown
+            )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_CtrStsDown, 
+                in2 := #Cfg_CtrLimit
+            )
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+IN2+IN3"
+            }
+            Calculate(
+                in1 := #Reps.Rep_CtrStsAbort, 
+                in2 := #Reps.Rep_CtrStsStop, 
+                in3 := #Reps.Rep_CtrStsIdle, 
+                out => #Reps.Rep_CtrStsDown
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4yy"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Sts_GlobStHold[0], 
+                in2 := #Sts_LocMskLow, 
+                out => #Sts_LocStHold[0]
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Sts_GlobStHold[1], 
+                in2 := #Sts_LocMskHgh, 
+                out => #Sts_LocStHold[1]
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4DR"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Sts_GlobStSuspd[0], 
+                in2 := #Sts_LocMskLow, 
+                out => #Sts_LocStSuspd[0]
+            )
+            {
+                S7_Templates := "SrcType := DWord"
+            }
+            And(
+                in1 := #Sts_GlobStSuspd[1], 
+                in2 := #Sts_LocMskHgh, 
+                out => #Sts_LocStSuspd[1]
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4PM"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_MachState, 
+                in2 := 8
+            )
+            wire#w1
+            R_Coil( #Sts_Hold )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #Cmd_DownTimeOn )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_LocStHold[0], 
+                in2 := 0
+            )
+            wire#w2
+            I_Contact( #Cmd_Hold )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_LocStHold[1], 
+                in2 := 0
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_MachState, 
+                in2 := 12
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_LocStHold[0], 
+                in2 := 0
+            )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_LocStHold[1], 
+                in2 := 0
+            )
+            wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_LocStSuspd[0], 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+        RUNG wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_LocStSuspd[1], 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_35H"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_MachState, 
+                in2 := 8
+            )
+            wire#w1
+            R_Coil( #Sts_Susp )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #Cmd_DownTimeOn )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_LocStSuspd[0], 
+                in2 := 0
+            )
+            wire#w2
+            I_Contact( #Cmd_Susp )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_LocStSuspd[1], 
+                in2 := 0
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_MachState, 
+                in2 := 10
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_LocStSuspd[0], 
+                in2 := 0
+            )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_LocStSuspd[1], 
+                in2 := 0
+            )
+            wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_LocStHold[0], 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+        RUNG wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_LocStHold[1], 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_XN"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Hold )
+            wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_LocStHold[0], 
+                in2 := 0
+            )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_LocStHold[1], 
+                in2 := 0
+            )
+            wire#w2
+            I_Contact( #Sts_TrnspMoving )
+            S_Coil( #Sts_Hold )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cfg_AllStHoldSuspend )
+        END_RUNG wire#w2
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LT_Contact(
+                in1 := #Cfg_StNbr, 
+                in2 := 32
+            )
+            Coil( #"ATSts_GlobStHold[0]"[#Sts_LocStIdx] )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #Cfg_StNbr, 
+                in2 := 32
+            )
+            Coil( #"ATSts_GlobStHold[1]"[#Sts_LocStIdx] )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4DG"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Susp )
+            wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_LocStSuspd[0], 
+                in2 := 0
+            )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_LocStSuspd[1], 
+                in2 := 0
+            )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_LocStHold[0], 
+                in2 := 0
+            )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_LocStHold[1], 
+                in2 := 0
+            )
+            wire#w2
+            I_Contact( #Sts_TrnspMoving )
+            S_Coil( #Sts_Susp )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cfg_AllStHoldSuspend )
+        END_RUNG wire#w2
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LT_Contact(
+                in1 := #Cfg_StNbr, 
+                in2 := 32
+            )
+            Coil( #"ATSts_GlobStSuspd[0]"[#Sts_LocStIdx] )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #Cfg_StNbr, 
+                in2 := 32
+            )
+            Coil( #"ATSts_GlobStSuspd[1]"[#Sts_LocStIdx] )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4dx"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_Hold )
+            I_Contact( #Sts_Susp )
+            wire#w1
+            R_Coil( #Sts_AlmsWaitTime )
+            R_Coil( #Sts_HoldCause )
+            R_Coil( #Sts_SuspCause )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_AlmsDownTime )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            I_Contact( #Cmd_WaitTimeOn )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Sts_AlmsWaitTime )
+            wire#w2
+            Contact( #Sts_HoldCause )
+            I_Contact( #Sts_Hold )
+            R_Coil( #Sts_HoldCause )
+            R_Coil( #Sts_AlmsWaitTime )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Sts_SuspCause )
+            I_Contact( #Sts_Susp )
+            R_Coil( #Sts_SuspCause )
+            R_Coil( #Sts_AlmsWaitTime )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_WaitTimeOn )
+            I_Contact( #Sts_AlmsDownTime )
+            wire#w3
+            I_Contact( #Sts_AlmsWaitTime )
+            Contact( #Sts_Hold )
+            S_Coil( #Sts_HoldCause )
+            S_Coil( #Sts_AlmsWaitTime )
+        END_RUNG
+        RUNG wire#w3
+            I_Contact( #Sts_AlmsWaitTime )
+            Contact( #Sts_Susp )
+            S_Coil( #Sts_SuspCause )
+            S_Coil( #Sts_AlmsWaitTime )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_46c"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_HoldCause )
+            wire#w1
+            P_Trig( #Sts_Ons[4] )
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_CtrStsHold, 
+                in2 := #Cfg_CtrLimit
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Reps.Rep_CtrStsHold )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_TmrStsHold, 
+                in2 := #Cfg_TimeLimit
+            )
+            wire#w2
+            { S7_Templates := "time_type := Time" }
+            #Tmr_StsHold.TONR(
+                r :=  , 
+                pt := #Tmr_StsHold.PT, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Tmr_StsHold.Q )
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+(IN2/IN3)"
+            }
+            Calculate(
+                in1 := #Temp_TmrStsHold, 
+                in2 := #Cfg_TmrPreset, 
+                in3 := #Cfg_TimeScale, 
+                out => #Temp_TmrStsHold
+            )
+            RT_Coil( #Tmr_StsHold )
+        END_RUNG
+        RUNG wire#w2
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+(IN2/IN3)"
+            }
+            Calculate(
+                in1 := #Temp_TmrStsHold, 
+                in2 := #Tmr_StsHold.ET, 
+                in3 := #Cfg_TimeScale, 
+                out => #Reps.Rep_TmrStsHold
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_hv"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_SuspCause )
+            wire#w1
+            P_Trig( #Sts_Ons[5] )
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_CtrStsSusp, 
+                in2 := #Cfg_CtrLimit
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Reps.Rep_CtrStsSusp )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_TmrStsSusp, 
+                in2 := #Cfg_TimeLimit
+            )
+            wire#w2
+            { S7_Templates := "time_type := Time" }
+            #Tmr_StsSusp.TONR(
+                r :=  , 
+                pt := #Tmr_StsSusp.PT, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Tmr_StsSusp.Q )
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+(IN2/IN3)"
+            }
+            Calculate(
+                in1 := #Temp_TmrStsSusp, 
+                in2 := #Cfg_TmrPreset, 
+                in3 := #Cfg_TimeScale, 
+                out => #Temp_TmrStsSusp
+            )
+            RT_Coil( #Tmr_StsSusp )
+        END_RUNG
+        RUNG wire#w2
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1+(IN2/IN3)"
+            }
+            Calculate(
+                in1 := #Temp_TmrStsSusp, 
+                in2 := #Tmr_StsSusp.ET, 
+                in3 := #Cfg_TimeScale, 
+                out => #Reps.Rep_TmrStsSusp
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3iz"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_AlmsWaitTime )
+            wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_TmrStsWait, 
+                in2 := #Cfg_TimeLimit
+            )
+            
+            Add(
+                in1 := #Reps.Rep_TmrStsHold, 
+                in2 := #Reps.Rep_TmrStsSusp, 
+                out => #Reps.Rep_TmrStsWait
+            )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Reps.Rep_CtrStsWait, 
+                in2 := #Cfg_CtrLimit
+            )
+            
+            Add(
+                in1 := #Reps.Rep_CtrStsHold, 
+                in2 := #Reps.Rep_CtrStsSusp, 
+                out => #Reps.Rep_CtrStsWait
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

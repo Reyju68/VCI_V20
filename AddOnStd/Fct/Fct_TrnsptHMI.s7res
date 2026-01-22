@@ -1,0 +1,112 @@
+﻿MultiLingualTexts:
+  - id: MLC_597
+    en-US: Transport management from the HMi
+  - id: MLC_4bD
+    en-US: |-
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V003.docx)
+  - id: MLC_55L
+    en-US: Cmd Prog state for its Cmd_state
+  - id: MLC_3bv
+    en-US: Jog mode is running
+  - id: MLC_4vj
+    en-US: Production Jog mode is running
+  - id: MLC_4s2
+    en-US: Move jog continuously
+  - id: MLC_38F
+    en-US: Move jog with stop psition
+  - id: MLC_3xU
+    en-US: Move jog with increment (10 degree)
+  - id: MLC_4Tr
+    en-US: Move small jog increment (1 degree)
+  - id: MLC_3bA
+    en-US: Move jog forward request
+  - id: MLC_3Vh
+    en-US: Move jog backward request
+  - id: MLC_4Xu
+    en-US: Cmd Absolute value for Jog stop position from popup
+  - id: MLC_4Bf
+    en-US: Transport is moving
+  - id: MLC_4pw
+    en-US: Transport in jogging mode
+  - id: MLC_4Hj
+    en-US: Transport in Production jogging mode
+  - id: MLC_34S
+    en-US: Machine In Execute mode
+  - id: MLC_46b
+    en-US: Get status from indramat drive
+  - id: MLC_3AW
+    en-US: Drive ready for power ON
+  - id: MLC_v6
+    en-US: Drive enable status
+  - id: MLC_4Dw
+    en-US: Drive disable status
+  - id: MLC_4SZ
+    en-US: Drive in fault
+  - id: MLC_3kd
+    en-US: Warning from drive
+  - id: MLC_3KN
+    en-US: Prog no fault
+  - id: MLC_4Lx
+    en-US: Station in alarm
+  - id: MLC_3ve
+    en-US: Prog Status Idle
+  - id: MLC_aR
+    en-US: Drive actual position from Act_Cam
+  - id: MLC_wf
+    en-US: Prog status Cmd State
+  - id: MLC_42J
+    en-US: Jog mode with stop position is enabled
+  - id: MLC_379
+    en-US: Transport Stop Position for next jog mode
+  - id: MLC_33Y
+    en-US: Move jog forward selected
+  - id: MLC_4j3
+    en-US: Move jog backward selected
+  - id: MLC_4RS
+    en-US: Station sequencer
+  - id: MLC_yk
+    en-US: Transport Cam
+  - id: MLC_rL
+    en-US: Absolute value for Jog stop position
+  - id: MLC_32y
+    en-US: Absolute value for Production Jog stop position
+  - id: MLC_rk
+    en-US: Transport Stop Position command for next jog mode
+  - id: MLC_UK
+    en-US: Drive Actual Position
+  - id: MLC_33X
+    en-US: Transfert the drive status
+  - id: MLC_4if
+    en-US: ' Wait for Cmd request on Prog for ABORT, RESET and EXEC for transport'
+  - id: MLC_49t
+    en-US: Transfer data to popup
+  - id: MLC_fR
+    en-US: ' Jog management for continous mode and stop position request'
+  - id: MLC_3E2
+    en-US: ' - Request management following popup buttons'
+  - id: MLC_4Ui
+    en-US: ' Jog management for continous mode and stop position request'
+  - id: MLC_3fJ
+    en-US: ' - Update the stop position in jog mode due to the configuration selection from the popup'
+  - id: MLC_384
+    en-US: ' Jog management for continous mode and stop position request'
+  - id: MLC_3hg
+    en-US: ' - Memorize transport stopped on position folloing stop position command'
+  - id: MLC_3J8
+    en-US: ' Jog management for continous mode and stop position request'
+  - id: MLC_4FA
+    en-US: ' - Clear the stop position in jog mode due to the swcth off the mode or the transport current position out of the stop limit'
+  - id: MLC_YB
+    en-US: ' Button "Reverse" control for JogForward / JogBackward'
+  - id: MLC_3Ly
+    en-US: ' Initialise Cmd folowing current status from Act_Cam'
+  - id: MLC_4HV
+    en-US: ' Button "Reverse" control for JogForward / JogBackward'
+  - id: MLC_3mZ
+    en-US: ' Update Act_cam status following Cmd from Popup'
+  - id: MLC_4dV
+    en-US: ' Button "Reverse" control for JogForward / JogBackward'
+  - id: MLC_3b5
+    en-US: ' Update  Cmd from Popup following Act_cam status'

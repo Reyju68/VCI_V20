@@ -1,0 +1,442 @@
+﻿FUNCTION_BLOCK "Act_TopGuard"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_MasterType : SInt;   // MasterType 0=Balluff; 1=Murr
+      Cfg_QtyCB : DInt;   // Configuration of quantity CB in use
+      Cfg_PortNbr : Int;   // Number of IoLink port on Master (0..7)
+      Cfg_PortHw : HW_IO;   // Port hardware address
+      Cfg_Cap : Int;   // Client Acces Point (See manual Manufacteror)
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts_ER : DInt;   // Status errors have occured
+      Sts_MSGERR : DInt;   // Communication Error
+      Sts_MSGEXERR : DInt;   // Communication extended Error
+      Sts_StateCheckStep : DInt;   // Output state StateCheck sequence
+      Sts_SetCBStep : DInt;   // Output state SetCB sequence
+      Sts_ComOK : Bool;   // Output Communication with slave and master is OK
+      Sts_AllChannelsOK : Bool;   // Status of all channels ready
+   END_VAR
+
+   VAR_IN_OUT 
+      Cmd_SetCB : Bool;   // Command write configurations to device
+      Cmd_RestartModule : Bool;   // Command Restart Modue (ALL COMBI)
+      Cmd_FIMRestart : Bool;   // Command Restart FIM
+      TopGuardFormat : "Typ_TopGuard";   // ss
+      ProcDataIn : "Typ_TopGuardInp";   // IoLink Master DataBlock In
+      Cfg_CBTripping_Current : Array[0..32] of UInt;   // Array with Tripping current settings in mA
+   END_VAR
+
+   VAR 
+      Par_DelayMSG : Time := T#500MS;   // Parameter delay time before sending new MESSAGE
+      FS : Bool := TRUE;   // Set on first scan
+      GlobalModuleStep : DInt;   // Steps To Send Global Command to Module
+      StateCheckStep : DInt;
+      SetCBStep : DInt;
+      PortCfgError : Bool;
+      MasterCfgError : Bool;
+      PortComError : Bool;
+      ComOkTmr {InstructionName := 'TON_TIME'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON_TIME;
+      MasterComError : Bool;
+      StateCheckTmr {InstructionName := 'TON_TIME'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON_TIME;
+      WaitTmr {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;
+      WaitTime { S7_SetPoint := 'True'} : Time := T#200MS;
+      Data : Array[0..231] of Byte;
+      StartMsg : Bool;
+      SmartDevMSG { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LIOLink_Device";
+      State : Array[0..32] of Byte;
+      iCount : Int;
+   END_VAR
+
+   VAR_TEMP 
+      StartData : Int;
+      Index : Int;
+      Count : Int;
+   END_VAR
+
+   VAR CONSTANT 
+      "False" : Bool;
+      "True" : Bool := 1;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	    //===============================================================================
+	    // IMA Automation Switzerland / (c)Copyright 2022
+	    //-------------------------------------------------------------------------------
+	    // Title:            Act_TopGuard
+	    // Function:         Interface function for Act_TopGuard CircuitBreaker Module
+	    // Library:          Mechatronic RA
+	    // Author:           RJA
+	    // Tested with:      CPU 1517TF-3 PN/DP
+	    // Engineering:      TIA Portal V18
+	    // Restrictions:     S7-1200/1500
+	    // Requirements:     --
+	    //-------------------------------------------------------------------------------
+	    // Change log table:
+	    // Version  | Date       | Expert in charge       | Changes applied
+	    //----------|------------|------------------------|------------------------------
+	    // 00.00.01 | 02.06.2025 | RJA                    | First release for TIA Portal V20
+	    //          |            |                        | 
+	    //          |            |                        | 
+	    //          |            |                        | 
+	    //          |            |                        | 
+	    //===============================================================================
+	END_REGION
+	REGION FIRST SCAN
+	    IF #FS THEN
+	        #Sts_ER := 0;
+	        #StateCheckStep := 0;
+	        #SetCBStep := 0;
+	        #Sts_MSGERR := 0;
+	        #Sts_MSGEXERR := 0;
+	        #SmartDevMSG."port" := #Cfg_PortNbr + 1;
+	        #SmartDevMSG.hwID := #Cfg_PortHw;
+	        #SmartDevMSG.cap := #Cfg_Cap;       // Manufacteror specofique Balluff=255 Murr= 16#B400
+	    END_IF;
+	END_REGION
+	
+	REGION Check Port number and Master type
+	    //Check Port number and Master type
+	    #PortCfgError := #Cfg_PortNbr < 0 OR #Cfg_PortNbr > 7;
+	    #MasterCfgError := #Cfg_MasterType <> 0 AND #Cfg_MasterType <> 1;
+	END_REGION
+	
+	REGION Check max quantity of CB
+	    //Check max quantity of CB
+	    IF #Cfg_QtyCB > 32 THEN
+	        #Cfg_QtyCB := 32;
+	    END_IF;
+	END_REGION
+	//Check if no errors of configuration
+	IF NOT #PortCfgError AND NOT #MasterCfgError THEN
+	   
+	    //Check Master Communication
+	    //gsv(Module, Master_Module, FaultCode, tmpFailcode);
+	    //MasterComError := tmpFailcode <> 0;
+	    
+	    REGION Check Port Communication
+	        //Check Port Communication
+	        #PortComError := #ProcDataIn.Inp[16].%X6 OR (NOT #ProcDataIn.Inp[16].%X5);    //Bit5 = devicice is connected , Bit 6= Device is in error
+	    END_REGION
+	    
+	    REGION Timers
+	        
+	        //Timer Communication Enable
+	    #ComOkTmr(IN := NOT #PortComError AND NOT #MasterComError,
+	              PT := T#5000MS);
+	    #Sts_ComOK := #ComOkTmr.Q;
+	    
+	    //Timer for start AutoCheck Sequence
+	    #StateCheckTmr(IN := #StateCheckStep = 0 AND #Sts_ComOK AND NOT #FS, //Run timer continously
+	                   PT := #Par_DelayMSG);  //Set timer to 500ms
+	    #WaitTmr(IN := (#StateCheckStep = 4) OR
+	             (#SetCBStep = 4) OR
+	             (#SetCBStep = 7) OR
+	             (#GlobalModuleStep = 2) OR
+	             (#GlobalModuleStep = 12),
+	             PT := #WaitTime);
+	    END_REGION
+	    
+	    REGION Handle Commands
+	        //Handle Commands
+	        IF #SetCBStep = 0 AND #StateCheckStep = 0 AND #GlobalModuleStep = 0 AND #Sts_ComOK THEN
+	            IF #StateCheckTmr.Q THEN
+	                IF #Cmd_RestartModule THEN
+	                    #GlobalModuleStep := 1;                              // Go To Restart Module Steps
+	                ELSIF #Cmd_FIMRestart THEN
+	                    #GlobalModuleStep := 10;                             // Go To Restart FIM Steps
+	                ELSE
+	                    #StateCheckStep := 1;                                //Start AutoCheck Sequence
+	                END_IF;
+	            ELSIF #Cmd_SetCB THEN
+	                #SetCBStep := 1;                                     //Start write of parameters to device
+	            END_IF;
+	        END_IF;
+	    END_REGION
+	    
+	    REGION Global Command Steps sequence
+	        CASE #GlobalModuleStep OF
+	            1:
+	                // Send Command Restart ALL (COMBI RESTART COMMAND)
+	                FILL_BLK(IN := 0,
+	                         COUNT := 232,
+	                         OUT => #Data[0]); //Clear Data
+	                #SmartDevMSG.readWrite := #True;   //set to WRITE
+	                #SmartDevMSG.writeLen := 1;         //Lenght of Data (1)
+	                #SmartDevMSG.index := 2;            //
+	                #SmartDevMSG.subindex := 0;         //Ommand for Combi Restart Command
+	                #Data[0] := 160;                    //
+	                #StartMsg := 1;                     //Start sending MSG
+	                #GlobalModuleStep := 2;
+	                #WaitTime := T#2000ms;
+	            2:
+	                //WAITTING END OF MESSAGE OR TIMER DONE
+	                IF ((NOT #StartMsg) AND (#SmartDevMSG.error)) OR #WaitTmr.Q THEN
+	                    #StateCheckStep := 4;                        //END if Message Error
+	                    #Cmd_RestartModule := 0;
+	                    #GlobalModuleStep := 0;                          //END of sequence
+	                END_IF;
+	            10:
+	                // Send Command FIM Restart Command (IO Link Backward Device)
+	                FILL_BLK(IN := 0,
+	                         COUNT := 232,
+	                         OUT => #Data[0]); //Clear Data
+	                #SmartDevMSG.readWrite := #True;   //set to WRITE
+	                #SmartDevMSG.writeLen := 1;         //Lenght of Data (1)
+	                #SmartDevMSG.index := 2;            //Index for Combi Restart Command
+	                #SmartDevMSG.subindex := 0;         //Command FMI restart
+	                #Data[0] := 161;                    //
+	                #StartMsg := 1;                     //Start sending MSG
+	                #GlobalModuleStep := 11;
+	            11:
+	                //WAIT END OF MESSAGE
+	                IF (NOT #StartMsg) AND (#SmartDevMSG.error OR #SmartDevMSG.done ) THEN
+	                    #Sts_MSGERR := #SmartDevMSG.status;
+	                    #Sts_MSGEXERR := DWORD_TO_DINT(#SmartDevMSG.diagnostics.subfunctionStatus);
+	                    #GlobalModuleStep := 12;                         // Go To Wait New MESSAGE
+	                END_IF;
+	                #WaitTime := T#200ms;
+	            12:
+	                //WAITTING BEFORE NEW MESSAGE
+	                IF #WaitTmr.Q THEN                                  //Wait for delay timer to be done
+	                    #Cmd_FIMRestart := 0;
+	                    #GlobalModuleStep := 0;                          //END of sequence
+	                END_IF;
+	        END_CASE;
+	    END_REGION
+	    
+	    //End of Global Command
+	    
+	    REGION State Check Sequence
+	        //Read sequence
+	        CASE #StateCheckStep OF
+	            1:
+	                //CONFIGURE READ START INDEX
+	                #Sts_MSGERR := 0;
+	                #Sts_MSGEXERR := 0;
+	                #SmartDevMSG.readWrite := #False;       //SetMsg to READ
+	                #StateCheckStep := 2;                   //Next step
+	            2:
+	                //READ FUSES STATE
+	                
+	                #State[0] := 0;
+	                FILL_BLK(IN := 0,
+	                         COUNT := 32,
+	                         OUT => #State[1]); //Clear Data
+	                FILL_BLK(IN := 0,
+	                         COUNT := 232,
+	                         OUT => #Data[0]); //Clear Data
+	                #SmartDevMSG.readWrite := #False;    //set to READ
+	                #SmartDevMSG.readLen := 0;          //set read lenght
+	                #SmartDevMSG.index := 334;          //Index for actual fuse state -> 334 (DEC) = 014E (HEX)
+	                #SmartDevMSG.subindex := 0;         //Read all 32 CB (Subindex = 0)
+	                #StartMsg := 1;                     //Start sending MSG
+	                #StateCheckStep := 3;
+	            3:
+	                //WAIT END OF MESSAGE
+	                IF NOT #StartMsg THEN
+	                    IF #SmartDevMSG.error THEN               //Store errors from SmartDevMsg
+	                        #Sts_MSGERR := #SmartDevMSG.status;
+	                        #Sts_MSGEXERR := DWORD_TO_DINT(#SmartDevMSG.diagnostics.subfunctionStatus);
+	                        #StateCheckStep := 4;                        //END if Message Error
+	                    ELSE
+	                        MOVE_BLK(IN := #Data[0],
+	                                 COUNT := 32,
+	                                 OUT => #State[1]);
+	                        #StateCheckStep := 4;                        //Next Step 
+	                    END_IF;
+	                END_IF;
+	                #WaitTime := T#200ms;
+	            4:
+	                //WAITTING BEFORE NEW MESSAGE
+	                IF #WaitTmr.Q THEN                                  //Wait for delay timer to be done
+	                    #StateCheckStep := 5;
+	                END_IF;
+	            5:
+	                //READ CURRENT BREAKERS
+	                FILL_BLK(IN := 0,
+	                         COUNT := 232,
+	                         OUT => #Data[0]); //Clear Data
+	                #SmartDevMSG.readWrite := #False;    //set to READ
+	                #SmartDevMSG.readLen := 0;          //set read lenght
+	                #SmartDevMSG.index := 328;          //Index for TGD-ELM Tripping Current Limit -> 328 (DEC) = 0148 (HEX)
+	                #SmartDevMSG.subindex := 0;         //Read all 32 CB (Subindex = 0)
+	                #StartMsg := 1;                     //Start sending MSG
+	                #StateCheckStep := 6;
+	            6:
+	                //WAIT END OF MESSAGE
+	                IF NOT #StartMsg THEN
+	                    IF #SmartDevMSG.error THEN               //Store errors from SmartDevMsg
+	                        #Sts_MSGERR := #SmartDevMSG.status;
+	                        #Sts_MSGEXERR := DWORD_TO_DINT(#SmartDevMSG.diagnostics.subfunctionStatus);
+	                        #StateCheckStep := 0;                        //END if Message Error
+	                    ELSE
+	                        MOVE_BLK(IN := #Data[0],
+	                                 COUNT := 32,
+	                                 OUT => #State[1]);
+	                        FOR #iCount := 1 TO #Cfg_QtyCB DO             //Collect data received if message done
+	                            #StartData := 2 * (#iCount - 1);
+	                            #TopGuardFormat.Breaker[#iCount].TripCurrentSet.%B1 := #Data[#StartData];
+	                            #TopGuardFormat.Breaker[#iCount].TripCurrentSet.%B0 := #Data[#StartData + 1];
+	                        END_FOR;
+	                        #StateCheckStep := 0;
+	                    END_IF;
+	                END_IF;
+	        END_CASE;
+	        //End of Read cycle
+	    END_REGION
+	    REGION Set CB sequenceeee
+	        //Reset sequence
+	        CASE #SetCBStep OF
+	            1:
+	                #Sts_MSGERR := 0;
+	                #Sts_MSGEXERR := 0;
+	                #SmartDevMSG.readWrite := #True;        //SetMsg to WRITE
+	                #SetCBStep := 2;
+	            2:
+	                //SETTING FACTORY DEFAULT
+	                FILL_BLK(IN := 0,
+	                         COUNT := 232,
+	                         OUT => #Data[0]); //Clear Data
+	                #SmartDevMSG.writeLen := 32;        //Lenght of WriteData (32)
+	                #SmartDevMSG.index := 316;          //Index for Factory Default
+	                #SmartDevMSG.subindex := 0;         //Read all 32 CB (Subindex = 0)
+	                #StartMsg := 1;                     //Start sending MSG
+	                #SetCBStep := 3;
+	            3:
+	                //WAIT END OF MESSAGE
+	                IF NOT #StartMsg THEN
+	                    IF #SmartDevMSG.error THEN               //Store errors from SmartDevMsg
+	                        #Sts_MSGERR := #SmartDevMSG.status;
+	                        #Sts_MSGEXERR := DWORD_TO_DINT(#SmartDevMSG.diagnostics.subfunctionStatus);
+	                        #Cmd_SetCB := 0;
+	                        #SetCBStep := 0;                             //END if Message Error
+	                    ELSE
+	                        #SetCBStep := 4;                                 //Next Step 
+	                    END_IF;
+	                END_IF;
+	                #WaitTime := T#200ms;
+	            4:
+	                //WAITTING BEFORE NEW MESSAGE
+	                IF #WaitTmr.Q THEN                                  //Wait for delay timer to be done
+	                    #SetCBStep := 5;
+	                END_IF;
+	            5:
+	                //SETTING RESTART DEVICE
+	                FILL_BLK(IN := 0,
+	                         COUNT := 232,
+	                         OUT => #Data[0]); //Clear Data
+	                #SmartDevMSG.writeLen := 32;        //Lenght of WriteData (32)
+	                #SmartDevMSG.index := 329;          //Index for RESTART
+	                #SmartDevMSG.subindex := 0;         //Read all 32 CB (Subindex = 0)
+	                #StartMsg := 1;                     //Start sending MSG
+	                #SetCBStep := 6;
+	            6:
+	                //WAIT END OF MESSAGE
+	                IF NOT #StartMsg THEN
+	                    IF #SmartDevMSG.error THEN               //Store errors from SmartDevMsg
+	                        #Sts_MSGERR := #SmartDevMSG.status;
+	                        #Sts_MSGEXERR := DWORD_TO_DINT(#SmartDevMSG.diagnostics.subfunctionStatus);
+	                        #Cmd_SetCB := 0;
+	                        #SetCBStep := 0;                             //END if Message Error
+	                    ELSE
+	                        #SetCBStep := 7;                                 //Next Step 
+	                    END_IF;
+	                END_IF;
+	                #WaitTime := T#5000ms;
+	            7:
+	                //WAITTING BEFORE NEW MESSAGE
+	                IF #WaitTmr.Q THEN                                  //Wait for delay timer to be done
+	                    #SetCBStep := 8;
+	                END_IF;
+	            8:
+	                //SETTING CURRENT OF BREAKERS
+	                FILL_BLK(IN := 0,
+	                         COUNT := 232,
+	                         OUT => #Data[0]); //Clear Data
+	                #SmartDevMSG.writeLen := 64;        //Lenght of WriteData (2*32)
+	                #SmartDevMSG.index := 328;          //Index for TGD-ELM Tripping Current Limit
+	                #SmartDevMSG.subindex := 0;         //Read all 32 CB (Subindex = 0)
+	                FOR #iCount := 1 TO #Cfg_QtyCB DO                     //Put setting of CB trippping current tu WriteData
+	                    #StartData := 2 * (#iCount - 1);
+	                    #Data[#StartData] := #Cfg_CBTripping_Current[#iCount].%B1;
+	                    #Data[#StartData + 1] := #Cfg_CBTripping_Current[#iCount].%B0;
+	                END_FOR;
+	                #StartMsg := 1;                     //Start sending MSG
+	                #SetCBStep := 9;
+	            9:
+	                //WAIT END OF MESSAGE
+	                IF NOT #StartMsg THEN
+	                    IF #SmartDevMSG.error THEN               //Store errors from SmartDevMsg
+	                        #Sts_MSGERR := #SmartDevMSG.status;
+	                        #Sts_MSGEXERR := DWORD_TO_DINT(#SmartDevMSG.diagnostics.subfunctionStatus);
+	                        #Cmd_SetCB := 0;
+	                        #SetCBStep := 0;                             //END if Message Error
+	                    ELSE
+	                        #Cmd_SetCB := 0;
+	                        #SetCBStep := 0;                             //END if Message Error
+	                    END_IF;
+	                END_IF;
+	        END_CASE;
+	        //END of Reset cycle
+	    END_REGION
+	    
+	    //Collect 16 bytes from processdata
+	    #Index := 32;
+	    FOR #Count := 0 TO 15 DO
+	        #TopGuardFormat.Breaker[#Index - 1].Device_Failure := #ProcDataIn.Inp[#Count].%X0;
+	        #TopGuardFormat.Breaker[#Index - 1].ShortCircuitSwitchOff := #ProcDataIn.Inp[#Count].%X1;
+	        #TopGuardFormat.Breaker[#Index - 1].LoadPreWarning := #ProcDataIn.Inp[#Count].%X2;
+	        #TopGuardFormat.Breaker[#Index - 1].LoadAlarmWarning := #ProcDataIn.Inp[#Count].%X3;
+	        #TopGuardFormat.Breaker[#Index - 1].Device_On := #State[#Index - 1].%X0;
+	        #TopGuardFormat.Breaker[#Index].Device_Failure := #ProcDataIn.Inp[#Count].%X4;
+	        #TopGuardFormat.Breaker[#Index].ShortCircuitSwitchOff := #ProcDataIn.Inp[#Count].%X5;
+	        #TopGuardFormat.Breaker[#Index].LoadPreWarning := #ProcDataIn.Inp[#Count].%X6;
+	        #TopGuardFormat.Breaker[#Index].LoadAlarmWarning := #ProcDataIn.Inp[#Count].%X7;
+	        #TopGuardFormat.Breaker[#Index].Device_On := #State[#Index].%X0;
+	        #Index := #Index - 2;
+	    END_FOR;
+	    #TopGuardFormat.BreakerFaultNbr := 0;
+	    FOR #Count := 1 TO #Cfg_QtyCB DO
+	        IF #TopGuardFormat.Breaker[#Count].Device_Failure OR #TopGuardFormat.Breaker[#Count].ShortCircuitSwitchOff OR (#State[#Count] = 0) THEN
+	            #TopGuardFormat.BreakerFaultNbr := #Count;
+	        END_IF;
+	        
+	        IF #TopGuardFormat.BreakerFaultNbr > 0 THEN
+	            EXIT;
+	        END_IF;
+	    END_FOR;
+	END_IF;
+	
+	
+	REGION IO_LINK_DEVICE
+	    #SmartDevMSG(execute := #StartMsg,
+	                 record := #Data);
+	    IF #SmartDevMSG.done OR #SmartDevMSG.error THEN
+	        #StartMsg := 0;
+	        
+	    END_IF;
+	END_REGION
+	
+	REGION //Update Error Status
+	    #Sts_ER.%X0 := #MasterCfgError;
+	    #Sts_ER.%X1 := #PortCfgError;
+	    #Sts_ER.%X2 := #MasterComError AND NOT #MasterCfgError;
+	    #Sts_ER.%X3 := #PortComError AND NOT #PortCfgError;
+	END_REGION
+	REGION //Update All Channels OK
+	    #TopGuardFormat.AllChannelsOK := #TopGuardFormat.BreakerFaultNbr = 0;
+	    #Sts_AllChannelsOK := #TopGuardFormat.AllChannelsOK;
+	END_REGION
+	REGION //Copy Status of read and write sequences
+	    #Sts_StateCheckStep := #StateCheckStep;
+	    #Sts_SetCBStep := #SetCBStep;
+	END_REGION
+	// end of first scan
+	#FS := #False;
+	
+END_FUNCTION_BLOCK
+

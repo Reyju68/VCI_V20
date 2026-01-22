@@ -1,0 +1,84 @@
+﻿FUNCTION_BLOCK "Act_FastFeeding"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_Feedpos { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;
+      Cfg_TrackNbr { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;
+      Cfg_FastFeedIndex { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;
+      Sys : "Typ_SiAdm";
+   END_VAR
+
+   VAR_IN_OUT 
+      Act_XTS : "Typ_Act_XTS";
+   END_VAR
+
+   VAR 
+      MemoFeedingError : Array[1..32] of DInt;
+      MemoFeedingError_Bool { S7_SetPoint := 'False'} : Array[1..32] of "Typ_FastFeedIndex_Bool";
+      MemoMoverNbr : DInt;
+      FeedingONS : Array[1.."Cfg_XTS_NbrMaxPosition"] of Bool;
+      LoopIndex : DInt;
+      Cmd_FirstPosFed : LInt;
+      Cmd_PosRqst : LInt;
+      Cmd_PosRqst_Bool : Array[1..64] of Bool;
+   END_VAR
+
+   VAR_TEMP 
+      N : DInt;
+      "DWord" : Array[1..32] of DWord;
+      "LWord" : LWord;
+   END_VAR
+
+
+BEGIN
+	#LWord := LINT_TO_LWORD(IN := #Cmd_PosRqst);
+	SCATTER(IN:=#LWord,
+	        OUT=>#Cmd_PosRqst_Bool);
+	
+	
+	IF  #Sys.Cmd_Reset THEN
+	    #MemoFeedingError[#Cfg_FastFeedIndex] := 0;
+	END_IF;
+	
+	IF #Cfg_Feedpos < 255 AND #Cfg_TrackNbr <= 20 THEN
+	    #MemoMoverNbr := #Act_XTS.Sts_MoverNb_Pos[#Cfg_Feedpos];
+	    // Reset one shot
+	    IF NOT #Act_XTS.Sync_PosFromXTS[#Cfg_Feedpos].Cmd_Cycle AND #Act_XTS.Sync_PosToXTS[#Cfg_Feedpos].Cmd_Force_Index = 0 THEN
+	        #FeedingONS[#Cfg_FastFeedIndex] := false;
+	    END_IF;
+	    // Start fast feeding when first position is feeded
+	    IF #Act_XTS.Sync_PosFromXTS[#Cfg_Feedpos].Cmd_Cycle AND #Act_XTS.Index_pos = #Cfg_Feedpos
+	        AND #Act_XTS.Sync_PosToXTS[#Cfg_Feedpos].Cmd_Force_Index = (#Cfg_Feedpos + #Cfg_TrackNbr - (#Cmd_FirstPosFed - 1)) AND NOT #FeedingONS[#Cfg_FastFeedIndex] THEN
+	        #FeedingONS[#Cfg_FastFeedIndex] := TRUE;
+	        // Loop for feeding location
+	        FOR #LoopIndex := #Cmd_FirstPosFed+1 TO #Cfg_TrackNbr DO
+	            IF #Cmd_PosRqst_Bool[#LoopIndex] THEN
+	                #MemoMoverNbr := #MemoMoverNbr + 1;
+	                IF #MemoMoverNbr > #Act_XTS.Cfg_NbrOfMover THEN
+	                    #MemoMoverNbr := #MemoMoverNbr - #Act_XTS.Cfg_NbrOfMover;
+	                END_IF;
+	                // Verify if mover is in the zone
+	                IF #Act_XTS.Index_Pos_Mover[#MemoMoverNbr] = #Cfg_Feedpos THEN
+	                    #Act_XTS.Index_Pos_Mover[#MemoMoverNbr] := #Cfg_Feedpos + #Cfg_TrackNbr - (#LoopIndex-1);
+	                ELSE
+	                    FOR #N := 1 TO 32 DO
+	                        #DWord[#N] := DINT_TO_DWORD(#MemoFeedingError[#N]); 
+	                        SCATTER(IN := #DWord[#N],
+	                                OUT => #MemoFeedingError_Bool[#N].Index);
+	                    END_FOR;
+	                    #MemoFeedingError_Bool[#Cfg_FastFeedIndex].Index[#LoopIndex] := true;
+	                    FOR #N := 1 TO 32 DO
+	                        GATHER(IN := #MemoFeedingError_Bool[#N].Index,
+	                               OUT => #DWord[#N]);
+	                        #MemoFeedingError[#N] := DWORD_TO_DINT(#DWord[#N]);
+	                    END_FOR;
+	                END_IF;
+	            END_IF;
+	        END_FOR;
+	    END_IF;
+	ELSE
+	    #MemoFeedingError[#Cfg_FastFeedIndex] := 999;
+	END_IF;
+	
+END_FUNCTION_BLOCK
+

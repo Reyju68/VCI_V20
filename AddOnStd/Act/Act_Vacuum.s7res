@@ -1,0 +1,208 @@
+﻿MultiLingualTexts:
+  - id: MLC_LR
+    en-US: Active Vacuum Actuator
+  - id: MLC_3wY
+    en-US: |-
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+
+      20 Jun 2025
+      - Mise a jour de l'add-on suivant Rockwell
+      - Ajout de la maintenance predictive
+  - id: MLC_4Vg
+    en-US: Configuration instruction to request emulated mode
+  - id: MLC_5Be
+    en-US: Config to enable the statistics updates
+  - id: MLC_3HQ
+    en-US: 'Config Monitoring type : 0=by Pressure / 1=by Flow'
+  - id: MLC_4az
+    en-US: Config to disable the statistics
+  - id: MLC_3yb
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_4NL
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_4ZU
+    en-US: Command send by the station sequence to enable blowing
+  - id: MLC_448
+    en-US: Command to check part missing (input off) with vacuum activited
+  - id: MLC_3de
+    en-US: Command send by the station sequence to check if input is OFF
+  - id: MLC_3Md
+    en-US: Command send by the station sequence to check if input is ON
+  - id: MLC_3kG
+    en-US: Command send by the station sequence to enable cleaning
+  - id: MLC_4j5
+    en-US: Command to reset the statistic informations
+  - id: MLC_4KP
+    en-US: Command send by the station sequence to enable vacuum
+  - id: MLC_3CM
+    en-US: Continious Check State Off
+  - id: MLC_3kj
+    en-US: Continious Check State On
+  - id: MLC_3WA
+    en-US: Command to update versus physical input
+  - id: MLC_t7
+    en-US: Numeric value of Vacuum
+  - id: MLC_3iD
+    en-US: Command to clear all statistics after actuator replacement
+  - id: MLC_4jh
+    en-US: Parameter to define the time of check no part (Vacuum activated)
+  - id: MLC_3kV
+    en-US: Parameter to define the time  out timer preset
+  - id: MLC_3Ps
+    en-US: Parameter to define the timer OFF preset
+  - id: MLC_4cP
+    en-US: Parameter to define the timer ON preset
+  - id: MLC_3Kj
+    en-US: Parameter to define the ideal execution time for Check Off action
+  - id: MLC_4Xz
+    en-US: Parameter to define the ideal execution time for Check On action
+  - id: MLC_49h
+    en-US: Parameter to define the blowing timer preset
+  - id: MLC_4V9
+    en-US: Parameter to define the vacuum timer preset
+  - id: MLC_3Mi
+    en-US: Status to inform that the input is not OFF
+  - id: MLC_4Ge
+    en-US: Status to inform that the input is not ON
+  - id: MLC_379
+    en-US: Status to inform alarm coming edge
+  - id: MLC_Wn
+    en-US: Status to control physical blowing output
+  - id: MLC_3VW
+    en-US: Status to inform command edge
+  - id: MLC_3Jr
+    en-US: Status to inform that end of timer has been reached
+  - id: MLC_3Hp
+    en-US: Status to inform about or to emulate physical input
+  - id: MLC_fB
+    en-US: Status to inform while no alarm pending
+  - id: MLC_3AC
+    en-US: Result of the ContiniousCheck State OFF
+  - id: MLC_3kB
+    en-US: Result of the ContiniousCheck State ON
+  - id: MLC_4kB
+    en-US: Status to control physical vacuum output
+  - id: MLC_3cN
+    en-US: Average leak value record during check no part presence
+  - id: MLC_47B
+    en-US: Average leak value record during check part presence
+  - id: MLC_53q
+    en-US: Average time between start vacuum and detection of part presence
+  - id: MLC_uH
+    en-US: Report configuration (xxx.0=With Stat / xxx.1=With Sensor feeback / xxx.2=With Numerical sensor)
+  - id: MLC_3bZ
+    en-US: Reporting counter of total vacuum cycles
+  - id: MLC_3Ze
+    en-US: Lowest leak value record during check no part presence
+  - id: MLC_eS
+    en-US: Lowest leak value record during check part presence
+  - id: MLC_4Z8
+    en-US: Maximum time between start vacuum and detection of part presence
+  - id: MLC_4TQ
+    en-US: Leak value record during check no part presence
+  - id: MLC_3VJ
+    en-US: Leak value record during check part presence
+  - id: MLC_4eP
+    en-US: Time between start vacuum and detection of part presence
+  - id: MLC_4NP
+    en-US: Level off average counter
+  - id: MLC_3fz
+    en-US: Level on average counter
+  - id: MLC_cZ
+    en-US: Time on Average counter
+  - id: MLC_3N3
+    en-US: Memo cycle alarm during command holding
+  - id: MLC_4YZ
+    en-US: ONS for time on management
+  - id: MLC_4KT
+    en-US: Temporary tag for level off average calculation
+  - id: MLC_3KA
+    en-US: Temporary tag for level on average calculation
+  - id: MLC_55r
+    en-US: Temporay tag for average time on calculation
+  - id: MLC_4Bm
+    en-US: Temporary tag for Low Level Off
+  - id: MLC_3vx
+    en-US: Temporary tag for Low Level On
+  - id: MLC_m9
+    en-US: Temporary tag for level off record
+  - id: MLC_4g3
+    en-US: Temporary tag for level on record
+  - id: MLC_3LT
+    en-US: Temporary tag for Maximum Time On
+  - id: MLC_cg
+    en-US: Local variable
+  - id: MLC_3Gr
+    en-US: Blowing Timer
+  - id: MLC_3Si
+    en-US: Timer check input during a programming time
+  - id: MLC_54f
+    en-US: Time on record timer
+  - id: MLC_mG
+    en-US: Clearing Timer
+  - id: MLC_3m8
+    en-US: OFF Timer
+  - id: MLC_3y6
+    en-US: ON Timer
+  - id: MLC_N2
+    en-US: Time Out Timer
+  - id: MLC_4TH
+    en-US: First PLC Scan
+  - id: MLC_4pa
+    en-US: Reset of the alarms management
+  - id: MLC_3C5
+    en-US: WORKMODE 1 (Control check during a programmed time)
+  - id: MLC_4uS
+    en-US: Check sensor State during the programmed time and set the alarm
+  - id: MLC_3Nb
+    en-US: WORKMODE 1 (Control check during a programmed time)
+  - id: MLC_4yr
+    en-US: Check sensor State during the programmed time and set the alarm
+  - id: MLC_5BR
+    en-US: WORKMODE 2 (Check after TimeOut)
+  - id: MLC_zB
+    en-US: Avoid the way to have both continious check On and Off at the same time, start the command edge and reset the timeout finished
+  - id: MLC_3Kg
+    en-US: WORKMODE 2 (Check after TimeOut)
+  - id: MLC_4ss
+    en-US: Alarms management
+  - id: MLC_56p
+    en-US: WORKMODE 2 (Check after TimeOut)
+  - id: MLC_3tu
+    en-US: TimeOut management
+  - id: MLC_4bg
+    en-US: Update of the status input with the state of the physical input
+  - id: MLC_56m
+    en-US: update of the result of the continious check state ON
+  - id: MLC_TL
+    en-US: update of the result of the continious check state OFF
+  - id: MLC_3wq
+    en-US: Command Hold Management
+  - id: MLC_4Au
+    en-US: Command Blowing ans Relese Management
+  - id: MLC_3Gt
+    en-US: Command Cleaning Management
+  - id: MLC_4kx
+    en-US: Status Blowing Management
+  - id: MLC_3A5
+    en-US: Emulate mode management
+  - id: MLC_3B7
+    en-US: PREDICTIVE MAINTENANCE - Replace actuator - Clear Statistics
+  - id: MLC_4bh
+    en-US: Inform the dashboard that the actuator uses the predictive maintenance statistics
+  - id: MLC_43F
+    en-US: Clear Statistics after dashboard acquisition
+  - id: MLC_bS
+    en-US: Time On - Time between start vacuum and detection of part presence
+  - id: MLC_ea
+    en-US: Time On - Record max value and average calculation
+  - id: MLC_Sn
+    en-US: Level On - Leak value record during check part presence
+  - id: MLC_nK
+    en-US: Level On - Record lowest value and average calculation
+  - id: MLC_47h
+    en-US: Level Off - Leak value record during check no part presence
+  - id: MLC_329
+    en-US: Level Off - Record lowest value and average calculation

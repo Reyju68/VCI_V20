@@ -1,0 +1,67 @@
+﻿FUNCTION "StdLimCircTest" : Void
+TITLE = Execute a circular limit test
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+AUTHOR : RJA
+FAMILY : 'Standard'
+VERSION : 11.00
+//08 Jan 2020
+//- New revision roles
+//(StdAddonsTIA_SCN_V002.docx)
+   VAR_INPUT 
+      LowLimit : Int;   // Low Limit
+      Test : Int;   // Value to test
+      HighLimit : Int;   // High Limit
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	// KOMAX System LCF SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: _Library_Std_v1.00
+	// Engineering: TIA Portal v13 SP1 upd9
+	// Restrictions: None
+	// Requirements: None
+	// Functionality: This function will execute a circular limit test:
+	//                     In the CASE #LowLimit <= #HighLimit: #Test IF #LowLimit <= #Test <= #HighLimit
+	//                     In the CASE #LowLimit >= #HighLimit: #Test IF  #Test <= #LowLimit AND #Test => #HighLimit
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	//-----------------------------------------------------------------------------
+	// Version       Date              Expert in charge           
+	// v0.0.1        2015-01-06        JASPERS Roel          
+	// Changes applied:
+	// Creation
+	//-----------------------------------------------------------------------------
+	// Version       Date              Expert in charge           
+	// v0.0.2        2015-04-23        JASPERS Roel          
+	// Changes applied:
+	// ???
+	//-----------------------------------------------------------------------------
+	// Version       Date         Expert in charge           
+	// v0.1.0        2017-03-21   SAINTOT Mickael          
+	// Changes applied:
+	// Update Library.
+	//-----------------------------------------------------------------------------
+	// v2.0.0        2017-03-21   SCHAFER Florian          
+	// Changes applied:
+	// Update Library.
+	//-----------------------------------------------------------------------------
+	//============================================================================
+	
+	IF ((#LowLimit <= #HighLimit) AND
+	    (#Test >= #LowLimit AND #Test <= #HighLimit)) OR
+	   ((#LowLimit >= #HighLimit) AND
+	    (#Test >= #LowLimit OR #Test <= #HighLimit)) THEN
+	        ENO := TRUE ;    
+	ELSE
+	        ENO := False ;
+	END_IF;
+	
+	     
+	        
+END_FUNCTION
+

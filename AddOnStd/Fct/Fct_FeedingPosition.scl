@@ -1,0 +1,177 @@
+﻿FUNCTION_BLOCK "Fct_FeedingPosition"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Sys : "Typ_SiAdm";
+   END_VAR
+   VAR_INPUT RETAIN
+      Cfg : "Typ_StationCfgXTS";
+      Cmd_UpdtFeedingRqstExec : Bool;
+      Cmd_StReset : Bool;
+      Cmd_ClearMemo : Bool;
+      Sts_FeedingRdy : Bool;
+      IN_Nbr_XtsPos : Array[0..40] of Int;
+   END_VAR
+
+   VAR_OUTPUT RETAIN
+      Memo_MoverNbr_Request_Pos : Array[0..40] of Int;
+      Cmd_Force_Index : Int;
+      Sts_Cycle : Bool;
+   END_VAR
+
+   VAR_IN_OUT 
+      Station : "Typ_StationMgtXTS";
+   END_VAR
+   VAR_IN_OUT RETAIN
+      Feed_Seq : DInt;
+   END_VAR
+
+   VAR RETAIN
+      Memo_Mover_Feeded : Bool;
+      Memo_WPHID_0 : Int;
+      N : DInt;
+      Memo_StationFeeded : LInt;
+      NewRqst : Bool;
+      Sts_StationFeeded_Bool : Array[0..63] of Bool;
+   END_VAR
+   VAR 
+      Sts_MoverRqstd_Bool : Array[0..63] of Bool;
+   END_VAR
+   VAR DB_SPECIFIC
+      Sts_LimpManu : LInt;
+      Sts_LimpManu_Bool { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} AT Sts_LimpManu : Array[0..63] of Bool;
+   END_VAR
+
+   VAR_TEMP 
+      Result : LWord;
+      Index : DInt;
+      DINT1 : DInt;
+   END_VAR
+
+
+BEGIN
+	#Result := LINT_TO_LWORD(#Station.Sts_StationFeeded);
+	SCATTER(IN:=#Result,
+	        OUT=>#Sts_StationFeeded_Bool);
+	    
+	#Result := LINT_TO_LWORD(#Station.Sts_MoverRqstd);
+	SCATTER(IN := #Result,
+	        OUT => #Sts_MoverRqstd_Bool);
+	    
+	#Sts_LimpManu := #Station.Sts_LimpManu;
+	    
+	REGION Command feeding
+	    //  New Feedeing Calulation    
+	    IF #Cmd_UpdtFeedingRqstExec THEN
+	        #Station.Sts_MoverRqstd := #Station.Sts_MoverAllow;
+	        #Station.Sts_StationFeeded := #Station.Sts_MoverAllow;
+	        IF #Station.Sts_LimpManu = #Cfg.WphUsed THEN
+	            #Station.Sts_MoverRqstd := #Cfg.WphUsed;
+	            #Station.Sts_StationFeeded := #Cfg.WphUsed;
+	        END_IF;
+	        #Cmd_UpdtFeedingRqstExec := FALSE;
+	        #Result := LINT_TO_LWORD(#Station.Sts_StationFeeded);
+	        SCATTER(IN := #Result,
+	                OUT => #Sts_StationFeeded_Bool);
+	        #Result := LINT_TO_LWORD(#Station.Sts_MoverRqstd);
+	        SCATTER(IN := #Result,
+	                OUT => #Sts_MoverRqstd_Bool);
+	    END_IF;
+	    
+	    // Reset Sequencer and Check if New Feedeing Calulation is required
+	    IF #Cmd_StReset THEN
+	        #Feed_Seq := 0;
+	        #Sts_Cycle := FALSE;
+	        #Cmd_Force_Index := 0;
+	        #NewRqst := TRUE;
+	        FOR #N := 1 TO #Cfg.TrackNumber DO
+	            IF #Memo_MoverNbr_Request_Pos[#N] <> 0 OR #Station.Sts_WPHID[#N] <> 0 THEN
+	                #NewRqst := FALSE;
+	            END_IF;
+	        END_FOR;
+	        IF #NewRqst THEN
+	            FOR #Index := 0 TO 63 DO
+	                #Sts_MoverRqstd_Bool[#Index] := 0;
+	                #Sts_StationFeeded_Bool[#Index] := 0;
+	            END_FOR;
+	            FOR #N := 1 TO #Cfg.TrackNumber DO
+	                IF NOT #Sts_LimpManu_Bool[#N] OR (#Station.Sts_LimpManu = #Cfg.WphUsed) THEN
+	                    #Sts_MoverRqstd_Bool[#N]:=TRUE;
+	                    #Sts_StationFeeded_Bool[#N] := TRUE;
+	                END_IF;
+	            END_FOR;
+	        END_IF;
+	        #Cmd_StReset := FALSE;
+	    END_IF;
+	    
+	    // Command Clear Memo Position
+	    IF #Cmd_ClearMemo THEN
+	        FOR #N := 1 TO #Cfg.TrackNumber DO
+	            #Memo_MoverNbr_Request_Pos[#N] := 0;
+	        END_FOR;
+	        #Cmd_ClearMemo := FALSE;
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION Sequence Feeding
+	    
+	    // Step0 - Wait For Feeding Request
+	    IF #Feed_Seq = 0 THEN
+	        IF #Sts_FeedingRdy AND #Station.Sts_StartFeeding AND #Station.Sts_WPHID[0] <> 0 AND #Station.Sts_StationFeeded > 1 THEN
+	            #Memo_Mover_Feeded := FALSE;
+	            #Memo_WPHID_0 := #Station.Sts_WPHID[0];
+	            #Feed_Seq := 1;
+	        END_IF;
+	    END_IF;
+	    
+	    // Step1 - Feed Position
+	    IF #Feed_Seq = 1 THEN
+	        IF (NOT #Memo_Mover_Feeded) THEN
+	            FOR #N := 1 TO #Cfg.TrackNumber DO
+	                IF #Sts_StationFeeded_Bool[#N] THEN
+	                    #Memo_MoverNbr_Request_Pos[#N] := #Memo_WPHID_0;
+	                    EXIT;
+	                END_IF;
+	            END_FOR;
+	            #Cmd_Force_Index := #IN_Nbr_XtsPos[#N];
+	            #Memo_Mover_Feeded := TRUE;
+	            #Sts_Cycle := TRUE;
+	            #Feed_Seq := 2;
+	        END_IF;
+	    END_IF;
+	    
+	    // Step2 - Feed Position
+	    IF #Feed_Seq = 2 THEN
+	        IF (NOT #Station.Sts_StartFeeding) THEN
+	            #Feed_Seq := 3;
+	            FOR #N := 1 TO #Cfg.TrackNumber DO
+	                IF #Memo_MoverNbr_Request_Pos[#N] <> 0 THEN
+	                    #Sts_StationFeeded_Bool[#N] := False;
+	                END_IF;
+	            END_FOR;
+	            IF #Sys.Sts_State <= 4 THEN
+	                #Feed_Seq := 0;
+	            END_IF;
+	        END_IF;
+	    END_IF;
+	    
+	    // Step3 - Reset XTS Synchronization Stat
+	    IF #Feed_Seq = 3 THEN
+	        #Sts_Cycle := 0;
+	        #Cmd_Force_Index := 0;
+	        #Feed_Seq := 0;
+	    END_IF;
+	    
+	END_REGION
+	
+	GATHER(IN:=#Sts_MoverRqstd_Bool,
+	       OUT=>#Result);
+	#Station.Sts_MoverRqstd := LWORD_TO_LINT(#Result);
+	
+	GATHER(IN := #Sts_StationFeeded_Bool,
+	       OUT => #Result);
+	#Station.Sts_StationFeeded := LWORD_TO_LINT(#Result);
+	
+END_FUNCTION_BLOCK
+

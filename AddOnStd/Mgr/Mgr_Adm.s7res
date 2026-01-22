@@ -1,0 +1,148 @@
+﻿MultiLingualTexts:
+  - id: MLC_4tq
+    en-US: Manage Admin Statistics
+  - id: MLC_nk
+    en-US: |-
+      10 Nov 2020: 
+      - Division by 0 correction
+      StdAddons_SCN_V006.docx
+  - id: MLC_du
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_3Td
+    en-US: Configurable instruction to define the number of tracks per station
+  - id: MLC_3fE
+    en-US: Command to reset the statistic informations
+  - id: MLC_58F
+    en-US: Reference to the machine current state
+  - id: MLC_ic
+    en-US: Reference to the machine second's pulse
+  - id: MLC_3pJ
+    en-US: Machine Ideal Time
+  - id: MLC_4xD
+    en-US: Audit Parts ID
+  - id: MLC_3jN
+    en-US: Bad Parts ID
+  - id: MLC_3eR
+    en-US: Good Parts ID
+  - id: MLC_3Pj
+    en-US: Reporting Availability percentage x 100 since last clear
+  - id: MLC_4dS
+    en-US: Reporting Audit parts counter since last clear
+  - id: MLC_3ZP
+    en-US: Reporting Bad parts counter since last clear
+  - id: MLC_i6
+    en-US: Reporting Good parts counter since last clear
+  - id: MLC_4iR
+    en-US: Reporting Total parts counter since last clear
+  - id: MLC_46j
+    en-US: Reporting machine Availability (without suspend time) percentage x 100 since last clear
+  - id: MLC_4Ei
+    en-US: Reporting machine OEE (without suspend time)  percentage x 100 since last clear
+  - id: MLC_3Qv
+    en-US: Reporting OEE percentage x 100 since last clear
+  - id: MLC_4DJ
+    en-US: Reporting Performance percentage x 100 since last clear
+  - id: MLC_Zh
+    en-US: Reporting Quality percentage x 100 since last clear
+  - id: MLC_3db
+    en-US: 'Timer State 2 : Aborted'
+  - id: MLC_3WM
+    en-US: 'Timer State 1 : Aborting'
+  - id: MLC_3Ys
+    en-US: 'Timer State 8 : Execute'
+  - id: MLC_4et
+    en-US: 'Timer State 10 : Held'
+  - id: MLC_4rS
+    en-US: 'Timer State 9 : Holding'
+  - id: MLC_4ni
+    en-US: 'Timer State 6 : Idle'
+  - id: MLC_4tj
+    en-US: Reporting Operated time since last clear
+  - id: MLC_4kC
+    en-US: 'Timer State 5 : Reseting'
+  - id: MLC_3ML
+    en-US: 'Timer State 7 : Starting'
+  - id: MLC_446
+    en-US: 'Timer State 4 : Stopped'
+  - id: MLC_3BW
+    en-US: 'Timer State 3 : Stopping'
+  - id: MLC_Vq
+    en-US: 'Timer State 12 : Suspended'
+  - id: MLC_3w9
+    en-US: 'Timer State 11 : Suspending'
+  - id: MLC_3ux
+    en-US: Reporting Total time since last clear
+  - id: MLC_3Wa
+    en-US: Config Time Limit (1892160000 1/10s -> 6 years)
+  - id: MLC_3hT
+    en-US: Config Time Scale (100 -> 1/10s)
+  - id: MLC_bs
+    en-US: Config Timer Preselection
+  - id: MLC_z7
+    en-US: Timer Aborted State
+  - id: MLC_3aQ
+    en-US: Timer Aborting State
+  - id: MLC_3aB
+    en-US: Timer Execute State
+  - id: MLC_4Xg
+    en-US: Timer Held State
+  - id: MLC_4fY
+    en-US: Timer Holding State
+  - id: MLC_u2
+    en-US: Timer Idle State
+  - id: MLC_4WL
+    en-US: Timer Reseting State
+  - id: MLC_3kw
+    en-US: Timer Starting State
+  - id: MLC_4BR
+    en-US: Timer Stopped State
+  - id: MLC_4nX
+    en-US: Timer Stopping State
+  - id: MLC_5CL
+    en-US: Timer Suspended State
+  - id: MLC_Xu
+    en-US: Timer Suspending State
+  - id: MLC_4BM
+    en-US: Timer Total State Time
+  - id: MLC_aS
+    en-US: Accumulate State Aborted Time
+  - id: MLC_4YX
+    en-US: Accumulate State Aborting Time
+  - id: MLC_4n2
+    en-US: Accumulate State Execute Time
+  - id: MLC_3eH
+    en-US: Accumulate State Held Time
+  - id: MLC_375
+    en-US: Accumulate State Holding Time
+  - id: MLC_3fr
+    en-US: Accumulate State Idle Time
+  - id: MLC_4Ha
+    en-US: Accumulate State Reseting Time
+  - id: MLC_3zK
+    en-US: Accumulate State Starting Time
+  - id: MLC_42L
+    en-US: Accumulate State Stopped Time
+  - id: MLC_dN
+    en-US: Accumulate State Stopping Time
+  - id: MLC_33R
+    en-US: Accumulate State Suspended Time
+  - id: MLC_4Fe
+    en-US: Accumulate State Suspending Time
+  - id: MLC_3vi
+    en-US: Accumulate Total State Time
+  - id: MLC_3Dm
+    en-US: First Scan
+  - id: MLC_33A
+    en-US: Reset of all statistics
+  - id: MLC_4qz
+    en-US: Time incrementation of the several states of the machine
+  - id: MLC_4Q4
+    en-US: Report Data management for machine parts counters
+  - id: MLC_3nj
+    en-US: Calculatation (every seconds) of the OEE and quality report of the machine
+  - id: MLC_3Lp
+    en-US: '(Supended time is Included for OEE calculation) '
+  - id: MLC_536
+    en-US: 'Calculatation of the OEE and quality report of the machine '
+  - id: MLC_3ZU
+    en-US: '(Supended time is Not Included for OEE calculation) '

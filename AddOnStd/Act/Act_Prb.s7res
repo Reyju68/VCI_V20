@@ -1,0 +1,90 @@
+﻿MultiLingualTexts:
+  - id: MLC_4dN
+    en-US: Active Probe/Sensor Module
+  - id: MLC_5CS
+    en-US: |-
+      02 Sep. 2022
+       - New Revision Roles (StdAddonsTIA_SCN_V004.docx)
+
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+
+      19 Jun 2025
+      - Ajout du controle du First Scan avant les temporisations
+  - id: MLC_3Dk
+    en-US: Parameter to define the ideal execution time for Check action
+  - id: MLC_4YF
+    en-US: Parameter to define the ideal execution time for Change-of-State action
+  - id: MLC_wC
+    en-US: Configuration to deactivate the statistic management
+  - id: MLC_3Ze
+    en-US: Configuration instruction to request emulated mode
+  - id: MLC_ai
+    en-US: Configurable instruction to disable any alarm
+  - id: MLC_4uf
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_4BF
+    en-US: Command to reset the statistic informations
+  - id: MLC_3XC
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_45E
+    en-US: Command to update versus physical input
+  - id: MLC_4DK
+    en-US: Command send by the station sequence to arm the Change-of-State trigger
+  - id: MLC_MX
+    en-US: Command send by the station sequence to check if input is ON
+  - id: MLC_qL
+    en-US: Command send by the station sequence to check if input is OFF
+  - id: MLC_4Xi
+    en-US: Command send by the station sequence to Check Change-of-State
+  - id: MLC_xj
+    en-US: Command send by the station sequence to Check No Change-of-State
+  - id: MLC_4Lx
+    en-US: Command send to finish the work
+  - id: MLC_3ct
+    en-US: Status to inform about or to emulate physical input
+  - id: MLC_4BD
+    en-US: Status to inform that time ON has been reached
+  - id: MLC_4mY
+    en-US: Status to inform when Cmd_CoS was not able to complete before end of time out
+  - id: MLC_3hH
+    en-US: Status to inform when Cmd_NCoS was not able to complete before end of time out
+  - id: MLC_3ir
+    en-US: Status to inform when Cmd_ChkOn was not able to complete before end of time check
+  - id: MLC_r7
+    en-US: Status to inform when Cmd_ChkOff was not able to complete before end of time check
+  - id: MLC_59N
+    en-US: Status to inform while no alarm pending
+  - id: MLC_iG
+    en-US: Status to inform alarm coming edge
+  - id: MLC_sc
+    en-US: Reporting value to give current execution elapsed time
+  - id: MLC_wk
+    en-US: Reporting counter for failed actions since last clear
+  - id: MLC_3MC
+    en-US: Reporting counter for total executed actions since last clear
+  - id: MLC_RE
+    en-US: Reporting statistic information
+  - id: MLC_3kV
+    en-US: Check State Timer
+  - id: MLC_4k9
+    en-US: Change of State Timer
+  - id: MLC_4ZE
+    en-US: Actuator Statistics
+  - id: MLC_4fb
+    en-US: First PLC Scan
+  - id: MLC_4PA
+    en-US: Reset of the alarms management
+  - id: MLC_cr
+    en-US: Update of the input status
+  - id: MLC_3yn
+    en-US: reset of the check commd in case of emulate mode or external done
+  - id: MLC_3ze
+    en-US: Check Sensor Change State and alarms management
+  - id: MLC_gQ
+    en-US: Check sensor State
+  - id: MLC_3F6
+    en-US: Alarms management
+  - id: MLC_54c
+    en-US: Statistics Management

@@ -1,0 +1,1680 @@
+﻿{
+    S7_BlockComment := "MLC_4ND";
+    S7_BlockTitle := "MLC_53u";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Act_VisInsightF5_NEW"
+    VAR_INPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Laddr : STRUCT
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            AcquisitionControl : HW_SUBMODULE;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            AcquisitionStatus : HW_SUBMODULE;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            InspectionControl : HW_SUBMODULE;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            InspectionStatus : HW_SUBMODULE;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            JobControl : HW_SUBMODULE;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Results : HW_SUBMODULE;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            SoftEventControl : HW_SUBMODULE;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            UserData : HW_SUBMODULE;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_Visibility := "Hidden := External"
+            }
+            Device : HW_SUBMODULE;
+        END_STRUCT;
+        { S7_MLC := "MLC_4hm" }
+        Cfg_ExtTrigger : Bool;
+        { S7_MLC := "MLC_4cE" }
+        Cfg_FixtureNumber : DInt;
+        { S7_MLC := "MLC_4Mq" }
+        Cfg_NoConsAlm : Bool;
+        { S7_MLC := "MLC_4w2" }
+        Cfg_NoLoadJob : Bool;
+        { S7_MLC := "MLC_3Mr" }
+        Cfg_NumberOfJob : DInt;
+        { S7_MLC := "MLC_3j2" }
+        Cfg_RnROn : Bool;
+        { S7_MLC := "MLC_4qg" }
+        Cmd_FirstScan : Bool;
+        { S7_MLC := "MLC_3TF" }
+        Cmd_Ack : Bool;
+        { S7_MLC := "MLC_3Ws" }
+        Cmd_ClrStat : Bool;
+        { S7_MLC := "MLC_438" }
+        Cmd_Out : DInt;
+        { S7_MLC := "MLC_3WT" }
+        Cmd_RequestJobLoad : Bool;
+        { S7_MLC := "MLC_3x6" }
+        Par_JobNbr : DInt;
+        Par_MaxCons : DInt;
+        { S7_MLC := "MLC_36p" }
+        Par_TimeOut : DInt;
+        { S7_MLC := "MLC_3gC" }
+        Par_TimeOutJob : DInt;
+        { S7_MLC := "MLC_4d8" }
+        Par_UserData4 : DInt;
+        { S7_MLC := "MLC_iR" }
+        Par_UserData5 : DInt;
+        { S7_MLC := "MLC_3rh" }
+        Par_UserData6 : DInt;
+        { S7_MLC := "MLC_3YV" }
+        Par_UserData7 : DInt;
+        CfgJob : _.Typ_VisJobNames;
+    END_VAR
+    VAR_OUTPUT 
+        { S7_MLC := "MLC_4vD" }
+        Sts_RequestJobLoad : Bool;
+        Sts_AlmConsErr : Bool;
+        { S7_MLC := "MLC_42z" }
+        Sts_AlmOns : Bool;
+        { S7_MLC := "MLC_4nm" }
+        Sts_Alms : DInt := 16#0000_0000;
+        { S7_MLC := "MLC_4c5" }
+        Sts_CmdDone : Bool;
+        { S7_MLC := "MLC_4Hf" }
+        Sts_CmdOns : Bool;
+        { S7_MLC := "MLC_k2" }
+        Sts_FailCode : DInt;
+        { S7_MLC := "MLC_38L" }
+        Sts_Idle : Bool := true;
+        { S7_MLC := "MLC_3c3" }
+        Sts_Inspection : DInt;
+        { S7_MLC := "MLC_Xj" }
+        Sts_ModuleInFault : Bool;
+        { S7_MLC := "MLC_3D5" }
+        Sts_NoAlm : Bool := true;
+        { S7_MLC := "MLC_uV" }
+        Sts_Out : DInt;
+        { S7_MLC := "MLC_4e8" }
+        Sts_Results : DInt;
+        { S7_MLC := "MLC_3Ff" }
+        Sts_TimeOut : Bool;
+        { S7_MLC := "MLC_Wh" }
+        Sts_AlmTrigError : Bool;
+        { S7_MLC := "MLC_3Pa" }
+        Sts_AlmAcquisition : Bool;
+        { S7_MLC := "MLC_4Cb" }
+        Sts_AlmInspectionError : Bool;
+        { S7_MLC := "MLC_3nT" }
+        Sts_AlmNotOffLine : Bool;
+        { S7_MLC := "MLC_4UE" }
+        Sts_AlmJobLoad : Bool;
+        { S7_MLC := "MLC_34r" }
+        Sts_AlmNotOnLine : Bool;
+        Sts_AlmInputCommError : Bool;
+        Sts_AlmOutputCommError : Bool;
+        Sts_AlmTestRunError : Bool;
+        Sts_InspectionResult4 : DInt;
+        { S7_MLC := "MLC_4sE" }
+        Sts_CurrentJobLoaded : DInt;
+        { S7_MLC := "MLC_44n" }
+        Sts_Seq : DInt;
+    END_VAR
+    VAR_OUTPUT RETAIN
+        { S7_MLC := "MLC_3ut" }
+        Rep_AlmFocus : DInt;
+        { S7_MLC := "MLC_4Jg" }
+        Rep_AlmLight : DInt;
+        { S7_MLC := "MLC_33X" }
+        Rep_AlmPart : DInt;
+        { S7_MLC := "MLC_3MZ" }
+        Rep_AlmPixel : DInt;
+        { S7_MLC := "MLC_4SL" }
+        Rep_AlmSyst : DInt;
+        Rep_Cons : DInt;
+        Rep_CtrAlm : DInt;
+        Rep_CtrTotal : DInt;
+        Rep_dT : DInt;
+        Rep_Quality : DInt;
+        { S7_MLC := "MLC_3aM" }
+        Rep_SpecAlm1 : DInt;
+        { S7_MLC := "MLC_4PX" }
+        Rep_SpecAlm2 : DInt;
+        { S7_MLC := "MLC_QA" }
+        Rep_SpecAlm3 : DInt;
+        { S7_MLC := "MLC_3FN" }
+        Rep_SpecAlm4 : DInt;
+        { S7_MLC := "MLC_4af" }
+        Rep_SpecAlm5 : DInt;
+        { S7_MLC := "MLC_55Z" }
+        Rep_SpecAlm6 : DInt;
+        { S7_MLC := "MLC_3zR" }
+        Rep_SpecAlm7 : DInt;
+        { S7_MLC := "MLC_46r" }
+        Rep_SpecAlm8 : DInt;
+        { S7_MLC := "MLC_35f" }
+        Rep_SpecAlm9 : DInt;
+        { S7_MLC := "MLC_Qa" }
+        Rep_SpecAlm10 : DInt;
+        { S7_MLC := "MLC_3Pu" }
+        Rep_SpecAlm11 : DInt;
+        { S7_MLC := "MLC_RZ" }
+        Rep_CtrComInputFail : DInt;
+        { S7_MLC := "MLC_eR" }
+        Rep_CtrComOutputFail : DInt;
+    END_VAR
+    VAR RETAIN
+        { S7_MLC := "MLC_3vf" }
+        Mem1_AcqID : Int;
+        { S7_MLC := "MLC_49Y" }
+        Mem2_AcqID : Int;
+    END_VAR
+    VAR 
+        { S7_MLC := "MLC_4wN" }
+        Inp_InSight4_Siemens : _.TypActVisCognexInputsF5;
+        { S7_MLC := "MLC_3X8" }
+        Out_InSight4_Siemens : _.TypActVisCognexOutputsF5;
+    END_VAR
+    VAR RETAIN
+        { S7_MLC := "MLC_3xV" }
+        AcquisitionID : Int;
+    END_VAR
+    VAR 
+        { S7_MLC := "MLC_sc" }
+        ModuleState : DIS;
+        { S7_MLC := "MLC_45J" }
+        Tmr : IEC_TIMER;
+        { S7_MLC := "MLC_37K" }
+        TmrPT : DInt;
+        { S7_MLC := "MLC_3Kb" }
+        Tmr_Clr : IEC_TIMER;
+        MemInspection : Bool;
+        { S7_Setpoint := "False" }
+        t_EventSendDelay : IEC_TIMER;
+    END_VAR
+    VAR_TEMP 
+        { S7_MLC := "MLC_tN" }
+        RetValDPRDDAT_AcqSts : Word;
+        { S7_MLC := "MLC_46k" }
+        RetValDPRDDAT_InspecSts : Word;
+        { S7_MLC := "MLC_56H" }
+        RetValDPRDDAT_JobCtrl : Word;
+        { S7_MLC := "MLC_Uj" }
+        RetValDPRDDAT_Results : Word;
+        { S7_MLC := "MLC_4s9" }
+        RetValDPWRDAT_AcqCtrl : Word;
+        { S7_MLC := "MLC_4C3" }
+        RetValDPWRDAT_InspecCtrl : Word;
+        { S7_MLC := "MLC_4gG" }
+        RetValDPWRDAT_JobCtrl : Word;
+        { S7_MLC := "MLC_3LB" }
+        RetValDPWRDAT_SoftEventCtrl : Word;
+        { S7_MLC := "MLC_4ur" }
+        RetValDPWRDAT_UserData : Word;
+        { S7_MLC := "MLC_478" }
+        DeviceState_RetVal : Int;
+        { S7_MLC := "MLC_3aN" }
+        DeviceState_CntDiag : UInt;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3vM"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            DPRD_DAT(
+                LADDR := #Laddr.AcquisitionStatus, 
+                RET_VAL => #RetValDPRDDAT_AcqSts, 
+                RECORD => #Inp_InSight4_Siemens.AcquisitionStatus
+            )
+            DPRD_DAT(
+                LADDR := #Laddr.InspectionStatus, 
+                RET_VAL => #RetValDPRDDAT_InspecSts, 
+                RECORD => #Inp_InSight4_Siemens.InspectionStatus
+            )
+            DPRD_DAT(
+                LADDR := #Laddr.JobControl, 
+                RET_VAL => #RetValDPRDDAT_JobCtrl, 
+                RECORD => #Inp_InSight4_Siemens.JobControl
+            )
+            DPRD_DAT(
+                LADDR := #Laddr.Results, 
+                RET_VAL => #RetValDPRDDAT_Results, 
+                RECORD => #Inp_InSight4_Siemens.InspectionResults
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Xj"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Inp_InSight4_Siemens.AcquisitionStatus.AcquisitionIDByte0, 
+                out1 => #AcquisitionID.%B1
+            )
+            
+            Move(
+                in := #Inp_InSight4_Siemens.AcquisitionStatus.AcquisitionIDByte1, 
+                out1 => #AcquisitionID.%B0
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Uw"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Word" }
+            NE_Contact(
+                in1 := #RetValDPRDDAT_AcqSts, 
+                in2 := 0
+            )
+            wire#w1
+            I_Contact( #Sts_Alms.%X7 )
+            S_Coil( #Sts_Alms.%X7 )
+            
+            Add(
+                in1 := #Rep_CtrComInputFail, 
+                in2 := 1, 
+                out => #Rep_CtrComInputFail
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Word" }
+            NE_Contact(
+                in1 := #RetValDPRDDAT_InspecSts, 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Word" }
+            NE_Contact(
+                in1 := #RetValDPRDDAT_JobCtrl, 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Word" }
+            NE_Contact(
+                in1 := #RetValDPRDDAT_Results, 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3nw"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Par_UserData4, 
+                out1 => #Out_InSight4_Siemens.UserData[4]
+            )
+            
+            Move(
+                in := #Par_UserData5, 
+                out1 => #Out_InSight4_Siemens.UserData[5]
+            )
+            
+            Move(
+                in := #Par_UserData6, 
+                out1 => #Out_InSight4_Siemens.UserData[6]
+            )
+            
+            Move(
+                in := #Par_UserData7, 
+                out1 => #Out_InSight4_Siemens.UserData[7]
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_33U"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            GET_DIAG(
+                MODE := 1, 
+                LADDR := #Laddr.Device, 
+                RET_VAL => #DeviceState_RetVal, 
+                CNT_DIAG => #DeviceState_CntDiag, 
+                DIAG := #ModuleState, 
+                DETAIL :=  
+            )
+            { S7_Templates := "SrcType := UInt" }
+            NE_Contact(
+                in1 := #ModuleState.OwnState, 
+                in2 := 0
+            )
+            I_Contact( #Cmd_Out.%X0 )
+            I_Contact( #Cmd_Out.%X3 )
+            I_Contact( #Sts_Idle )
+            Coil( #Sts_ModuleInFault )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_yZ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_ClrStat )
+            R_Coil( #Cmd_ClrStat )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Rep_CtrComInputFail, 
+                out2 => #Rep_CtrComOutputFail, 
+                out3 => #Rep_AlmFocus, 
+                out4 => #Rep_AlmLight, 
+                out5 => #Rep_AlmPart, 
+                out6 => #Rep_AlmPixel
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Rep_SpecAlm1, 
+                out2 => #Rep_SpecAlm2, 
+                out3 => #Rep_SpecAlm3, 
+                out4 => #Rep_SpecAlm4, 
+                out5 => #Rep_SpecAlm5, 
+                out6 => #Rep_SpecAlm6, 
+                out7 => #Rep_SpecAlm7, 
+                out8 => #Rep_SpecAlm8, 
+                out9 => #Rep_SpecAlm9, 
+                out10 => #Rep_SpecAlm10, 
+                out11 => #Rep_SpecAlm11
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Rep_CtrTotal, 
+                out2 => #Rep_CtrAlm
+            )
+            I_Contact( #Cmd_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr_Clr.TOF(
+                pt := T#500MS, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Tmr_Clr.Q )
+            Coil( #Out_InSight4_Siemens.SoftEventControl.SoftEvent7 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4MN"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Ack )
+            R_Coil( #Cmd_Ack )
+            wire#w1
+            R_Coil( #Sts_AlmConsErr )
+            I_Contact( #Sts_NoAlm )
+            RT_Coil( #Tmr )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Out, 
+                out2 => #Sts_Alms
+            )
+            R_Coil( #Sts_ModuleInFault )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+            S_Coil( #Sts_Idle )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4db"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Idle )
+            
+            Move(
+                in := 0, 
+                out1 => #Sts_Seq
+            )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Out, 
+                in2 := 0
+            )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Idle )
+            Coil( #Sts_CmdOns )
+            
+            Move(
+                in := #Cmd_Out, 
+                out1 => #Sts_Out
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Par_TimeOut, 
+                out1 => #TmrPT
+            )
+            
+            Add(
+                in1 := #Rep_CtrTotal, 
+                in2 := 1, 
+                out => #Rep_CtrTotal
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Js"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_CmdOns )
+            I_Contact( #Cmd_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr.TON(
+                pt := #TmrPT, 
+                et =>  
+            )
+            Coil( #Sts_TimeOut )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_38Y";
+        S7_NetworkTitle := "MLC_3gk"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Cfg_NoLoadJob )
+            R_Coil( #Cfg_ExtTrigger )
+            R_Coil( #Out_InSight4_Siemens.InspectionControl.ResultsBufferEnable )
+            R_Coil( #Out_InSight4_Siemens.InspectionControl.InspectionResultsAck )
+            
+            Move(
+                in := T#100MS, 
+                out1 => #t_EventSendDelay.PT
+            )
+            wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Sts_Results, 
+                out2 => #Sts_FailCode, 
+                out3 => #Sts_Inspection, 
+                out4 => #Sts_Seq
+            )
+            R_Coil( #Out_InSight4_Siemens.InspectionControl.ExecuteCommand )
+            R_Coil( #Cfg_NoConsAlm )
+            wire#w2
+            Contact( #Cmd_Out.%X1 )
+            I_Contact( #Cmd_Out.%X0 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 1, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_Out.%X0 )
+            S_Coil( #Sts_CmdDone )
+            S_Coil( #Sts_Idle )
+            S_Coil( #Out_InSight4_Siemens.SoftEventControl.SoftEvent0 )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 0
+            )
+            Contact( #Cmd_Out.%X1 )
+        END_RUNG wire#w1
+        RUNG wire#w2
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Cmd_Out
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_49f"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 1
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Out_InSight4_Siemens.JobControl.JobID
+            )
+            R_Coil( #Out_InSight4_Siemens.InspectionControl.ExecuteCommand )
+            S_Coil( #Out_InSight4_Siemens.AcquisitionControl.TriggerEnable )
+            R_Coil( #Out_InSight4_Siemens.AcquisitionControl.ForceOffline )
+            Contact( #Sts_NoAlm )
+            wire#w1
+            Contact( #Sts_TimeOut )
+            S_Coil( #Sts_Alms.%X5 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 90, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_TimeOut )
+            I_Contact( #Sts_ModuleInFault )
+            Contact( #Inp_InSight4_Siemens.AcquisitionStatus.Online )
+            wire#w2
+            I_Contact( #Cmd_Out.%X3 )
+            S_Coil( #Sts_CmdDone )
+            S_Coil( #Sts_Idle )
+            R_Coil( #Cmd_Out.%X1 )
+            R_Coil( #Cmd_Out.%X2 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cmd_Out.%X3 )
+            Contact( #Cmd_Out.%X2 )
+            S_Coil( #Sts_Inspection.%X2 )
+            R_Coil( #Sts_RequestJobLoad )
+            R_Coil( #Cmd_Out.%X3 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 0
+            )
+            wire#w3
+            Contact( #Cmd_Out.%X3 )
+            S_Coil( #Sts_Inspection.%X2 )
+            R_Coil( #Sts_RequestJobLoad )
+        END_RUNG
+        RUNG wire#w3
+            S_Coil( #Sts_CmdDone )
+            S_Coil( #Sts_Idle )
+            R_Coil( #Cmd_Out.%X3 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Ki"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 0
+            )
+            I_Contact( #Out_InSight4_Siemens.SoftEventControl.SoftEvent0 )
+            wire#w1
+            Contact( #Cmd_Out.%X3 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Par_TimeOutJob, 
+                out1 => #TmrPT
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 30, 
+                out1 => #Sts_Seq
+            )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cmd_Out.%X2 )
+            wire#w2
+            R_Coil( #MemInspection )
+            Contact( #Inp_InSight4_Siemens.InspectionStatus.InspectionCompleted )
+            S_Coil( #MemInspection )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w2
+            R_Coil( #Sts_Inspection.%X0 )
+            I_Contact( #Cfg_NoLoadJob )
+            Contact( #Sts_RequestJobLoad )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Par_TimeOutJob, 
+                out1 => #TmrPT
+            )
+            S_Coil( #Cmd_Out.%X3 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 30, 
+                out1 => #Sts_Seq
+            )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w2
+            I_Contact( #Cmd_Out.%X3 )
+            R_Coil( #Sts_Inspection.%X1 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Sts_Results
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 10, 
+                out1 => #Sts_Seq
+            )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_34Y"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 10
+            )
+            S_Coil( #Out_InSight4_Siemens.AcquisitionControl.TriggerEnable )
+            R_Coil( #Out_InSight4_Siemens.AcquisitionControl.ForceOffline )
+            wire#w1
+            Contact( #Sts_TimeOut )
+            S_Coil( #Sts_Alms.%X5 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 90, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_TimeOut )
+            Contact( #Inp_InSight4_Siemens.AcquisitionStatus.Online )
+            Contact( #Inp_InSight4_Siemens.AcquisitionStatus.TriggerReady )
+            wire#w2
+            I_Contact( #Cfg_ExtTrigger )
+            S_Coil( #Out_InSight4_Siemens.AcquisitionControl.Trigger )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 11, 
+                out1 => #Sts_Seq
+            )
+            
+            Move(
+                in := #AcquisitionID, 
+                out1 => #Mem1_AcqID
+            )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Mem1_AcqID, 
+                in2 := 32768
+            )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Mul(
+                in1 := #Mem1_AcqID, 
+                in2 := -1, 
+                out => #Mem1_AcqID
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cfg_ExtTrigger )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 12, 
+                out1 => #Sts_Seq
+            )
+            
+            Move(
+                in := #AcquisitionID, 
+                out1 => #Mem1_AcqID
+            )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Mem1_AcqID, 
+                in2 := 32768
+            )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Mul(
+                in1 := #Mem1_AcqID, 
+                in2 := -1, 
+                out => #Mem1_AcqID
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Jy"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 11
+            )
+            wire#w1
+            Contact( #Sts_TimeOut )
+            S_Coil( #Sts_Alms.%X0 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 90, 
+                out1 => #Sts_Seq
+            )
+            R_Coil( #Out_InSight4_Siemens.AcquisitionControl.Trigger )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_TimeOut )
+            Contact( #Inp_InSight4_Siemens.AcquisitionStatus.TriggerAck )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 12, 
+                out1 => #Sts_Seq
+            )
+            R_Coil( #Out_InSight4_Siemens.AcquisitionControl.Trigger )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_hc"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 12
+            )
+            wire#w1
+            Contact( #Sts_TimeOut )
+            S_Coil( #Sts_Alms.%X1 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 90, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_TimeOut )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #AcquisitionID, 
+                in2 := #Mem1_AcqID
+            )
+            
+            Move(
+                in := #AcquisitionID, 
+                out1 => #Mem2_AcqID
+            )
+            S_Coil( #Sts_Inspection.%X1 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 13, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_f4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 13
+            )
+            wire#w1
+            Contact( #Sts_TimeOut )
+            S_Coil( #Sts_Alms.%X0 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 90, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_TimeOut )
+            I_Contact( #Inp_InSight4_Siemens.AcquisitionStatus.TriggerAck )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 14, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_Uk"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 14
+            )
+            wire#w1
+            Contact( #Inp_InSight4_Siemens.InspectionStatus.InspectionCompleted )
+            I_Contact( #MemInspection )
+            wire#w2
+            { S7_Templates := "SrcType := Int" }
+            EQ_Contact(
+                in1 := #Mem2_AcqID, 
+                in2 := #Inp_InSight4_Siemens.InspectionResults.InspectionID
+            )
+            wire#w3
+            S_Coil( #Sts_Inspection.%X0 )
+            R_Coil( #Cmd_Out.%X2 )
+            S_Coil( #Sts_CmdDone )
+            S_Coil( #Sts_Idle )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Inp_InSight4_Siemens.InspectionStatus.InspectionCompleted )
+            Contact( #MemInspection )
+        END_RUNG wire#w2
+        RUNG wire#w3
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Inp_InSight4_Siemens.InspectionResults.InspectionResults1, 
+                out1 => #Sts_FailCode
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Inp_InSight4_Siemens.InspectionResults.InspectionResultCode, 
+                out1 => #Out_InSight4_Siemens.UserData[0]
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Inp_InSight4_Siemens.InspectionResults.InspectionResults1, 
+                out1 => #Out_InSight4_Siemens.UserData[1]
+            )
+        END_RUNG
+        RUNG wire#w3
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Inp_InSight4_Siemens.InspectionResults.InspectionResults4, 
+                out1 => #Sts_InspectionResult4
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Inp_InSight4_Siemens.InspectionResults.InspectionResults0.%X0 )
+            wire#w4
+            S_Coil( #Sts_Results.%X0 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_AlmPart, 
+                in2 := 1, 
+                out => #Rep_AlmPart
+            )
+        END_RUNG
+        RUNG wire#w3
+            I_Contact( #Inp_InSight4_Siemens.InspectionResults.InspectionResults0.%X1 )
+            I_Contact( #Inp_InSight4_Siemens.InspectionResults.InspectionResults0.%X2 )
+        END_RUNG wire#w4
+        RUNG wire#w3
+            Contact( #Inp_InSight4_Siemens.InspectionResults.InspectionResults0.%X1 )
+            S_Coil( #Sts_Results.%X1 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_AlmSyst, 
+                in2 := 1, 
+                out => #Rep_AlmSyst
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Inp_InSight4_Siemens.InspectionResults.InspectionResults0.%X0 )
+            wire#w5
+            I_Contact( #Cfg_NoConsAlm )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Rep_Cons )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Inp_InSight4_Siemens.InspectionResults.InspectionResults0.%X1 )
+        END_RUNG wire#w5
+        RUNG wire#w3
+            Contact( #Inp_InSight4_Siemens.InspectionResults.InspectionResults0.%X2 )
+            S_Coil( #Sts_Results.%X2 )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Dec( #Rep_Cons )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X0 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_AlmLight, 
+                in2 := 1, 
+                out => #Rep_AlmLight
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X1 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_AlmFocus, 
+                in2 := 1, 
+                out => #Rep_AlmFocus
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X2 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_AlmPixel, 
+                in2 := 1, 
+                out => #Rep_AlmPixel
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X3 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm1, 
+                in2 := 1, 
+                out => #Rep_SpecAlm1
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X4 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm2, 
+                in2 := 1, 
+                out => #Rep_SpecAlm2
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X5 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm3, 
+                in2 := 1, 
+                out => #Rep_SpecAlm3
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X6 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm4, 
+                in2 := 1, 
+                out => #Rep_SpecAlm4
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X7 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm5, 
+                in2 := 1, 
+                out => #Rep_SpecAlm5
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X8 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm6, 
+                in2 := 1, 
+                out => #Rep_SpecAlm6
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X9 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm7, 
+                in2 := 1, 
+                out => #Rep_SpecAlm7
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X10 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm8, 
+                in2 := 1, 
+                out => #Rep_SpecAlm8
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X11 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm9, 
+                in2 := 1, 
+                out => #Rep_SpecAlm9
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X12 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm10, 
+                in2 := 1, 
+                out => #Rep_SpecAlm10
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Sts_FailCode.%X13 )
+            {
+                S7_GenerateENO := "TRUE"
+            }
+            Add(
+                in1 := #Rep_SpecAlm11, 
+                in2 := 1, 
+                out => #Rep_SpecAlm11
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Sts_TimeOut )
+            wire#w6
+            { S7_Templates := "SrcType := Int" }
+            NE_Contact(
+                in1 := #AcquisitionID, 
+                in2 := #Inp_InSight4_Siemens.InspectionResults.InspectionID
+            )
+            S_Coil( #Sts_Alms.%X2 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 90, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w6
+            I_Contact( #Sts_Alms.%X2 )
+            S_Coil( #Sts_Alms.%X1 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 90, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Up"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 30
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Out_InSight4_Siemens.JobControl.JobID
+            )
+            R_Coil( #Out_InSight4_Siemens.InspectionControl.ExecuteCommand )
+            R_Coil( #Out_InSight4_Siemens.AcquisitionControl.TriggerEnable )
+            S_Coil( #Out_InSight4_Siemens.AcquisitionControl.ForceOffline )
+            R_Coil( #Sts_Inspection.%X2 )
+            wire#w1
+            Contact( #Sts_TimeOut )
+            R_Coil( #Out_InSight4_Siemens.AcquisitionControl.ForceOffline )
+            S_Coil( #Sts_Alms.%X3 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 90, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_TimeOut )
+            I_Contact( #Inp_InSight4_Siemens.AcquisitionStatus.Online )
+            Contact( #Sts_NoAlm )
+            
+            Move(
+                in := #Par_JobNbr, 
+                out1 => #Out_InSight4_Siemens.JobControl.JobID
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 31, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_3et";
+        S7_NetworkTitle := "MLC_ab"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 31
+            )
+            S_Coil( #Out_InSight4_Siemens.InspectionControl.ExecuteCommand )
+            wire#w1
+            Contact( #Sts_TimeOut )
+            Contact( #Inp_InSight4_Siemens.InspectionStatus.JobLoadFailed )
+            S_Coil( #Sts_Alms.%X4 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 90, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Inp_InSight4_Siemens.InspectionStatus.JobLoadComplete )
+            I_Contact( #Inp_InSight4_Siemens.InspectionStatus.JobLoadFailed )
+            R_Coil( #Out_InSight4_Siemens.InspectionControl.ExecuteCommand )
+            
+            Move(
+                in := 0, 
+                out1 => #Out_InSight4_Siemens.JobControl.JobID
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 1, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3q3"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_Alms, 
+                in2 := 0
+            )
+            Contact( #Sts_NoAlm )
+            Coil( #Sts_AlmOns )
+            
+            Add(
+                in1 := #Rep_CtrAlm, 
+                in2 := 1, 
+                out => #Rep_CtrAlm
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Vw"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Alms, 
+                in2 := 0
+            )
+            I_Contact( #Sts_AlmConsErr )
+            Coil( #Sts_NoAlm )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Md"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 90
+            )
+            R_Coil( #Out_InSight4_Siemens.AcquisitionControl.Trigger )
+            R_Coil( #Out_InSight4_Siemens.AcquisitionControl.TriggerEnable )
+            Contact( #Sts_NoAlm )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Cmd_Out
+            )
+            wire#w1
+            Contact( #Sts_Inspection.%X2 )
+            S_Coil( #Cmd_Out.%X1 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 1, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_Inspection.%X2 )
+            S_Coil( #Cmd_Out.%X3 )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := #Par_TimeOutJob, 
+                out1 => #TmrPT
+            )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 30, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Rm"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Cmd_Out.%X2 )
+            I_Contact( #Cmd_Out.%X3 )
+            I_Contact( #Sts_RequestJobLoad )
+            wire#w1
+            I_Contact( #Inp_InSight4_Siemens.AcquisitionStatus.Online )
+            wire#w2
+            S_Coil( #Sts_RequestJobLoad )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Sts_ModuleInFault )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #Cmd_RequestJobLoad )
+            R_Coil( #Cmd_RequestJobLoad )
+        END_RUNG wire#w2
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_XJ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Out_InSight4_Siemens.UserData[3]
+            )
+            Contact( #Cfg_RnROn )
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 1, 
+                out1 => #Out_InSight4_Siemens.UserData[3]
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4zx"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Cfg_FixtureNumber, 
+                out1 => #Out_InSight4_Siemens.UserData[2]
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4b9"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Idle )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Out, 
+                in2 := 0
+            )
+            wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Rep_CtrTotal, 
+                in2 := 0
+            )
+            
+            Move(
+                in := 1, 
+                out1 => #Rep_CtrTotal
+            )
+        END_RUNG
+        RUNG wire#w1
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN3-(IN3*IN1/IN2)"
+            }
+            Calculate(
+                in1 := #Rep_CtrAlm, 
+                in2 := #Rep_CtrTotal, 
+                in3 := 100, 
+                out => #Rep_Quality
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4w4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_CmdOns )
+            Contact( #Sts_Idle )
+            
+            Move(
+                in := #Tmr.ET, 
+                out1 => #Rep_dT
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_gH"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Out_InSight4_Siemens.SoftEventControl.SoftEvent0 )
+            { S7_Templates := "time_type := Time" }
+            #t_EventSendDelay.TON(
+                pt := T#100MS, 
+                et =>  
+            )
+            R_Coil( #Out_InSight4_Siemens.SoftEventControl.SoftEvent0 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4VM"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Idle )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Out
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_43k"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            DPWR_DAT(
+                LADDR := #Laddr.AcquisitionControl, 
+                RECORD := #Out_InSight4_Siemens.AcquisitionControl, 
+                RET_VAL => #RetValDPWRDAT_AcqCtrl
+            )
+            DPWR_DAT(
+                LADDR := #Laddr.InspectionControl, 
+                RECORD := #Out_InSight4_Siemens.InspectionControl, 
+                RET_VAL => #RetValDPWRDAT_InspecCtrl
+            )
+            DPWR_DAT(
+                LADDR := #Laddr.JobControl, 
+                RECORD := #Out_InSight4_Siemens.JobControl, 
+                RET_VAL => #RetValDPWRDAT_JobCtrl
+            )
+            DPWR_DAT(
+                LADDR := #Laddr.SoftEventControl, 
+                RECORD := #Out_InSight4_Siemens.SoftEventControl, 
+                RET_VAL => #RetValDPWRDAT_SoftEventCtrl
+            )
+            DPWR_DAT(
+                LADDR := #Laddr.UserData, 
+                RECORD := #Out_InSight4_Siemens.UserData, 
+                RET_VAL => #RetValDPWRDAT_UserData
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_p5"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Par_MaxCons, 
+                in2 := 0
+            )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #Rep_Cons, 
+                in2 := #Par_MaxCons
+            )
+            I_Contact( #Cfg_RnROn )
+            S_Coil( #Sts_AlmConsErr )
+            wire#w1
+            { S7_GenerateENO := "TRUE" }
+            Move(
+                in := 0, 
+                out1 => #Rep_Cons
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            LT_Contact(
+                in1 := #Rep_Cons, 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Cfg_RnROn )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4k2"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Word" }
+            NE_Contact(
+                in1 := #RetValDPWRDAT_AcqCtrl, 
+                in2 := 0
+            )
+            wire#w1
+            I_Contact( #Sts_Alms.%X8 )
+            S_Coil( #Sts_Alms.%X8 )
+            
+            Add(
+                in1 := #Rep_CtrComOutputFail, 
+                in2 := 1, 
+                out => #Rep_CtrComOutputFail
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Word" }
+            NE_Contact(
+                in1 := #RetValDPWRDAT_InspecCtrl, 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Word" }
+            NE_Contact(
+                in1 := #RetValDPWRDAT_JobCtrl, 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Word" }
+            NE_Contact(
+                in1 := #RetValDPWRDAT_SoftEventCtrl, 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := Word" }
+            NE_Contact(
+                in1 := #RetValDPWRDAT_UserData, 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_Y4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Inp_InSight4_Siemens.JobControl.JobID, 
+                out1 => #Sts_CurrentJobLoaded
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3iU"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Alms.%X0 )
+            Coil( #Sts_AlmTrigError )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Alms.%X1 )
+            Coil( #Sts_AlmAcquisition )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Alms.%X2 )
+            Coil( #Sts_AlmInspectionError )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Alms.%X3 )
+            Coil( #Sts_AlmNotOffLine )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Alms.%X4 )
+            Coil( #Sts_AlmJobLoad )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Alms.%X5 )
+            Coil( #Sts_AlmNotOnLine )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Alms.%X7 )
+            Coil( #Sts_AlmInputCommError )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Alms.%X8 )
+            Coil( #Sts_AlmOutputCommError )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Alms.%X9 )
+            Coil( #Sts_AlmTestRunError )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Ej"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_AlmInputCommError )
+            wire#w1
+            S_Coil( #Sts_Alms.%X6 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_AlmOutputCommError )
+        END_RUNG wire#w1
+    END_NETWORK
+END_FUNCTION_BLOCK

@@ -1,0 +1,632 @@
+﻿{
+    S7_Author := "MIS";
+    S7_BlockComment := "MLC_4bD";
+    S7_BlockTitle := "MLC_597";
+    S7_Family := "Standard";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "11.0"
+}
+FUNCTION_BLOCK "Fct_TrnsptHMI"
+    VAR_INPUT 
+        { S7_MLC := "MLC_55L" }
+        Cmd_ProgState : DInt;
+        { S7_MLC := "MLC_3bv" }
+        Cfg_JogMode : Bool;
+        { S7_MLC := "MLC_4vj" }
+        Cfg_ProdJogMode : Bool;
+        { S7_MLC := "MLC_4s2" }
+        Cfg_Jog_Cont : Bool;
+        { S7_MLC := "MLC_38F" }
+        Cfg_Jog_WthStop : Bool;
+        { S7_MLC := "MLC_3xU" }
+        Cfg_Jog_Plus10Dgr : Bool;
+        { S7_MLC := "MLC_4Tr" }
+        Cfg_Jog_Plus1Dgr : Bool;
+        { S7_MLC := "MLC_3bA" }
+        Cmd_JogForward : Bool;
+        { S7_MLC := "MLC_3Vh" }
+        Cmd_JogBackward : Bool;
+        { S7_MLC := "MLC_4Xu" }
+        Cmd_ValAbsStopPos : DInt;
+        { S7_MLC := "MLC_4Bf" }
+        In_TrnsptMoving : Bool;
+        { S7_MLC := "MLC_4pw" }
+        In_TrnsptJogging : Bool;
+        { S7_MLC := "MLC_4Hj" }
+        In_TrnsptProdJogging : Bool;
+        { S7_MLC := "MLC_34S" }
+        In_MachState : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_46b";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Drive : _.Typ_IndramatDriveStsWord;
+    END_VAR
+    VAR_OUTPUT 
+        { S7_MLC := "MLC_3AW" }
+        Sts_DriveReady : Bool;
+        { S7_MLC := "MLC_v6" }
+        Sts_DriveEnabled : Bool;
+        { S7_MLC := "MLC_4Dw" }
+        Sts_DriveDisabled : Bool;
+        { S7_MLC := "MLC_4SZ" }
+        Sts_DriveFault : Bool;
+        { S7_MLC := "MLC_3kd" }
+        Sts_DriveWarning : Bool;
+        { S7_MLC := "MLC_3KN" }
+        Sts_NoAlm : Bool;
+        { S7_MLC := "MLC_4Lx" }
+        Sts_StationAlarm : Bool;
+        { S7_MLC := "MLC_3ve" }
+        Sts_Idle : Bool := True;
+        { S7_MLC := "MLC_aR" }
+        Sts_DriveActualPosition : DInt;
+        { S7_MLC := "MLC_wf" }
+        Sts_State : DInt;
+        { S7_MLC := "MLC_42J" }
+        Sts_JogStopEnabled : Bool;
+        { S7_MLC := "MLC_379" }
+        Sts_JogStopPos : DInt;
+        { S7_MLC := "MLC_33Y" }
+        Sts_JogForward : Bool;
+        { S7_MLC := "MLC_4j3" }
+        Sts_JogBackward : Bool;
+    END_VAR
+    VAR_IN_OUT 
+        { S7_MLC := "MLC_4RS" }
+        Prog : _.Typ_MgrProg;
+        { S7_MLC := "MLC_yk" }
+        Act_Cam : _.Act_Cam;
+        { S7_MLC := "MLC_rL" }
+        Cfg_ValAbsStopPos : DInt;
+        { S7_MLC := "MLC_32y" }
+        Cfg_ProdValAbsStopPos : DInt;
+    END_VAR
+    VAR 
+        { S7_MLC := "MLC_rk" }
+        Cmd_JogStopPos : DInt;
+        { S7_MLC := "MLC_UK" }
+        In_DriveActualPosition : DInt;
+        Ons : DInt;
+        Mem : Array[0..10] of Bool;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_33X"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Drive.Status_Word.Ready_For_Power )
+            Coil( #Sts_DriveReady )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Drive.Status_Word.Enabled )
+            Coil( #Sts_DriveEnabled )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #Sts_Drive.Status_Word.Enabled )
+            Coil( #Sts_DriveDisabled )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Drive.Status_Word.Drive_Error )
+            Coil( #Sts_DriveFault )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_Drive.Status_Word.Drive_Warning )
+            Coil( #Sts_DriveWarning )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4if"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_ProgState.%X0 )
+            S_Coil( #Prog.Cmd_State.%X0 )
+            wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_ProgState
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_ProgState.%X1 )
+            S_Coil( #Prog.Cmd_State.%X1 )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            Contact( #Cmd_ProgState.%X2 )
+            S_Coil( #Prog.Cmd_State.%X2 )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_49t"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Prog.Sts_Idle )
+            Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_DriveFault )
+            Coil( #Sts_StationAlarm )
+        END_RUNG
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Prog.Cmd_State, 
+                out1 => #Sts_State
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Act_Cam.Sts_Inn, 
+                out1 => #In_DriveActualPosition, 
+                out2 => #Sts_DriveActualPosition
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #Sts_JogStopEnabled )
+            wire#w1
+            I_Contact( #Cfg_ProdJogMode )
+            
+            Move(
+                in := 358, 
+                out1 => #Cmd_ValAbsStopPos, 
+                out2 => #Sts_JogStopPos
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cfg_ProdJogMode )
+            
+            Move(
+                in := #Cfg_ProdValAbsStopPos, 
+                out1 => #Cfg_ValAbsStopPos, 
+                out2 => #Sts_JogStopPos
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_JogStopEnabled )
+            I_Contact( #Cfg_ProdJogMode )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_ValAbsStopPos, 
+                in2 := #Cfg_ValAbsStopPos
+            )
+            
+            Move(
+                in := #Cmd_ValAbsStopPos, 
+                out1 => #Cfg_ValAbsStopPos
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_3E2";
+        S7_NetworkTitle := "MLC_fR"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Cfg_JogMode )
+            R_Coil( #Cfg_Jog_Cont )
+            R_Coil( #Cfg_Jog_WthStop )
+            R_Coil( #Cfg_Jog_Plus10Dgr )
+            R_Coil( #Cfg_Jog_Plus1Dgr )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #Cfg_JogMode, 
+                bit := #Ons.%X0
+            )
+            wire#w1
+            S_Coil( #Cfg_Jog_Cont )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cfg_JogMode )
+            Contact( #Sts_JogBackward )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            I_Contact( #Cfg_Jog_WthStop )
+            I_Contact( #Cfg_Jog_Plus10Dgr )
+            I_Contact( #Cfg_Jog_Plus1Dgr )
+            P_Trig( #Ons.%X5 )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #Cfg_Jog_Cont, 
+                bit := #Ons.%X1
+            )
+            R_Coil( #Cfg_Jog_WthStop )
+            R_Coil( #Cfg_Jog_Plus10Dgr )
+            R_Coil( #Cfg_Jog_Plus1Dgr )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #In_TrnsptMoving )
+            wire#w2
+            Contact( #Cfg_Jog_WthStop )
+            P_Trig( #Ons.%X2 )
+            R_Coil( #Cfg_Jog_Cont )
+            R_Coil( #Cfg_Jog_Plus10Dgr )
+            R_Coil( #Cfg_Jog_Plus1Dgr )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cfg_Jog_Plus10Dgr )
+            P_Trig( #Ons.%X3 )
+            R_Coil( #Cfg_Jog_Cont )
+            R_Coil( #Cfg_Jog_WthStop )
+            R_Coil( #Cfg_Jog_Plus1Dgr )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cfg_Jog_Plus1Dgr )
+            P_Trig( #Ons.%X4 )
+            R_Coil( #Cfg_Jog_Cont )
+            R_Coil( #Cfg_Jog_WthStop )
+            R_Coil( #Cfg_Jog_Plus10Dgr )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cfg_Jog_WthStop )
+            wire#w3
+            Coil( #Sts_JogStopEnabled )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cfg_Jog_Plus10Dgr )
+        END_RUNG wire#w3
+        RUNG wire#powerrail
+            Contact( #Cfg_Jog_Plus1Dgr )
+        END_RUNG wire#w3
+        RUNG wire#powerrail
+            Contact( #Cfg_ProdJogMode )
+            { S7_Templates := "SrcType := DInt" }
+            InRange(
+                min := 1, 
+                in := #Cfg_ProdValAbsStopPos, 
+                max := 355
+            )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #In_MachState, 
+                in2 := 8
+            )
+        END_RUNG wire#w3
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_3fJ";
+        S7_NetworkTitle := "MLC_4Ui"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Ons.%X30 )
+            wire#w1
+            I_Contact( #In_TrnsptMoving )
+            wire#w2
+            Contact( #Cfg_ProdJogMode )
+            
+            Move(
+                in := #Cfg_ProdValAbsStopPos, 
+                out1 => #Cmd_JogStopPos
+            )
+            
+            Move(
+                in := #Cmd_JogStopPos, 
+                out1 => #Sts_JogStopPos
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #In_TrnsptProdJogging )
+        END_RUNG wire#w2
+        RUNG wire#w1
+            I_Contact( #In_TrnsptMoving )
+            wire#w3
+            Contact( #Cfg_Jog_WthStop )
+            
+            Move(
+                in := #Cfg_ValAbsStopPos, 
+                out1 => #Cmd_JogStopPos
+            )
+            
+            Move(
+                in := #Cmd_JogStopPos, 
+                out1 => #Sts_JogStopPos
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #In_TrnsptJogging )
+        END_RUNG wire#w3
+        RUNG wire#w1
+            I_Contact( #In_TrnsptMoving )
+            wire#w4
+            Contact( #Cfg_Jog_Plus10Dgr )
+            
+            Add(
+                in1 := #Act_Cam.Sts_Inn, 
+                in2 := 10, 
+                out => #Cmd_JogStopPos
+            )
+            Coil( #Mem[0] )
+        END_RUNG
+        RUNG wire#w4
+            Contact( #Cfg_Jog_Plus1Dgr )
+            
+            Add(
+                in1 := #Act_Cam.Sts_Inn, 
+                in2 := 1, 
+                out => #Cmd_JogStopPos
+            )
+            Coil( #Mem[1] )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Mem[0] )
+            wire#w5
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Cmd_JogStopPos, 
+                in2 := 360
+            )
+            {
+                S7_Templates := "SrcType := DInt"
+            }
+            Mod(
+                in1 := #Cmd_JogStopPos, 
+                in2 := 360, 
+                out => #Cmd_JogStopPos
+            )
+            
+            Move(
+                in := #Cmd_JogStopPos, 
+                out1 => #Sts_JogStopPos
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Mem[1] )
+        END_RUNG wire#w5
+        RUNG wire#w5
+            { S7_Templates := "SrcType := DInt" }
+            LT_Contact(
+                in1 := #Cmd_JogStopPos, 
+                in2 := 360
+            )
+            
+            Move(
+                in := #Cmd_JogStopPos, 
+                out1 => #Sts_JogStopPos
+            )
+        END_RUNG
+        RUNG wire#w5
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Cmd_JogStopPos, 
+                in2 := 0
+            )
+            
+            Move(
+                in := 1, 
+                out1 => #Cmd_JogStopPos
+            )
+            
+            Move(
+                in := #Cmd_JogStopPos, 
+                out1 => #Sts_JogStopPos
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_3hg";
+        S7_NetworkTitle := "MLC_384"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_JogStopEnabled )
+            wire#w1
+            Contact( #In_TrnsptProdJogging )
+            Coil( #Mem[2] )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #In_TrnsptJogging )
+            Coil( #Mem[3] )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #Mem[2], 
+                bit := #Ons.%X10
+            )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #Act_Cam.Sts_Inn, 
+                in2 := #Sts_JogStopPos
+            )
+            wire#w2
+            S_Coil( #Ons.%X30 )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #Mem[3], 
+                bit := #Ons.%X11
+            )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #Act_Cam.Sts_Inn, 
+                in2 := #Sts_JogStopPos
+            )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #Sts_JogStopEnabled )
+            Contact( #In_TrnsptJogging )
+            wire#w3
+            Contact( #Cfg_Jog_Plus10Dgr )
+        END_RUNG wire#w2
+        RUNG wire#w3
+            Contact( #Cfg_Jog_Plus1Dgr )
+        END_RUNG wire#w2
+        RUNG wire#powerrail
+            Contact( #Ons.%X29 )
+            "Fct_LimCircTest"(
+                LowLimit := 0, 
+                Test := #Act_Cam.Sts_Inn, 
+                HighLimit := #Cmd_JogStopPos
+            )
+            wire#w4
+            R_Coil( #Ons.%X29 )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #Ons.%X30 )
+        END_RUNG wire#w4
+        RUNG wire#w4
+            Contact( #Cfg_Jog_Plus10Dgr )
+            wire#w5
+            
+            Move(
+                in := #Cmd_JogStopPos, 
+                out1 => #Sts_JogStopPos
+            )
+        END_RUNG
+        RUNG wire#w4
+            Contact( #Cfg_Jog_Plus1Dgr )
+        END_RUNG wire#w5
+        RUNG wire#powerrail
+            I_Contact( #Ons.%X29 )
+            I_Contact( #Cfg_Jog_Plus10Dgr )
+            I_Contact( #Cfg_Jog_Plus1Dgr )
+            { S7_Templates := "SrcType := DInt" }
+            LT_Contact(
+                in1 := #Act_Cam.Sts_Inn, 
+                in2 := #Sts_JogStopPos
+            )
+            wire#w6
+            R_Coil( #Ons.%X30 )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #In_TrnsptJogging )
+            wire#w7
+            Contact( #Cfg_Jog_Plus10Dgr )
+        END_RUNG wire#w6
+        RUNG wire#w7
+            Contact( #Cfg_Jog_Plus1Dgr )
+        END_RUNG wire#w6
+        RUNG wire#powerrail
+            I_Contact( #Sts_JogStopEnabled )
+        END_RUNG wire#w6
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_4FA";
+        S7_NetworkTitle := "MLC_3J8"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #In_TrnsptMoving )
+            Contact( #Ons.%X30 )
+            wire#w1
+            I_Contact( #Cfg_Jog_Plus10Dgr )
+            I_Contact( #Cfg_Jog_Plus1Dgr )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #Act_Cam.Sts_Inn, 
+                in2 := #Sts_JogStopPos
+            )
+            wire#w2
+            S_Coil( #Ons.%X29 )
+            wire#w4
+            
+            Move(
+                in := 360, 
+                out1 => #Sts_JogStopPos
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cfg_Jog_Plus10Dgr )
+            wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Act_Cam.Sts_Inn, 
+                in2 := #Sts_JogStopPos
+            )
+        END_RUNG wire#w2
+        RUNG wire#w1
+            Contact( #Cfg_Jog_Plus1Dgr )
+        END_RUNG wire#w3
+        RUNG wire#powerrail
+            I_Contact( #Sts_JogStopEnabled )
+        END_RUNG wire#w4
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_3Ly";
+        S7_NetworkTitle := "MLC_YB"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_JogForward )
+            I_Contact( #Sts_JogBackward )
+            wire#w1
+            Contact( #Act_Cam.Sts_Rev )
+            R_Coil( #Cmd_JogForward )
+            S_Coil( #Cmd_JogBackward )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Act_Cam.Sts_Rev )
+            S_Coil( #Cmd_JogForward )
+            R_Coil( #Cmd_JogBackward )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_3mZ";
+        S7_NetworkTitle := "MLC_4HV"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            R_Coil( #Ons.%X31 )
+            wire#w1
+            I_Contact( #Cmd_JogForward )
+            I_Contact( #Cmd_JogBackward )
+            S_Coil( #Cmd_JogBackward )
+            S_Coil( #Act_Cam.Sts_Rev )
+            S_Coil( #Ons.%X31 )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cmd_JogForward )
+            Contact( #Cmd_JogBackward )
+            R_Coil( #Cmd_JogBackward )
+            R_Coil( #Act_Cam.Sts_Rev )
+            S_Coil( #Ons.%X31 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_3b5";
+        S7_NetworkTitle := "MLC_4dV"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Ons.%X31 )
+            wire#w1
+            Contact( #Act_Cam.Sts_Rev )
+            Contact( #Cmd_JogForward )
+            R_Coil( #Cmd_JogForward )
+            S_Coil( #Cmd_JogBackward )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Act_Cam.Sts_Rev )
+            I_Contact( #Cmd_JogForward )
+            S_Coil( #Cmd_JogForward )
+            R_Coil( #Cmd_JogBackward )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_JogForward )
+            Coil( #Sts_JogForward )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_JogBackward )
+            Coil( #Sts_JogBackward )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

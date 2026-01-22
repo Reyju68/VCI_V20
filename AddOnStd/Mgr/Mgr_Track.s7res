@@ -1,0 +1,17 @@
+﻿MultiLingualTexts:
+  - id: MLC_4zY
+    en-US: 'Mgr_Track: Manage Track Statistics'
+  - id: MLC_347
+    en-US: "08 Jan 2020\r\n- New revision roles\r\n(StdAddonsTIA_SCN_V002.docx)\r\n\r\n23 Jun 2025\r\n- Update fail code  counter 3 If reject cause > 9.\r\n(Refer to GitLab - Issues #17) "
+  - id: MLC_3L4
+    en-US: Reset of the status
+  - id: MLC_53N
+    en-US: Bad Cycle
+  - id: MLC_kb
+    en-US: Good Cycle
+  - id: MLC_3nY
+    en-US: Clear Statistics
+  - id: MLC_aW
+    en-US: Quality
+  - id: MLC_4Qt
+    en-US: Reset Command

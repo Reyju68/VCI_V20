@@ -1,0 +1,132 @@
+﻿MultiLingualTexts:
+  - id: MLC_44b
+    en-US: Report - Stations Alarms Counters
+  - id: MLC_55k
+    en-US: |-
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+  - id: MLC_4US
+    en-US: 'Hold/Suspend config: =0 only for the first station; =1 for all stations'
+  - id: MLC_3jg
+    en-US: Cfg Station Number
+  - id: MLC_3SM
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_re
+    en-US: Clear All Statistics
+  - id: MLC_N5
+    en-US: Down Time Update enable
+  - id: MLC_56p
+    en-US: Status Hold
+  - id: MLC_5BV
+    en-US: Status Suspend
+  - id: MLC_ft
+    en-US: Wait Time Update Enable If Machine is running
+  - id: MLC_Qs
+    en-US: Status Abort
+  - id: MLC_3zV
+    en-US: Status Idle
+  - id: MLC_48D
+    en-US: Status Machine State
+  - id: MLC_g9
+    en-US: Status Stop
+  - id: MLC_4sN
+    en-US: Main transport is mouving
+  - id: MLC_3cx
+    en-US: Status Hold
+  - id: MLC_59i
+    en-US: Status Suspend
+  - id: MLC_3eB
+    en-US: Global area of the station that contains the reps values
+  - id: MLC_548
+    en-US: 'Status Global Holded State : one bit by Station'
+  - id: MLC_P3
+    en-US: 'Status Global Suspended State : one bit by Station'
+  - id: MLC_3V6
+    en-US: Status Abort Cause
+  - id: MLC_3HT
+    en-US: Alarms Down Time Pending
+  - id: MLC_4j9
+    en-US: Alarms Wait Time Pending
+  - id: MLC_as
+    en-US: Satus Hold Cause
+  - id: MLC_4Yt
+    en-US: Status Idle Cause
+  - id: MLC_gv
+    en-US: Status Stop Cause
+  - id: MLC_e9
+    en-US: Status Suspend Cause
+  - id: MLC_3MM
+    en-US: Accumulate Status Abort Time
+  - id: MLC_ki
+    en-US: Accumulate Status Hold Time
+  - id: MLC_3Qi
+    en-US: Accumulate Status Idle Time
+  - id: MLC_5AX
+    en-US: Accumulate Status Stop Time
+  - id: MLC_3sR
+    en-US: Accumulate Status Suspend Time
+  - id: MLC_VR
+    en-US: Config Counter Limit
+  - id: MLC_3d8
+    en-US: Config Time Limit (1892160000 1/10s -> 6 years)
+  - id: MLC_3Tj
+    en-US: Config Time Scale (100 -> 1/10s)
+  - id: MLC_3TZ
+    en-US: Config Timer Preselection
+  - id: MLC_3Qx
+    en-US: Current high mask on other stations for Held-Suspend state
+  - id: MLC_3PX
+    en-US: Current low mask on other stations for Held-Suspend state
+  - id: MLC_4hz
+    en-US: Sation index in word state for Held and suspend
+  - id: MLC_3Yh
+    en-US: 'Status Local Holded State : one bit by Station'
+  - id: MLC_4xL
+    en-US: 'Status Global Suspended State : one bit by Station'
+  - id: MLC_39q
+    en-US: Rising up detecion
+  - id: MLC_3M8
+    en-US: Timer Sts Abort
+  - id: MLC_4fL
+    en-US: Timer Sts Hold
+  - id: MLC_fb
+    en-US: Timer Sts Idle
+  - id: MLC_4zb
+    en-US: Timer Sts Stop
+  - id: MLC_3er
+    en-US: Timer Sts Susp
+  - id: MLC_4dF
+    en-US: First PLC Scan
+  - id: MLC_3v4
+    en-US: Reset All Statistics
+  - id: MLC_3jv
+    en-US: Stop Cause Memorize
+  - id: MLC_44D
+    en-US: 'Sts Abort : Accumulate Time and Occurence'
+  - id: MLC_px
+    en-US: 'Sts Stop : Accumulate Time and Occurence'
+  - id: MLC_3r7
+    en-US: 'Sts Idle: Accumulate Time and Occurence'
+  - id: MLC_4Wc
+    en-US: 'Sts Down Time : Abort + Stop + Idle'
+  - id: MLC_4yy
+    en-US: Refresh held state from other stations
+  - id: MLC_4DR
+    en-US: Refresh suspend state from other stations
+  - id: MLC_4PM
+    en-US: Clear Hold status IF machine restarts OR alarm statistics WaitTIme is disable OR this station leaves its hold state with an another  in hold state
+  - id: MLC_35H
+    en-US: Clear Suspend status IF machine restarts OR alarm statistics WaitTIme is disable OR this station leaves its suspend state with an another  in hold state
+  - id: MLC_XN
+    en-US: Set Status hold for this station IF any other station is already hold
+  - id: MLC_4DG
+    en-US: Set Status suspend for this station IF any other station is already suspended
+  - id: MLC_4dx
+    en-US: Wait Cause Memorize
+  - id: MLC_46c
+    en-US: 'Sts Hold: Accumulate Time and Occurence'
+  - id: MLC_hv
+    en-US: 'Sts Susp: Accumulate Time and Occurence'
+  - id: MLC_3iz
+    en-US: 'Sts Wait Time : Hold + Suspsend'

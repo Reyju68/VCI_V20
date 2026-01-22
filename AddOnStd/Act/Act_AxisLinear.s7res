@@ -1,0 +1,211 @@
+﻿MultiLingualTexts:
+  - id: MLC_3QS
+    en-US: Clock 1 Hz
+  - id: MLC_3bu
+    en-US: Config No Interlock for movement (Homing Sequence)
+  - id: MLC_44Q
+    en-US: Config No Interlock for movement
+  - id: MLC_52x
+    en-US: Safety HR1 On
+  - id: MLC_4Vz
+    en-US: Scaling position unit
+  - id: MLC_3Uh
+    en-US: Safety Mode (0=STO / 1=SS1 / 2=SS2)
+  - id: MLC_tk
+    en-US: Safety On to enable motion
+  - id: MLC_4AE
+    en-US: Axis in slow speed
+  - id: MLC_4zY
+    en-US: Command for alarm acknowledgement
+  - id: MLC_4CM
+    en-US: Command to reset the statistic informations
+  - id: MLC_3vz
+    en-US: Status to inform the type of alarm pending
+  - id: MLC_5Af
+    en-US: Alm DriveError
+  - id: MLC_4Gk
+    en-US: Alm Motion Error
+  - id: MLC_42F
+    en-US: Alm Interlock Error
+  - id: MLC_4xL
+    en-US: Enable Input - System Defined Parameter
+  - id: MLC_3Cc
+    en-US: TimeOut Parameter
+  - id: MLC_436
+    en-US: First Scan
+  - id: MLC_iM
+    en-US: Command Pause Axia
+  - id: MLC_324
+    en-US: Homing Value
+  - id: MLC_4bT
+    en-US: Homing Type config
+  - id: MLC_yd
+    en-US: Enable Output - System Defined Parameter
+  - id: MLC_at
+    en-US: Reporting counter for failed actions since last clear
+  - id: MLC_M5
+    en-US: Reporting value to give current execution elapsed time
+  - id: MLC_4RJ
+    en-US: Status to inform the axis actual position according to the scaling value input
+  - id: MLC_UP
+    en-US: Status to inform alarm coming edge
+  - id: MLC_3GJ
+    en-US: Status to inform the type of alarm pending
+  - id: MLC_Lk
+    en-US: Alm DriveError
+  - id: MLC_35K
+    en-US: Alm Motion Error
+  - id: MLC_4hG
+    en-US: Alm Interlock Error
+  - id: MLC_46W
+    en-US: Alm Not Homed Master / Axis
+  - id: MLC_Qh
+    en-US: Alm Reference Interlock Error
+  - id: MLC_WJ
+    en-US: Status to inform Approach position reached
+  - id: MLC_5AU
+    en-US: Status to inform Process complete of command
+  - id: MLC_bg
+    en-US: Status to inform end of command
+  - id: MLC_562
+    en-US: Status to inform while no alarm pending
+  - id: MLC_49z
+    en-US: Status No Interlock for movement (Homing Sequence)
+  - id: MLC_kR
+    en-US: Status No Interlock for movement
+  - id: MLC_5AF
+    en-US: Status to inform the command ongoing
+  - id: MLC_4t4
+    en-US: Open Holding Brake
+  - id: MLC_4WU
+    en-US: Axis Motion Configuration
+  - id: MLC_yH
+    en-US: Safe Jog Axis Configuration
+  - id: MLC_W5
+    en-US: System Interface HMi
+  - id: MLC_3qw
+    en-US: Motion Group
+  - id: MLC_4vn
+    en-US: Motion Instruction - MHOM
+  - id: MLC_rD
+    en-US: Motion Instruction - MABS
+  - id: MLC_4jf
+    en-US: Motion Instruction - MREL
+  - id: MLC_53n
+    en-US: Motion Instruction - MPWR
+  - id: MLC_ri
+    en-US: Motion Instruction - MJOG
+  - id: MLC_Sz
+    en-US: Motion Instruction - MHALT
+  - id: MLC_fL
+    en-US: Motion Instruction - MRES
+  - id: MLC_X5
+    en-US: Motion Instruction - MSTOP
+  - id: MLC_4aa
+    en-US: Command to define next sequence value
+  - id: MLC_Zi
+    en-US: 'Axis linear Control Move type : 0= Absolute, 1= Relative'
+  - id: MLC_4aG
+    en-US: Approach high limit
+  - id: MLC_NJ
+    en-US: Approach low limit
+  - id: MLC_39R
+    en-US: Status Error Memorisation
+  - id: MLC_3ah
+    en-US: Status to give current sequence value
+  - id: MLC_4pf
+    en-US: Status to inform once a sequence change
+  - id: MLC_4sR
+    en-US: Status to give previous sequence value
+  - id: MLC_3ZZ
+    en-US: Reporting value to give current execution elapsed time of the sequence
+  - id: MLC_3Tn
+    en-US: Timeout value reached
+  - id: MLC_532
+    en-US: Temporary tag to control the brake
+  - id: MLC_4dW
+    en-US: Command duration timer
+  - id: MLC_3Eu
+    en-US: Timer of time out
+  - id: MLC_47V
+    en-US: First PLC Scan
+  - id: MLC_3jZ
+    en-US: Abort when HR1 is Off (Emergency Stop Or Power Off)
+  - id: MLC_L4
+    en-US: Alarm Reset
+  - id: MLC_3yv
+    en-US: Cmd HMI Forward/Backward incremental
+  - id: MLC_48n
+    en-US: Clear Commands if Safety Not On
+  - id: MLC_39D
+    en-US: Waiting for Command
+  - id: MLC_k5
+    en-US: Sequencer Management
+  - id: MLC_45P
+    en-US: 'Timer Management : Sequence TimeOut / Command Duration'
+  - id: MLC_33s
+    en-US: Axis move Jog / Call MC MoveJog
+  - id: MLC_3g9
+    en-US: Brake Control
+  - id: MLC_3x3
+    en-US: Axis Home
+  - id: MLC_nR
+    en-US: 'Step01: Abort Begin - Motion Axis Stop'
+  - id: MLC_3wV
+    en-US: 'Step02: Abort End - Motion Servo Off'
+  - id: MLC_bp
+    en-US: 'Step10: Reset begin - Reset Axis Faultd'
+  - id: MLC_3tw
+    en-US: 'Step11: Check If Axis homed'
+  - id: MLC_vH
+    en-US: 'Step12: Reset End - Enable Axis '
+  - id: MLC_3R4
+    en-US: 'Step 50: Homing - Power enable'
+  - id: MLC_4fa
+    en-US: 'Step 51: Homing - Waiting for sensor'
+  - id: MLC_wB
+    en-US: 'Step 52: Homing - Stop Movement'
+  - id: MLC_4Mn
+    en-US: 'Step 50: Homing - Homed'
+  - id: MLC_3tK
+    en-US: 'Step100: Exec Begin - Start Motion'
+  - id: MLC_32f
+    en-US: 'Call MC Move : 0= Absolute, 1= Relative'
+  - id: MLC_599
+    en-US: 'Step101: Exec Begin - Wait End Motion'
+  - id: MLC_u6
+    en-US: 'Step102: Exec Begin - Pause Axis in Jog mode'
+  - id: MLC_ZG
+    en-US: 'Step200: Execute Jog - Move Relative for Jog'
+  - id: MLC_4GS
+    en-US: Call MC Power
+  - id: MLC_t9
+    en-US: Call MC Reset
+  - id: MLC_39K
+    en-US: Call MC Stop
+  - id: MLC_bf
+    en-US: Call MC Halt
+  - id: MLC_3dM
+    en-US: Interface HMI
+  - id: MLC_3NX
+    en-US: alarms management
+  - id: MLC_39q
+    en-US: Status No Interlock for movement
+  - id: MLC_357
+    en-US: Status No Reference Interlock for Homing from HMI
+  - id: MLC_vu
+    en-US: Clear Status and Command in Idle
+  - id: MLC_3AA
+    en-US: Statistic management
+  - id: MLC_4JD
+    en-US: Predictive maintenance Read data and conversion
+  - id: MLC_4jV
+    en-US: Movement in Progress
+  - id: MLC_3Ni
+    en-US: Clear data at the beginning of movement
+  - id: MLC_3vU
+    en-US: Record data during movement
+  - id: MLC_4WL
+    en-US: Updtate Max and Average Values for Dashboard and clear temporary values
+  - id: MLC_57p
+    en-US: Updtate Max and average values at the end of movement

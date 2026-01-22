@@ -1,0 +1,149 @@
+﻿{
+    S7_BlockComment := "MLC_uq";
+    S7_BlockTitle := "MLC_Ri";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Fct_DataState"
+    VAR_INPUT 
+        Cfg_Buffer_Size : DInt := 0;
+        { S7_MLC := "MLC_cp" }
+        Cfg_HeartBeatFreq : DInt := 60000;
+        { S7_MLC := "MLC_5Ae" }
+        Cfg_MachOrStation_ID : DInt := 0;
+        { S7_MLC := "MLC_3gP" }
+        Cfg_State_ID : DInt := 2;
+        Cfg_Time_Stamp : LInt := 0;
+    END_VAR
+    VAR_IN_OUT RETAIN
+        Cfg_Pointer : DInt;
+    END_VAR
+    VAR_IN_OUT 
+        Cfg_State : _.Typ_State;
+        Cmd_DataWrite_Out : DInt;
+    END_VAR
+    VAR 
+        {
+            S7_MLC := "MLC_3UD";
+            S7_Setpoint := "False"
+        }
+        HearBeat : TON_TIME;
+    END_VAR
+    VAR RETAIN
+        { S7_MLC := "MLC_3Gi" }
+        Memo_StateId : DInt := 2;
+    END_VAR
+    VAR_TEMP 
+        "NOP" : Bool;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Bb"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( true )
+            { S7_Templates := "time_type := Time" }
+            #HearBeat.TON(
+                pt := T#1M, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Cfg_State_ID, 
+                in2 := #Memo_StateId
+            )
+            I_Contact( #HearBeat.Q )
+            JumpCoil( End )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3NC"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Cfg_HeartBeatFreq, 
+                out1 => #HearBeat.PT
+            )
+            RT_Coil( #HearBeat )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_423"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Cfg_State_ID, 
+                out1 => #Memo_StateId
+            )
+            
+            Move(
+                in := #Cfg_Time_Stamp, 
+                out1 => #Cfg_State.TimeStamp
+            )
+            
+            Move(
+                in := #Cfg_State_ID, 
+                out1 => #Cfg_State.State
+            )
+            
+            Move(
+                in := #Cfg_MachOrStation_ID, 
+                out1 => #Cfg_State.StationNb
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3kS"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Add(
+                in1 := #Cmd_DataWrite_Out, 
+                in2 := 1, 
+                out => #Cmd_DataWrite_Out
+            )
+            
+            Mod(
+                in1 := #Cmd_DataWrite_Out, 
+                in2 := #Cfg_Buffer_Size, 
+                out => #Cfg_Pointer
+            )
+            
+            Add(
+                in1 := #Cfg_Pointer, 
+                in2 := #Cfg_Buffer_Size, 
+                out => #Cfg_Pointer
+            )
+            
+            Mod(
+                in1 := #Cfg_Pointer, 
+                in2 := #Cfg_Buffer_Size, 
+                out => #Cfg_Pointer
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3tU"
+    }
+    NETWORK
+        Label(End)
+        RUNG wire#powerrail
+            Coil( #"NOP" )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

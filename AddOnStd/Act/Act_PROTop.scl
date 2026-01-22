@@ -1,0 +1,114 @@
+﻿FUNCTION_BLOCK "Act_PROTop"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_MasterType : SInt;   // Type of master: 0=BALLUFF;1=MURR
+      Cfg_PortNbr : SInt;   // Number of IoLink port on Master (0..7)
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts_ER : DInt;   // Status errors have occured
+      Sts_AllChannelsOK : Bool;   // Status of all channels ready
+   END_VAR
+
+   VAR_IN_OUT 
+      ProTopFormat : "Typ_PROTop";   // Formated output data
+      ProcDataIn : "Typ_PROTopInp";   // IoLink Master DataBlock (ex: M11_KA10.I:Data)
+   END_VAR
+
+   VAR 
+      FS : Bool := TRUE;
+      count : Int;
+      MasterCfgError : Bool;
+      PortCfgError : Bool;
+      ResultReal : Array[0..5] of Real;
+   END_VAR
+
+   VAR_TEMP 
+      tmpDint : DInt;
+   END_VAR
+
+   VAR CONSTANT 
+      "False" : Bool := FALSE;
+      "True" : Bool := TRUE;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	    //===============================================================================
+	    // IMA Automation Switzerland / (c)Copyright 2022
+	    //-------------------------------------------------------------------------------
+	    // Title:            Act_PROTop
+	    // Function:         Interface function for ProTop PowerDuppéy
+	    // Library:          Mechatronic RA
+	    // Author:           RJA
+	    // Tested with:      CPU 1517TF-3 PN/DP
+	    // Engineering:      TIA Portal V18
+	    // Restrictions:     S7-1200/1500
+	    // Requirements:     --
+	    //-------------------------------------------------------------------------------
+	    // Change log table:
+	    // Version  | Date       | Expert in charge       | Changes applied
+	    //----------|------------|------------------------|------------------------------
+	    // 00.00.01 | 01.06.2025 | RJA                    | First release for TIA Portal V18
+	    //          |            |                        | 
+	    //          |            |                        | 
+	    //          |            |                        | 
+	    //          |            |                        | 
+	    //===============================================================================
+	END_REGION
+	
+	REGION First scan
+	    IF #FS THEN
+	        #Sts_ER := 0;
+	        #FS := 0;
+	    END_IF;
+	END_REGION
+	
+	REGION Check Port number and Master type
+	    #PortCfgError := #Cfg_PortNbr < 0 OR #Cfg_PortNbr > 7;
+	    #MasterCfgError := #Cfg_MasterType <> 0 AND #Cfg_MasterType <> 1;
+	END_REGION
+	
+	REGION Collect and format
+	//Check IF no errors OF configuration 
+	    IF NOT #PortCfgError AND NOT #MasterCfgError THEN
+	        
+	        FOR #count := 0 TO 2 DO
+	            #tmpDint := 0;
+	            #tmpDint.%B1 := #ProcDataIn.Inp[2 * #count];
+	            #tmpDint.%B0  := #ProcDataIn.Inp[2 * #count + 1];
+	            #ResultReal[#count] := #tmpDint / 100.0;
+	        END_FOR;
+	        #ProTopFormat.OutputVoltage := #ResultReal[0];
+	        #ProTopFormat.ORingVoltage := #ResultReal[1];
+	        #ProTopFormat.OutputCurrent := #ResultReal[2];
+	        
+	        #ProTopFormat.ShortCircuit := #ProcDataIn.Inp[6].%X0;
+	        #ProTopFormat.LoadPrewarning := #ProcDataIn.Inp[6].%X1;
+	        #ProTopFormat.ShortCircuitSw := #ProcDataIn.Inp[6].%X2;
+	        #ProTopFormat.Ovrl110 := #ProcDataIn.Inp[6].%X3;
+	        #ProTopFormat.Ovrl150 := #ProcDataIn.Inp[6].%X4;
+	        #ProTopFormat.DCL_Active := #ProcDataIn.Inp[6].%X5;
+	        #ProTopFormat.Relay_State := #ProcDataIn.Inp[6].%X6;
+	        #ProTopFormat.DI_State := #ProcDataIn.Inp[6].%X7;
+	        #ProTopFormat.AllChannelsOK := NOT #ProTopFormat.ShortCircuit AND
+	                                        NOT #ProTopFormat.ShortCircuitSw;
+	    END_IF; 
+	END_REGION
+	
+	REGION Output status All Chanels OK
+	    //Update Output Status All Channels OK
+	    #Sts_AllChannelsOK := #ProTopFormat.AllChannelsOK;
+	END_REGION
+	REGION Error output
+	    //Update Error Status
+	    #Sts_ER.%X0 := #MasterCfgError;
+	    #Sts_ER.%X1 := #PortCfgError;
+	END_REGION
+	#FS := #False;
+	
+	
+END_FUNCTION_BLOCK
+

@@ -1,0 +1,259 @@
+﻿{
+    S7_Author := "MIS";
+    S7_BlockComment := "MLC_347";
+    S7_BlockTitle := "MLC_4zY";
+    S7_Family := "Standard";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "11.2"
+}
+FUNCTION "Mgr_Track" : Void
+    VAR_INPUT 
+        Cfg_RejectCause : DInt;
+    END_VAR
+    VAR_IN_OUT 
+        Track : _.Typ_Track;
+    END_VAR
+
+    { S7_Language := "LAD" }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Cfg_RejectCause, 
+                out1 => #Track.Cfg_RejectCause
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3L4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Track.Cmd_ClearCycleStatus )
+            R_Coil( #Track.Sts_Good )
+            R_Coil( #Track.Sts_Bad )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_53N"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Track.Cmd_SetBadCycle )
+            I_Contact( #Track.Sts_Bad )
+            S_Coil( #Track.Sts_Bad )
+            
+            Add(
+                in1 := #Track.Rep_CtrBad, 
+                in2 := 1, 
+                out => #Track.Rep_CtrBad
+            )
+            wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Track.Cfg_RejectCause, 
+                in2 := 1
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Track.Rep_CtrFailCode1 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Track.Cfg_RejectCause, 
+                in2 := 2
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Track.Rep_CtrFailCode2 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Track.Cfg_RejectCause, 
+                in2 := 3
+            )
+            wire#w2
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Track.Rep_CtrFailCode3 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Track.Cfg_RejectCause, 
+                in2 := 9
+            )
+        END_RUNG wire#w2
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Track.Cfg_RejectCause, 
+                in2 := 4
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Track.Rep_CtrFailCode4 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Track.Cfg_RejectCause, 
+                in2 := 5
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Track.Rep_CtrFailCode5 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Track.Cfg_RejectCause, 
+                in2 := 6
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Track.Rep_CtrFailCode6 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Track.Cfg_RejectCause, 
+                in2 := 7
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Track.Rep_CtrFailCode7 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Track.Cfg_RejectCause, 
+                in2 := 8
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Track.Rep_CtrFailCode8 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Track.Cfg_RejectCause, 
+                in2 := 9
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Track.Rep_CtrFailCode9 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_kb"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Track.Cmd_SetGoodCycle )
+            I_Contact( #Track.Sts_Bad )
+            I_Contact( #Track.Sts_Good )
+            S_Coil( #Track.Sts_Good )
+            
+            Add(
+                in1 := #Track.Rep_CtrGood, 
+                in2 := 1, 
+                out => #Track.Rep_CtrGood
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3nY"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Track.Cmd_ClrStat )
+            wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Track.Rep_CtrBad, 
+                out2 => #Track.Rep_CtrGood
+            )
+            
+            Move(
+                in := 0.0, 
+                out1 => #Track.Rep_Quality
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Track.Rep_CtrFailCode1, 
+                out2 => #Track.Rep_CtrFailCode2, 
+                out3 => #Track.Rep_CtrFailCode3, 
+                out4 => #Track.Rep_CtrFailCode4, 
+                out5 => #Track.Rep_CtrFailCode5, 
+                out6 => #Track.Rep_CtrFailCode6, 
+                out7 => #Track.Rep_CtrFailCode7, 
+                out8 => #Track.Rep_CtrFailCode8, 
+                out9 => #Track.Rep_CtrFailCode9
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_aW"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Add(
+                in1 := #Track.Rep_CtrGood, 
+                in2 := #Track.Rep_CtrBad, 
+                out => #Track.Rep_CtrTotal
+            )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Track.Rep_CtrTotal, 
+                in2 := 0
+            )
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "IN1*IN2/IN3"
+            }
+            Calculate(
+                in1 := 100, 
+                in2 := #Track.Rep_CtrGood, 
+                in3 := #Track.Rep_CtrTotal, 
+                out => #Track.Rep_Quality
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Qt"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            R_Coil( #Track.Cmd_ClearCycleStatus )
+            R_Coil( #Track.Cmd_SetBadCycle )
+            R_Coil( #Track.Cmd_SetGoodCycle )
+            R_Coil( #Track.Cmd_ClrStat )
+            S_Coil( #Track.Sts_TrackUsed )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION

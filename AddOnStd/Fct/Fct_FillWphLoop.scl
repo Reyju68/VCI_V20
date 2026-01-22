@@ -1,0 +1,94 @@
+﻿FUNCTION "Fct_FillWphLoop" : Void
+TITLE = Fct_FillWphLoop
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Sts_PLC1ToPLC2Old_WPHID : DInt;   // _01_Adm, Part Info PLC1To PLC2
+   END_VAR
+
+   VAR_IN_OUT 
+      WPHsLoop : Array[0..168] of "Typ_WPH";
+   END_VAR
+
+   VAR_TEMP 
+      ScanNest : Int;
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	// IMA Automation SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: _Library_Std_v1.00
+	// Engineering: TIA Portal v20
+	// Restrictions: None
+	// Requirements: None
+	// Functionality: This ADD-On is used to fill a WHP at 0 in the WPHLoop structure.
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	//-----------------------------------------------------------------------------
+	// Version       Date              Expert in charge           
+	// v0.1          2025-Jun-27       REY Julien          
+	// Changes applied:
+	// Creation
+	//-----------------------------------------------------------------------------
+	
+	// Variable Assignment
+	ENO := 1;
+	
+	// Mise a 0 de la structure
+	FOR #ScanNest := 0 TO 4 DO
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Cmd_Ack := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Cmd_ClrStat := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Cmd_RejectPart := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Cmd_Clear := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Cmd_GoodPart := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Cfg_Station := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Cfg_SubAssembly := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Cfg_RejectCause := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Cfg_MaxCons := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_LastGoodStation := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_NestID := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_NestNb := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_TrackNb := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_PartID := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_StationFailID := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_SpecFailCode := 0;
+	    FILL_BLK(IN := 0,
+	             COUNT := 64,
+	             OUT => #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_OperationDone[0]);
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_NotInProd := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_Enable := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_Good := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_Bad := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_Full := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_OK := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_FullPos := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_BadPos := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_AuditRqst := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_Alm := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_Unused := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_FailNestID := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_FailSubAssembly := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_FailTrackID := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Sts_FailWPHID := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_CtrTotal := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_CtrGood := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_CtrBad := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_Quality := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_Cons := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_Miscellaneous := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_User1 := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_User2 := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_User3 := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_User4 := 0;
+	    #WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Nest[#ScanNest].Rep_User5 := 0;
+	END_FOR;
+	
+	#WPHsLoop[#Sts_PLC1ToPLC2Old_WPHID].Sts_MoverID := 0;
+	    
+END_FUNCTION
+

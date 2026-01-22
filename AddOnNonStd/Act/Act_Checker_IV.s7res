@@ -1,0 +1,168 @@
+﻿MultiLingualTexts:
+  - id: MLC_3gp
+    en-US: Add-On Act_Checker_IV
+  - id: MLC_3W2
+    en-US: |-
+      ==================================================
+      IMA Automation Switzerland SA
+      Allée du Quartz 12
+      2301 La Chaux-de-Fonds
+      Switzerland
+      --------------------------------------------------------------------------------------------------------------------
+      Engineering: TIA Portal V18
+      Restriction: Keyence IV3
+
+      v01.00 - JRE - 03 Jun 2024 - First Release
+
+      ==================================================
+      Block Alarm Bit (Sts_Alms):
+           Sts_Alms.X0: Trigger Error
+           Sts_Alms.X1: Acquisition Error
+           Sts_Alms.X2: User Data Error
+           Sts_Alms.X3: Device Not Ready
+           Sts_Alms.X5: Clear Stat Failed
+           Sts_Alms.X6: Load Job Failed
+
+      Sequence Command (Cmd_Out)
+           Cmd_Out.X0: Cmd Abort
+           Cmd_Out.X1: Cmd Reset
+           Cmd_Out.X2: Cmd Execute
+           Cmd_Out.X3: Cmd Load Job
+           Cmd_Out.X4: Cmd Clear Stats
+      ==================================================
+  - id: MLC_4tK
+    en-US: Timeout Parameter
+  - id: MLC_3AM
+    en-US: Max Consecutive
+  - id: MLC_Wb
+    en-US: Keyence Job Number
+  - id: MLC_mZ
+    en-US: First Scan PLC
+  - id: MLC_yG
+    en-US: Configuration instruction to select manualy a job number
+  - id: MLC_4bk
+    en-US: Configuration Instruction To Enable No Consecutive Alarm
+  - id: MLC_Nb
+    en-US: Enable Inspection On Camera
+  - id: MLC_4MW
+    en-US: Alarm Reset
+  - id: MLC_3jG
+    en-US: Command To Clear Stats
+  - id: MLC_4ci
+    en-US: Status to inform the command ongoing
+  - id: MLC_hm
+    en-US: Idle Status
+  - id: MLC_3N6
+    en-US: Bad Part
+  - id: MLC_5CM
+    en-US: Status to inforn the inspection result
+  - id: MLC_4KR
+    en-US: Request to load job on next cycle
+  - id: MLC_b2
+    en-US: Alarm Number
+  - id: MLC_45j
+    en-US: Measurement Error
+  - id: MLC_4fs
+    en-US: Consecutive Measurement Error
+  - id: MLC_3cW
+    en-US: No Alarm
+  - id: MLC_5BW
+    en-US: Status to inform alarm coming edge
+  - id: MLC_3FC
+    en-US: Reporting counter for failed actions since last clear
+  - id: MLC_3Gu
+    en-US: Reporting of the consecutive error number for camera 1
+  - id: MLC_jV
+    en-US: Reporting value to give current execution elapsed time
+  - id: MLC_rm
+    en-US: Command [.0 Abort / .1 Reset / .2 Execute]
+  - id: MLC_3Wx
+    en-US: Command to load Job Request
+  - id: MLC_Pu
+    en-US: Command to define next sequence value
+  - id: MLC_aP
+    en-US: Status to give current sequence value
+  - id: MLC_3UG
+    en-US: Sequence Change Of State
+  - id: MLC_59g
+    en-US: Status to give previous sequence value
+  - id: MLC_3dJ
+    en-US: Step Time duration
+  - id: MLC_rY
+    en-US: Timeout value reached
+  - id: MLC_4Se
+    en-US: Command duration timer
+  - id: MLC_496
+    en-US: Timeout
+  - id: MLC_42g
+    en-US: Memory Trigger Not Ready
+  - id: MLC_4rY
+    en-US: First Scan
+  - id: MLC_4kP
+    en-US: Acknowledgement
+  - id: MLC_wj
+    en-US: Read Input Data
+  - id: MLC_42f
+    en-US: Input Communication Failure
+  - id: MLC_34Z
+    en-US: Detect if the camera was set offline OR the module has been seen in fault to load the job on the next vision cycle
+  - id: MLC_4Pd
+    en-US: Waiting For Command
+  - id: MLC_4A8
+    en-US: Sequencer managenment
+  - id: MLC_3y2
+    en-US: 'Timers Management : Sequence TimeOut / Command duration'
+  - id: MLC_Uq
+    en-US: 'Seq 1: ABORT'
+  - id: MLC_3Zy
+    en-US: 'Seq 10: RESET'
+  - id: MLC_4Hf
+    en-US: REset Trigger, Clear Inspection Status
+  - id: MLC_3eM
+    en-US: 'Seq 100: EXECUTE'
+  - id: MLC_4ak
+    en-US: Check Status, Update User Data, Clear Inspection Status
+  - id: MLC_3sT
+    en-US: 'Seq 101: EXECUTE'
+  - id: MLC_4LT
+    en-US: Set Trigger
+  - id: MLC_4Ve
+    en-US: 'Seq 102: EXECUTE'
+  - id: MLC_3Hr
+    en-US: Check acquisiton done
+  - id: MLC_55S
+    en-US: 'Seq 200: LOAD JOB'
+  - id: MLC_4aR
+    en-US: Wait Vision Ready
+  - id: MLC_4Tf
+    en-US: 'Seq 201: LOAD JOB'
+  - id: MLC_xb
+    en-US: Start Load Job
+  - id: MLC_4CC
+    en-US: 'Seq 202: LOAD JOB'
+  - id: MLC_cR
+    en-US: Check Load Job Complete
+  - id: MLC_hi
+    en-US: 'Seq 300: CLEAR STAT'
+  - id: MLC_hW
+    en-US: Wait Vision Ready
+  - id: MLC_RT
+    en-US: 'Seq 301: CLEAR STAT'
+  - id: MLC_3TN
+    en-US: Start Stats Clearing
+  - id: MLC_3DZ
+    en-US: 'Seq 302: CLEAR STAT'
+  - id: MLC_346
+    en-US: Check Clearing Complete
+  - id: MLC_Vw
+    en-US: 'Seq 999: ALARM STATE'
+  - id: MLC_3mF
+    en-US: Alarms management
+  - id: MLC_4Xx
+    en-US: Clear Status and Command in Idle
+  - id: MLC_3pQ
+    en-US: Statistic management
+  - id: MLC_39G
+    en-US: Consecutive Counter
+  - id: MLC_w2
+    en-US: Write Output Data

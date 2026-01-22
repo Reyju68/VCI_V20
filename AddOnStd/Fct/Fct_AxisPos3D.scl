@@ -1,0 +1,26 @@
+﻿FUNCTION "Fct_AxisPos3D" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Axis1_ActualPos : DInt;   // Axis 1 Actual Pos
+      Axis1_TargetPos : DInt;   // Target Position Axis 1
+      Axis2_ActualPos : DInt;   // Axis 2 Actual Pos
+      Axis2_TargetPos : DInt;   // Target Position Axis 2
+      Axis3_ActualPos : DInt;   // Axis 3 Actual Pos (Set to 0 for 2D)
+      Axis3_TargetPos : DInt;   // Target Position Axis 3 (Set to 0 for 2D)
+      Cfg_InPos : DInt;   // Distance To Be In Range Of Target
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts_Distance : Real;   // Actual Distance Between Axis Actual Position And Target Position
+      Sts_InPos : Bool;   // Status In Range Of Target Pos
+   END_VAR
+
+
+BEGIN
+	// Calculate distance between gantry and target position
+	#Sts_Distance := SQRT((#Axis1_ActualPos - #Axis1_TargetPos) ** 2 + (#Axis2_ActualPos - #Axis2_TargetPos) ** 2 + (#Axis3_ActualPos - #Axis3_TargetPos) ** 2);
+	// Returns "1" if gantry is in range
+	#Sts_InPos := #Sts_Distance <= DINT_TO_REAL(#Cfg_InPos);
+END_FUNCTION
+

@@ -1,0 +1,23 @@
+﻿MultiLingualTexts:
+  - id: MLC_u4
+    en-US: Manager for Nest Statistics
+  - id: MLC_3Uf
+    en-US: "08 Jan 2020\r\n- New revision roles\r\n(StdAddonsTIA_SCN_V002.docx)\r\n\r\n23 Jun 2025\r\n-- Change data type for \"Sts_NestNb , Sts_StationFailID , Cfg_RejectCause , Sts_SpecFailCode , Sts_NestID , Sts_FailWPHID\" from SINT to INT\r\n(Refer to GitLab - Issues 18) "
+  - id: MLC_V8
+    en-US: Reference to the Mgr_Nest manager
+  - id: MLC_3eE
+    en-US: Clear Statistiques
+  - id: MLC_4uu
+    en-US: Status to inform if current process has failed or not
+  - id: MLC_Qz
+    en-US: Good Cycle on Station
+  - id: MLC_3fu
+    en-US: Rejct Part
+  - id: MLC_42t
+    en-US: 'Acknowledgment of consecutive alarm '
+  - id: MLC_5BQ
+    en-US: Set consecutive alarm
+  - id: MLC_3dH
+    en-US: Reporting
+  - id: MLC_Ws
+    en-US: Clear Command

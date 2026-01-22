@@ -1,0 +1,130 @@
+﻿FUNCTION_BLOCK "Fct_CheckZoneXTS_Vision"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_NbrOfZone : DInt;   // Configuration Number of Movers
+      Cfg_CheckSecu1 : Bool;
+      Cfg_CheckSecu2 : Bool;
+      Cfg_CheckSecu3 : Bool;
+      Cfg_CheckSecu4 : Bool;
+      Cfg_CheckSecu5 : Bool;
+      Cfg_NbrOfMover : DInt;
+      Cfg_Min_Zone1 : Real;
+      Cfg_Min_Zone2 : Real;
+      Cfg_Min_Zone3 : Real;
+      Cfg_Min_Zone4 : Real;
+      Cfg_Min_Zone5 : Real;
+      Cfg_Max_Zone1 : Real;
+      Cfg_Max_Zone2 : Real;
+      Cfg_Max_Zone3 : Real;
+      Cfg_Max_Zone4 : Real;
+      Cfg_Max_Zone5 : Real;
+      IN_SecuStationOk1 : Bool;
+      IN_SecuStationOk2 : Bool;
+      IN_SecuStationOk3 : Bool;
+      IN_SecuStationOk4 : Bool;
+      IN_SecuStationOk5 : Bool;
+      Cmd_Ack : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts_NbrOfMover_InZone : Array[1..5] of DInt;   // Status Number of Movers in Zone
+      Sts_ZoneEmpty : Array[1..5] of Bool;   // Status Zone Empty
+      Sts_AllMoverPosOk : Array[1..5] of Bool;   // Status All Movers Inside Zone In Pos OK
+      Sts_NoAlm : Array[1..5] of Bool;   // Status Zone Secu Station No Alar
+      Sts_MoverID_Zone : Array[1..5] of DInt;
+   END_VAR
+
+   VAR_IN_OUT 
+      IN_Mover_StdInp : "Typ_XTS_In";
+      Mover_ID : Array[1.."Cfg_XTS_NbrMaxMover"] of "Typ_Act_XTS";
+   END_VAR
+
+   VAR 
+      Tmp_CheckSecu : Array[1..5] of Bool;   // Configuration Check Security of Zone
+      Tmp_Min_Zone : Array[1..5] of Real;   // Configuration of Beginning of Zone
+      Tmp_Max_Zone : Array[1..5] of Real;   // Configuration of End of Zone
+      Tmp_SecuStationOk : Array[1..5] of Bool;
+      Loop_Mover : DInt;
+      Loop_Zone : DInt;
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	//******** Monitors movers status inside five defined areas
+	//============================================================================
+	
+	#Tmp_Min_Zone[1] := #Cfg_Min_Zone1;
+	#Tmp_Min_Zone[2] := #Cfg_Min_Zone2;
+	#Tmp_Min_Zone[3] := #Cfg_Min_Zone3;
+	#Tmp_Min_Zone[4] := #Cfg_Min_Zone4;
+	#Tmp_Min_Zone[5] := #Cfg_Min_Zone5;
+	
+	#Tmp_Max_Zone[1] := #Cfg_Max_Zone1;
+	#Tmp_Max_Zone[2] := #Cfg_Max_Zone2;
+	#Tmp_Max_Zone[3] := #Cfg_Max_Zone3;
+	#Tmp_Max_Zone[4] := #Cfg_Max_Zone4;
+	#Tmp_Max_Zone[5] := #Cfg_Max_Zone5;
+	
+	#Tmp_SecuStationOk[1] := #IN_SecuStationOk1;
+	#Tmp_SecuStationOk[2] := #IN_SecuStationOk2;
+	#Tmp_SecuStationOk[3] := #IN_SecuStationOk3;
+	#Tmp_SecuStationOk[4] := #IN_SecuStationOk4;
+	#Tmp_SecuStationOk[5] := #IN_SecuStationOk5;
+	
+	
+	
+	IF #Cfg_NbrOfZone > 5 THEN
+	    #Cfg_NbrOfZone := 5;
+	END_IF;
+	
+	// Reset Alarm
+	IF #Cmd_Ack THEN
+	    #Cmd_Ack := 0;
+	    FOR #Loop_Zone := 1 TO #Cfg_NbrOfZone DO
+	        #Sts_NoAlm[#Loop_Zone] := 1;
+	    END_FOR;
+	END_IF;
+	
+	// Reset Loop Data
+	// 
+	FOR #Loop_Zone := 1 TO #Cfg_NbrOfZone DO
+	    
+	    #Sts_ZoneEmpty[#Loop_Zone] := 1;
+	    #Sts_NbrOfMover_InZone[#Loop_Zone] := 0;
+	    #Sts_MoverID_Zone[#Loop_Zone] := 0;
+	    #Sts_AllMoverPosOk[#Loop_Zone] := 1;
+	    
+	END_FOR;
+	
+	//Update Zone Empty Status, Number of Movers inside Zone
+	//Send Immediate Stop Command (Cmd_Out.3) to Mover
+	//Update Station Zone Secu and Station No Alarm Status
+	
+	FOR #Loop_Mover := 1 TO "Cfg_XTS_NbrMaxMover" DO
+	    
+	    FOR #Loop_Zone := 1 TO #Cfg_NbrOfZone DO
+	        
+	        IF (#Tmp_Min_Zone[#Loop_Zone]<= #Tmp_Max_Zone[#Loop_Zone] AND #IN_Mover_StdInp.MoverStatus[#Loop_Mover].rPos >= #Tmp_Min_Zone[#Loop_Zone] AND #IN_Mover_StdInp.MoverStatus[#Loop_Mover].rPos <= #Tmp_Max_Zone[#Loop_Zone])
+	            OR
+	            (#Tmp_Max_Zone[#Loop_Zone] < #Tmp_Min_Zone[#Loop_Zone] AND (#IN_Mover_StdInp.MoverStatus[#Loop_Mover].rPos >= #Tmp_Min_Zone[#Loop_Zone] OR #IN_Mover_StdInp.MoverStatus[#Loop_Mover].rPos <= #Tmp_Max_Zone[#Loop_Zone]))
+	        THEN
+	            #Sts_NbrOfMover_InZone[#Loop_Zone] := #Sts_NbrOfMover_InZone[#Loop_Zone];
+	            #Sts_MoverID_Zone[#Loop_Zone] := #Loop_Mover;
+	            #Sts_ZoneEmpty[#Loop_Zone] := 0;
+	            IF #Sts_NbrOfMover_InZone[#Loop_Zone] > 1 THEN
+	                #Sts_MoverID_Zone[#Loop_Zone] := 0;
+	            END_IF;
+	            IF #Tmp_CheckSecu[#Loop_Zone] AND NOT #Tmp_SecuStationOk[#Loop_Zone] AND NOT #Mover_ID[#Loop_Mover].Sts_Mover_PosOk THEN
+	                #Mover_ID[#Loop_Mover].Cmd_Out.%X3 := 1;
+	                #Sts_NoAlm[#Loop_Zone] := 0;
+	            END_IF;
+	            IF NOT #Mover_ID[#Loop_Mover].Sts_Mover_PosOk THEN
+	                #Sts_AllMoverPosOk[#Loop_Zone] := 0;
+	            END_IF;
+	        END_IF;
+	    END_FOR;
+	END_FOR;
+END_FUNCTION_BLOCK
+

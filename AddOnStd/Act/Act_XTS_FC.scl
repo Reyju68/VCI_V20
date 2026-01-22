@@ -1,0 +1,721 @@
+﻿FUNCTION "Act_XTS_FC" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_IN_OUT 
+      Act_XTS : "Typ_Act_XTS";
+   END_VAR
+
+
+BEGIN
+	Loop:
+	
+	#Act_XTS.Sts_Seq := #Act_XTS.Sts_Seq;
+	#Act_XTS.Sts_Idle := #Act_XTS.Sts_Idle;
+	#Act_XTS.Sts_Alms := #Act_XTS.Sts_Alms;
+	#Act_XTS.Index_pos := #Act_XTS.Index_pos;
+	#Act_XTS.MoverIN.rPos := #Act_XTS.MoverIN.rPos;
+	#Act_XTS.MoverOUT.rTargetPosition := #Act_XTS.MoverOUT.rTargetPosition;
+	#Act_XTS.LastIndex_Pos := #Act_XTS.LastIndex_Pos;
+	#Act_XTS.Mem_Force_Index := #Act_XTS.Mem_Force_Index;
+	#Act_XTS.MemoryPos := #Act_XTS.MemoryPos;
+	#Act_XTS.MoverOUT.bEnable := #Act_XTS.MoverOUT.bEnable;
+	#Act_XTS.MoverOUT.bStopMoving := #Act_XTS.MoverOUT.bStopMoving;
+	#Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Sts_Cycle := #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Sts_Cycle;
+	#Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Force_Index := #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Force_Index;
+	#Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Allow := #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Allow;
+	#Act_XTS.Sync_PosFromXTS[#Act_XTS.Index_pos].Cmd_Cycle := #Act_XTS.Sync_PosFromXTS[#Act_XTS.Index_pos].Cmd_Cycle;
+	#Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] := #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos];
+	
+	REGION Reset function
+	    IF #Act_XTS.Cmd_ResetFct THEN
+	        #Act_XTS.Index_Pos_Mover[#Act_XTS.Cfg_MoverNumber] := #Act_XTS.Cfg_Index_Pos_ResetFct;
+	        #Act_XTS.Cmd_Seq := 0;
+	        #Act_XTS.Sts_Seq := 0;
+	        #Act_XTS.MoverOUT.bEnable := FALSE;
+	        #Act_XTS.MoverOUT.bStopMoving := FALSE;
+	        #Act_XTS.MoverOUT.bGrpBothWay := FALSE;
+	        #Act_XTS.Cmd_Ack := TRUE;
+	        #Act_XTS.Sts_Idle := TRUE;
+	        #Act_XTS.MoverOUT.rTargetPosition := - #Act_XTS.Cfg_LenghtRail;
+	        #Act_XTS.Mem_Force_Index := 0;
+	        #Act_XTS.MemoryPos := -99;
+	        #Act_XTS.Cmd_Out := 0;
+	        #Act_XTS.LastIndex_Pos := -1;
+	        #Act_XTS.Mem_Index_pos := 0;
+	        #Act_XTS.Cmd_ResetFct := FALSE;
+	    END_IF;
+	END_REGION
+	
+	REGION "Local" Parameters
+	    #Act_XTS.rTolPos := 3.0;
+	END_REGION
+	
+	REGION Retrieve Index_pos 
+	    #Act_XTS.Index_pos := #Act_XTS.Index_Pos_Mover[#Act_XTS.Cfg_MoverNumber];
+	END_REGION
+	
+	REGION Initialize Index_pos
+	    IF #Act_XTS.Index_pos > "Cfg_XTS_NbrMaxPosition" OR #Act_XTS.Index_pos < 0 THEN
+	        #Act_XTS.Index_pos := 0;
+	    END_IF;
+	    IF #Act_XTS.Mem_Force_Index > "Cfg_XTS_NbrMaxPosition" OR #Act_XTS.Mem_Force_Index < 0 THEN
+	        #Act_XTS.Mem_Force_Index := 0;
+	    END_IF;
+	END_REGION
+	
+	REGION Retrieve MoverIN
+	    #Act_XTS.MoverIN := #Act_XTS.MoverIN_Mover[#Act_XTS.Cfg_MoverNumber];
+	END_REGION
+	
+	REGION Update Status Mover in Module
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X0 := #Act_XTS.Cfg_MoverInMD[0];
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X1 := #Act_XTS.Cfg_MoverInMD[1];
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X2 := #Act_XTS.Cfg_MoverInMD[2];
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X3 := #Act_XTS.Cfg_MoverInMD[3];
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X4 := #Act_XTS.Cfg_MoverInMD[4];
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X5 := #Act_XTS.Cfg_MoverInMD[5];
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X6 := #Act_XTS.Cfg_MoverInMD[6];
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X7 := #Act_XTS.Cfg_MoverInMD[7];
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X8 := #Act_XTS.Cfg_MoverInMD[8];
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X9 := #Act_XTS.Cfg_MoverInMD[9];
+	    #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber].%X10 := #Act_XTS.Cfg_MoverInMD[10];
+	END_REGION
+	
+	REGION Alarms Reset
+	    #Act_XTS.AckTmr(IN := #Act_XTS.Cmd_Ack AND #Act_XTS.MoverIN.bError,
+	                    PT := T#100MS);
+	    IF #Act_XTS.Cmd_Ack THEN
+	        #Act_XTS.Sts_Alms := 0;
+	        #Act_XTS.Cmd_Ack := FALSE;
+	    END_IF;
+	    #Act_XTS.MoverOUT.bAck := #Act_XTS.AckTmr.Q;
+	END_REGION
+	
+	REGION Interface function with HMI
+	    // Input 
+	    #Act_XTS.Fct_XTS_HMi.Cfg_MoverNumber := #Act_XTS.Cfg_MoverNumber;
+	    #Act_XTS.Fct_XTS_HMi.Cfg_MoverInMD := #Act_XTS.Cfg_MoverInMD;
+	    #Act_XTS.Fct_XTS_HMi.Cfg_NbrHMI := #Act_XTS.Cfg_NbrHMI;
+	    #Act_XTS.Fct_XTS_HMi.Cfg_LastPos := #Act_XTS.Cfg_LastPos;
+	    #Act_XTS.Fct_XTS_HMi.Sts_Idle := #Act_XTS.Sts_Idle;
+	    #Act_XTS.Fct_XTS_HMi.MoverIN := #Act_XTS.MoverIN;
+	    #Act_XTS.Fct_XTS_HMi.Cfg_Pos := #Act_XTS.Cfg_Pos;
+	    #Act_XTS.Fct_XTS_HMi.Sts_ActualPos := #Act_XTS.Sts_ActualPos;
+	    #Act_XTS.Fct_XTS_HMi.Sts_Mover_ColAvoidFF := #Act_XTS.Sts_Mover_ColAvoidFF;
+	    #Act_XTS.Fct_XTS_HMi.Sts_Mover_ColAvoidBW := #Act_XTS.Sts_Mover_ColAvoidBW;
+	    #Act_XTS.Fct_XTS_HMi.Sts_NoAlm := #Act_XTS.Sts_NoAlm;
+	    #Act_XTS.Fct_XTS_HMi.Cmd_Out := #Act_XTS.Cmd_Out;
+	    
+	    // Call
+	    "Fct_XTS_HMI_FC"("Fct_XTS_HMI" := #Act_XTS.Fct_XTS_HMi);
+	    
+	    #Act_XTS.Cmd_FromHMi := #Act_XTS.Fct_XTS_HMi.Cmd_FromHMi;
+	    #Act_XTS.Cmd_Out := #Act_XTS.Fct_XTS_HMi.Cmd_Out;
+	    #Act_XTS.InterfaceHMi := #Act_XTS.Fct_XTS_HMi.InterfaceHMi;
+	    
+	END_REGION
+	
+	REGION Update Status before Aborting if signature is pending
+	    
+	    IF #Act_XTS.Cmd_Out.%X1 OR #Act_XTS.Cmd_Out.%X2 OR #Act_XTS.Cmd_Out.%X4 THEN
+	        #Act_XTS.Memo_AbortSign := False;
+	    END_IF;
+	    
+	    IF #Act_XTS.Cmd_Out.%X0 AND (#Act_XTS.Sts_Seq = 103 OR #Act_XTS.Cmd_Seq = 103) THEN
+	        #Act_XTS.Memo_AbortSign := TRUE;
+	    END_IF;
+	    
+	    IF #Act_XTS.Memo_AbortSign AND #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Sts_Cycle AND #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Force_Index > 0 THEN
+	        
+	        IF #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Force_Index <= #Act_XTS.Cfg_LastPos THEN
+	            #Act_XTS.Mem_Force_Index := #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Force_Index;
+	        END_IF;
+	        
+	        #Act_XTS.Memo_AbortSign := FALSE;
+	        #Act_XTS.Sync_PosFromXTS[#Act_XTS.Index_pos].Cmd_Cycle := FALSE;
+	        #Act_XTS.LastIndex_Pos := #Act_XTS.Index_pos;
+	        #Act_XTS.Pos_LastIndex_Pos := #Act_XTS.MoverIN.rPos;
+	        
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION Waiting for command
+	    IF #Act_XTS.Cmd_Out <> 0 THEN
+	        #Act_XTS.Sts_Out := #Act_XTS.Cmd_Out;
+	        
+	        // Cmd Execute Manual
+	        IF #Act_XTS.Cmd_Out.%X4 AND #Act_XTS.Sts_Idle THEN
+	            #Act_XTS.Cmd_Seq := 110;
+	            #Act_XTS.Tmr_Cmd(IN := FALSE,
+	                             PT := #Act_XTS.Tmr_Cmd.PT);
+	            #Act_XTS.Sts_Idle := FALSE;
+	            
+	            // Cmd Execute
+	        ELSIF #Act_XTS.Cmd_Out.%X2 AND #Act_XTS.Sts_Idle THEN
+	            #Act_XTS.Cmd_Seq := 100;
+	            #Act_XTS.Tmr_Cmd(IN := FALSE,
+	                             PT := #Act_XTS.Tmr_Cmd.PT);
+	            #Act_XTS.Sts_Idle := FALSE;
+	            
+	            // Cmd Reset
+	        ELSIF #Act_XTS.Cmd_Out.%X1 AND (#Act_XTS.Sts_Idle OR #Act_XTS.Sts_Seq > 99) THEN
+	            #Act_XTS.Cmd_Seq := 10;
+	            #Act_XTS.Cmd_Out := 2;
+	            #Act_XTS.Tmr_Cmd(IN := FALSE,
+	                             PT := #Act_XTS.Tmr_Cmd.PT);
+	            #Act_XTS.Sts_Idle := FALSE;
+	            
+	            // Cmd Stop Mover
+	        ELSIF #Act_XTS.Cmd_Out.%X3 AND (#Act_XTS.Sts_Idle OR #Act_XTS.Sts_Seq > 9) THEN
+	            #Act_XTS.Cmd_Seq := 5;
+	            #Act_XTS.Cmd_Out := 8;
+	            #Act_XTS.Tmr_Cmd(IN := FALSE,
+	                             PT := #Act_XTS.Tmr_Cmd.PT);
+	            #Act_XTS.Sts_Idle := FALSE;
+	        END_IF;
+	        
+	        // Cmd Abort
+	        IF #Act_XTS.Cmd_Out.%X0 AND (#Act_XTS.Sts_Idle OR #Act_XTS.Sts_Seq > 4) THEN
+	            #Act_XTS.Cmd_Seq := 1;
+	            #Act_XTS.Cmd_Out := 1;
+	            #Act_XTS.Tmr_Cmd(IN := FALSE,
+	                             PT := #Act_XTS.Tmr_Cmd.PT);
+	            #Act_XTS.Sts_Idle := FALSE;
+	        END_IF;
+	        
+	        // Manual Reset of Memory Position  
+	        IF #Act_XTS.Cmd_Out.%X7 THEN
+	            #Act_XTS.MemoryPos := -99;
+	            #Act_XTS.Cmd_Out.%X7 := FALSE;
+	        END_IF;
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION Sequencer managenment
+	    #Act_XTS.Sts_SeqOns := #Act_XTS.Cmd_Seq <> 0;
+	    IF #Act_XTS.Sts_SeqOns THEN
+	        #Act_XTS.Sts_Seqp := #Act_XTS.Sts_Seq;
+	        #Act_XTS.Sts_Seq := #Act_XTS.Cmd_Seq;
+	        #Act_XTS.Cmd_Seq := 0;
+	        #Act_XTS.Tmr_TO(IN := FALSE,
+	                        PT := #Act_XTS.Tmr_TO.PT);
+	    END_IF;
+	END_REGION
+	
+	REGION Timers Management : Sequence TimeOut / Command duration
+	    IF (NOT #Act_XTS.Sts_Idle) THEN
+	        #Act_XTS.Tmr_TO.PT := #Act_XTS.Par_TimeOut;
+	        IF #Act_XTS.Cfg_Speed_During_Reset = #Act_XTS.MoverOUT.rTargetSpeed THEN
+	            #Act_XTS.Tmr_TO.PT := #Act_XTS.Par_TimeOut * 2;
+	        END_IF;
+	    END_IF;
+	    #Act_XTS.Tmr_TO(IN := (NOT #Act_XTS.Sts_Idle),
+	                    PT := #Act_XTS.Tmr_TO.PT);
+	    #Act_XTS.Tmr_Cmd(IN := (NOT #Act_XTS.Sts_Idle),
+	                     PT := T#9999999ms);
+	    #Act_XTS.Sts_SeqT := #Act_XTS.Tmr_TO.ET;
+	    #Act_XTS.Rep_dT := #Act_XTS.Tmr_Cmd.ET;
+	    #Act_XTS.Sts_TimeOut := #Act_XTS.Tmr_TO.Q;
+	END_REGION
+	
+	REGION Alarm Mover in error
+	    IF (NOT #Act_XTS.Sts_Out.%X0) AND #Act_XTS.MoverIN.bError THEN
+	        #Act_XTS.MoverOUT.bStopMoving := TRUE;
+	        #Act_XTS.Sts_Alms.%X1 := TRUE;
+	    END_IF;
+	END_REGION
+	
+	REGION Define rMinPosWithTol TO manage when position request is closed TO Cfg_LenghtRail
+	    #Act_XTS.rMinPosWithTol := #Act_XTS.MoverOUT.rTargetPosition - #Act_XTS.Cfg_LenghtRail;
+	    IF #Act_XTS.rMinPosWithTol < 0 THEN
+	        #Act_XTS.rMinPosWithTol := #Act_XTS.Cfg_LenghtRail - #Act_XTS.Cfg_InPos;
+	    END_IF;
+	END_REGION
+	
+	REGION Define rMinPosWithTol TO manage when position request is closed TO Cfg_LenghtRail
+	    #Act_XTS.rMaxPosWithTol := #Act_XTS.MoverOUT.rTargetPosition + #Act_XTS.Cfg_InPos;
+	    IF #Act_XTS.rMinPosWithTol > #Act_XTS.Cfg_LenghtRail THEN
+	        #Act_XTS.rMaxPosWithTol := 0 + #Act_XTS.Cfg_InPos;
+	    END_IF;
+	END_REGION
+	
+	REGION Position requested is close TO zero
+	    IF #Act_XTS.MoverOUT.rTargetPosition + #Act_XTS.Cfg_InPos > #Act_XTS.Cfg_LenghtRail
+	        OR #Act_XTS.MoverOUT.rTargetPosition - #Act_XTS.Cfg_InPos < 0 THEN
+	        IF ((#Act_XTS.MoverIN.rPos >= #Act_XTS.rMinPosWithTol AND #Act_XTS.MoverIN.rPos <= #Act_XTS.Cfg_LenghtRail)
+	            OR (#Act_XTS.MoverIN.rPos <= #Act_XTS.rMaxPosWithTol)) THEN
+	            #Act_XTS.bInPos := TRUE;
+	        ELSE
+	            #Act_XTS.bInPos := FALSE;
+	        END_IF;
+	    ELSE
+	        // Position request is not around 0
+	        IF ABS(#Act_XTS.MoverIN.rPos - #Act_XTS.MoverOUT.rTargetPosition) <= #Act_XTS.Cfg_InPos THEN
+	            #Act_XTS.bInPos := TRUE;
+	        ELSE
+	            #Act_XTS.bInPos := FALSE;
+	        END_IF;
+	    END_IF;
+	END_REGION
+	
+	REGION Mover In Position
+	    #Act_XTS.Sts_Mover_PosOk := #Act_XTS.bInPos AND (NOT #Act_XTS.MoverIN.bIsMoving) AND (#Act_XTS.MoverIN.bInPos OR ((NOT #Act_XTS.Sts_Out.%X2) AND (NOT #Act_XTS.Cmd_Out.%X2)));
+	    #Act_XTS.Sts_Pos[#Act_XTS.Index_pos].Mover_PosOk := #Act_XTS.Sts_Mover_PosOk AND (#Act_XTS.Sync_PosFromXTS[#Act_XTS.Index_pos].Cmd_Cycle OR #Act_XTS.Sts_ManExe);
+	END_REGION
+	
+	REGION Offset Management FOR Target Position
+	    IF #Act_XTS.Cfg_Scaling <= 0 THEN
+	        #Act_XTS.Cfg_Scaling := 1.0;
+	    END_IF;
+	    #Act_XTS.TargetPosition := (#Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Position + #Act_XTS.Cfg_Offset_Mover) / #Act_XTS.Cfg_Scaling;
+	    #Act_XTS.Sts_ActualPos := #Act_XTS.MoverIN.rPos * #Act_XTS.Cfg_Scaling;
+	END_REGION
+	
+	REGION Define number OF Next Mover - Define IO Number OF Next Mover
+	    IF #Act_XTS.Cfg_MoverNumber = 1 THEN
+	        #Act_XTS.NextMoverNumber := #Act_XTS.Cfg_NbrOfMover;
+	    END_IF;
+	    IF #Act_XTS.Cfg_MoverNumber <> 1 THEN
+	        #Act_XTS.NextMoverNumber := #Act_XTS.Cfg_MoverNumber - 1;
+	    END_IF;
+	    IF #Act_XTS.Cfg_MoverNumber = #Act_XTS.Cfg_NbrOfMover THEN
+	        #Act_XTS.PrevMoverNumber := 1;
+	    END_IF;
+	    IF #Act_XTS.Cfg_MoverNumber <> #Act_XTS.Cfg_NbrOfMover THEN
+	        #Act_XTS.PrevMoverNumber := #Act_XTS.Cfg_MoverNumber + 1;
+	    END_IF;
+	    #Act_XTS.IN_NextMover := #Act_XTS.NextMoverNumber;
+	    #Act_XTS.IN_PrevMover := #Act_XTS.PrevMoverNumber;
+	END_REGION
+	
+	REGION Mover In Anticipate Position - Mover Out OF Its Anticipation Area
+	    
+	    //Mover In Anticipate Position
+	    IF #Act_XTS.Index_pos <> #Act_XTS.Index_Pos_Mover[#Act_XTS.IN_NextMover] THEN
+	        IF ABS(#Act_XTS.MoverIN.rPos - #Act_XTS.MoverOUT.rTargetPosition) <= (#Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Anticip / #Act_XTS.Cfg_Scaling) THEN
+	            #Act_XTS.Sts_Mover_AnticipOk := TRUE;
+	        ELSIF (#Act_XTS.MoverOUT.rTargetPosition - (#Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Anticip / #Act_XTS.Cfg_Scaling) < 0) AND (ABS(#Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Anticip / #Act_XTS.Cfg_Scaling - #Act_XTS.MoverOUT.rTargetPosition - #Act_XTS.Cfg_LenghtRail) <= #Act_XTS.MoverIN.rPos) THEN
+	            #Act_XTS.Sts_Mover_AnticipOk := TRUE;
+	        ELSIF #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Anticip = -1 THEN
+	            #Act_XTS.Sts_Mover_AnticipOk := TRUE;
+	        ELSE
+	            #Act_XTS.Sts_Mover_AnticipOk := FALSE;
+	        END_IF;
+	    ELSE
+	        #Act_XTS.Sts_Mover_AnticipOk := FALSE;
+	    END_IF;
+	    
+	    //Mover Out OF Its Anticipation Area
+	    IF #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Anticip <> -1 THEN
+	        IF (#Act_XTS.MoverOUT.rTargetPosition - (#Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Anticip / #Act_XTS.Cfg_Scaling) < 0) AND #Act_XTS.MoverIN.rPos > #Act_XTS.MoverOUT.rTargetPosition AND (#Act_XTS.Cfg_LenghtRail + #Act_XTS.MoverOUT.rTargetPosition - #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Anticip / #Act_XTS.Cfg_Scaling) > #Act_XTS.MoverIN.rPos THEN
+	            #Act_XTS.Sts_Mover_OutOfAnticip := TRUE;
+	        ELSIF (#Act_XTS.MoverOUT.rTargetPosition - (#Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Anticip / #Act_XTS.Cfg_Scaling) >= 0) AND ((#Act_XTS.MoverIN.rPos > #Act_XTS.MoverOUT.rTargetPosition) OR (#Act_XTS.MoverOUT.rTargetPosition - #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Anticip / #Act_XTS.Cfg_Scaling) > #Act_XTS.MoverIN.rPos) THEN
+	            #Act_XTS.Sts_Mover_OutOfAnticip := TRUE;
+	        ELSE
+	            #Act_XTS.Sts_Mover_OutOfAnticip := FALSE;
+	        END_IF;
+	    ELSE
+	        #Act_XTS.Sts_Mover_OutOfAnticip := FALSE;
+	    END_IF;
+	END_REGION
+	
+	REGION Mover Gap management
+	    #Act_XTS.MoverOUT.bGapBit0 := FALSE;
+	    #Act_XTS.MoverOUT.bGapBit1 := FALSE;
+	    IF #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Gap = 1 THEN
+	        #Act_XTS.Gap := #Act_XTS.Cfg_Gap1;
+	        #Act_XTS.MoverOUT.bGapBit0 := TRUE;
+	    END_IF;
+	    IF #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Gap = 2 THEN
+	        #Act_XTS.Gap := #Act_XTS.Cfg_Gap2;
+	        #Act_XTS.MoverOUT.bGapBit1 := TRUE;
+	    END_IF;
+	    IF #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Gap = 3 THEN
+	        #Act_XTS.Gap := #Act_XTS.Cfg_Gap3;
+	        #Act_XTS.MoverOUT.bGapBit0 := TRUE;
+	        #Act_XTS.MoverOUT.bGapBit1 := TRUE;
+	    END_IF;
+	    IF (NOT #Act_XTS.MoverOUT.bGapBit0) AND (NOT #Act_XTS.MoverOUT.bGapBit1) THEN
+	        #Act_XTS.Gap := #Act_XTS.Cfg_Gap0;
+	    END_IF;
+	END_REGION
+	
+	REGION Status Mover in Collision Avoidance
+	    IF #Act_XTS.MoverIN.rPos <= #Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].rPos AND ABS(#Act_XTS.MoverIN.rPos - #Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].rPos) <= #Act_XTS.Gap + #Act_XTS.rTolPos
+	        OR
+	        (#Act_XTS.MoverIN.rPos > #Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].rPos AND ABS(#Act_XTS.MoverIN.rPos - (#Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].rPos + #Act_XTS.Cfg_LenghtRail)) <= #Act_XTS.Gap + #Act_XTS.rTolPos) THEN
+	        #Act_XTS.Sts_Mover_ColAvoidFF := TRUE;
+	    ELSE
+	        #Act_XTS.Sts_Mover_ColAvoidFF := FALSE;
+	    END_IF;
+	    
+	    IF #Act_XTS.MoverIN.rPos >= #Act_XTS.MoverIN_Mover[#Act_XTS.IN_PrevMover].rPos AND ABS(#Act_XTS.MoverIN.rPos - #Act_XTS.MoverIN_Mover[#Act_XTS.IN_PrevMover].rPos) <= #Act_XTS.Gap + #Act_XTS.rTolPos
+	        OR
+	        #Act_XTS.MoverIN.rPos < #Act_XTS.MoverIN_Mover[#Act_XTS.IN_PrevMover].rPos AND ABS(#Act_XTS.MoverIN.rPos - (#Act_XTS.MoverIN_Mover[#Act_XTS.IN_PrevMover].rPos + #Act_XTS.Cfg_LenghtRail)) <= #Act_XTS.Gap + #Act_XTS.rTolPos THEN
+	        #Act_XTS.Sts_Mover_ColAvoidBW := TRUE;
+	    ELSE
+	        #Act_XTS.Sts_Mover_ColAvoidBW := FALSE;
+	    END_IF;
+	END_REGION
+	
+	REGION Status Mover Held By Next Mover
+	    IF NOT #Act_XTS.Cfg_DisableNoHaltMotion AND
+	        (
+	        (#Act_XTS.MoverIN.rPos <= #Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].rPos AND ABS(#Act_XTS.MoverIN.rPos - #Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].rPos) <= 500)
+	        OR
+	        #Act_XTS.MoverIN.rPos > #Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].rPos AND ABS(#Act_XTS.MoverIN.rPos - (#Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].rPos + #Act_XTS.Cfg_LenghtRail)) <= 500
+	        ) THEN
+	        #Act_XTS.Sts_HoldMotionNoCA := TRUE;
+	    ELSE
+	        #Act_XTS.Sts_HoldMotionNoCA := FALSE;
+	    END_IF;
+	END_REGION
+	
+	REGION Reset Mover ID number in front OF Position[x] 
+	    IF #Act_XTS.LastIndex_Pos <> -1 AND (NOT #Act_XTS.Sts_Out.%X0) AND (NOT #Act_XTS.Cmd_Out.%X0) AND (NOT #Act_XTS.Sts_Out.%X1) AND (NOT #Act_XTS.Cmd_Out.%X1) AND #Act_XTS.Sts_Out.%X2 THEN
+	        #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.LastIndex_Pos] := 0;
+	        #Act_XTS.LastIndex_Pos := -1;
+	        #Act_XTS.Pos_LastIndex_Pos := 0;
+	    END_IF;
+	END_REGION
+	
+	REGION New Motion Acknoledge
+	    IF (#Act_XTS.Memo_NewMotionAck AND #Act_XTS.MoverIN.bNewMotionAck) OR ((NOT #Act_XTS.Memo_NewMotionAck) AND (NOT #Act_XTS.MoverIN.bNewMotionAck)) THEN
+	        #Act_XTS.Sts_NewMotionAck := TRUE;
+	    END_IF;
+	END_REGION
+	
+	REGION SEQUENCE
+	    CASE #Act_XTS.Sts_Seq OF
+	        1:// Abort Cycle - Save Mover Actual Position
+	            IF #Act_XTS.Sts_SeqOns THEN
+	                #Act_XTS.Cmd_NewRqst := FALSE;
+	                #Act_XTS.MoverOUT.bStopMoving := FALSE;
+	                #Act_XTS.MoverOUT.bGrpBothWay := FALSE;
+	                #Act_XTS.MoverOUT.bEnable := FALSE;
+	            ELSIF #Act_XTS.MoverIN.bNoGroupCA OR (#Act_XTS.Sts_SeqT >= (#Act_XTS.Par_TimeOut * 0.9)) THEN
+	                #Act_XTS.Sts_Idle := TRUE;
+	                IF #Act_XTS.MemoryPos = -99 THEN
+	                    #Act_XTS.MemoryPos := #Act_XTS.MoverIN.rPos;
+	                    #Act_XTS.MemoryPosPre := #Act_XTS.MemoryPos;
+	                END_IF;
+	                IF #Act_XTS.MemoryPos = -88 THEN
+	                    #Act_XTS.MemoryPos := #Act_XTS.MemoryPosPre;
+	                END_IF;
+	                #Act_XTS.MoverOUT.rTargetPosition := - #Act_XTS.Cfg_LenghtRail;
+	            END_IF;
+	            
+	        5:// Stop Mover cycle - Stop Mover in current pos with cmd bStopMover
+	            #Act_XTS.MoverOUT.bStopMoving := TRUE;
+	            IF #Act_XTS.Sts_SeqT > 1000 OR (NOT #Act_XTS.MoverIN.bIsMoving) THEN
+	                #Act_XTS.Cmd_Seq := 1;
+	            END_IF;
+	            
+	        10:// Reset Begin - Check If Mover is moved by hand - Check is Mover R Position is closed to Index Target Position
+	            IF #Act_XTS.Sts_SeqOns THEN
+	                IF #Act_XTS.Sts_ManExe THEN
+	                    IF #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Mem_Index_pos] = 0 THEN
+	                        #Act_XTS.Sync_PosFromXTS[#Act_XTS.Index_pos].Cmd_Cycle := FALSE;
+	                        #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] := #Act_XTS.Mem_MoverNb_Pos;
+	                        #Act_XTS.Index_pos := #Act_XTS.Mem_Index_pos;
+	                    ELSE
+	                        #Act_XTS.MemoryPos := #Act_XTS.MoverIN.rPos;
+	                    END_IF;
+	                    IF #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] = 0 THEN
+	                        #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] := #Act_XTS.Cfg_MoverNumber;
+	                    END_IF;
+	                END_IF;
+	                #Act_XTS.Sts_ManExe := FALSE;
+	                #Act_XTS.Cmd_NewRqst := FALSE;
+	                #Act_XTS.MoverOUT.rTargetPosition := - #Act_XTS.Cfg_LenghtRail;
+	                #Act_XTS.Cfg_InhbtMotionAlarm := FALSE;
+	                #Act_XTS.MoverOUT.bStopMoving := FALSE;
+	                #Act_XTS.MoverOUT.bGrpBothWay := TRUE;
+	                #Act_XTS.MoverOUT.bEnable := TRUE;
+	                #Act_XTS.MoverOUT.rDec := #Act_XTS.Cfg_AccDec_During_Reset;
+	                #Act_XTS.MoverOUT.rAcc := #Act_XTS.Cfg_AccDec_During_Reset;
+	                #Act_XTS.MoverOUT.rTargetSpeed := #Act_XTS.Cfg_Speed_During_Reset;
+	                IF #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] = #Act_XTS.Cfg_MoverNumber THEN
+	                    #Act_XTS.Sync_PosFromXTS[#Act_XTS.Index_pos].Cmd_Cycle := FALSE;
+	                END_IF;
+	                IF #Act_XTS.MemoryPos <> -88 AND #Act_XTS.MemoryPos <> -99 AND ABS(#Act_XTS.MemoryPos - #Act_XTS.MoverIN.rPos) > #Act_XTS.Cfg_IsMoved THEN
+	                    #Act_XTS.Sts_Pos[#Act_XTS.Index_pos].Mover_Moved := TRUE;
+	                END_IF;
+	            ELSIF #Act_XTS.Sts_TimeOut THEN
+	                #Act_XTS.Sts_Alms.%X4 := TRUE; // Alm Mover Group Change
+	                #Act_XTS.Sts_Idle := TRUE;
+	            ELSIF (NOT #Act_XTS.MoverIN.bGroupFF) AND (NOT #Act_XTS.MoverIN.bNoGroupCA) THEN
+	                IF #Act_XTS.MemoryPos = -88 OR #Act_XTS.MemoryPos = -99 THEN
+	                    #Act_XTS.Sts_Idle := TRUE;
+	                ELSIF ((NOT #Act_XTS.MoverIN_Mover[#Act_XTS.IN_PrevMover].bNoGroupCA) OR #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber] <> #Act_XTS.Sts_MoverInMD[#Act_XTS.Cfg_MoverNumber + 1] OR #Act_XTS.Cmd_FromHMi.%X1) THEN
+	                    #Act_XTS.Cmd_Seq := 11;
+	                END_IF;
+	            END_IF;
+	            
+	        11:// Start Mover to Memory Position - When Mover was Moved after his target position
+	            IF #Act_XTS.Sts_SeqOns THEN
+	                #Act_XTS.MoverOUT.rTargetPosition := #Act_XTS.MemoryPos;
+	                #Act_XTS.Cmd_NewRqst := TRUE;
+	            ELSIF #Act_XTS.Sts_TimeOut THEN
+	                #Act_XTS.MoverOUT.rTargetPosition := - #Act_XTS.Cfg_LenghtRail;
+	                #Act_XTS.Sts_Alms.%X0 := TRUE;// Alm Mover Motion Error
+	                #Act_XTS.Sts_Idle := TRUE;
+	                #Act_XTS.Cmd_NewRqst := FALSE;
+	            ELSIF #Act_XTS.Sts_NewMotionAck AND (#Act_XTS.Sts_Mover_PosOk OR (#Act_XTS.Sts_SeqT > 3000 AND (#Act_XTS.Sts_Mover_ColAvoidFF OR #Act_XTS.Sts_Mover_ColAvoidBW))) THEN
+	                IF ABS(#Act_XTS.MemoryPos - #Act_XTS.TargetPosition) >= #Act_XTS.Cfg_IsMoved OR #Act_XTS.Cfg_IsMoved <= 0 THEN
+	                    #Act_XTS.Sts_Idle := TRUE;
+	                    #Act_XTS.MemoryPos := -88;
+	                    #Act_XTS.Cmd_NewRqst := FALSE;
+	                END_IF;
+	                IF ABS(#Act_XTS.MemoryPos - #Act_XTS.TargetPosition) < #Act_XTS.Cfg_IsMoved AND #Act_XTS.Cfg_IsMoved > 0 THEN
+	                    #Act_XTS.Cmd_Seq := 12;
+	                    #Act_XTS.Cmd_NewRqst := FALSE;
+	                END_IF;
+	            END_IF;
+	            
+	        12://  Repositioning
+	            IF #Act_XTS.Sts_SeqOns THEN
+	                IF #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Station_Present AND #Act_XTS.TargetPosition <> #Act_XTS.MoverOUT.rTargetPosition THEN
+	                    #Act_XTS.MoverOUT.rTargetPosition := #Act_XTS.TargetPosition;
+	                    #Act_XTS.Cmd_NewRqst := TRUE;
+	                END_IF;
+	            ELSIF #Act_XTS.Sts_TimeOut THEN
+	                #Act_XTS.MoverOUT.rTargetPosition := - #Act_XTS.Cfg_LenghtRail;
+	                #Act_XTS.Sts_Alms.%X0 := TRUE; // Alm Mover Motion Error
+	                #Act_XTS.Sts_Idle := TRUE;
+	            ELSIF (#Act_XTS.Sts_NewMotionAck AND #Act_XTS.Sts_Mover_PosOk) OR (NOT #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Station_Present) THEN
+	                #Act_XTS.Sts_Idle := TRUE;
+	            ELSIF #Act_XTS.Sts_SeqT > 1000 AND (#Act_XTS.Sts_Mover_ColAvoidFF OR #Act_XTS.Sts_Mover_ColAvoidBW) THEN
+	                #Act_XTS.MoverOUT.rTargetPosition := - #Act_XTS.Cfg_LenghtRail;
+	                #Act_XTS.Sts_Idle := TRUE;
+	            END_IF;
+	            IF #Act_XTS.Sts_Idle THEN
+	                #Act_XTS.MemoryPos := -99;
+	                #Act_XTS.Cmd_NewRqst := FALSE;
+	            END_IF;
+	            
+	            
+	        100:// Exec Begin - Management Index Position  
+	            IF #Act_XTS.Sts_SeqOns THEN
+	                #Act_XTS.Tmr_Grp_TO(IN := FALSE,
+	                                    PT := #Act_XTS.Tmr_Grp_TO.PT);
+	                IF #Act_XTS.Mem_Force_Index <> 0 THEN
+	                    IF #Act_XTS.Mem_Force_Index < #Act_XTS.Index_pos THEN
+	                        FOR #Act_XTS.N := #Act_XTS.Mem_Force_Index TO #Act_XTS.Index_pos - #Act_XTS.Mem_Force_Index DO
+	                            #Act_XTS.Sts_Pos[#Act_XTS.N] := #Act_XTS.Empty_StatusPos;
+	                        END_FOR;
+	                    END_IF;
+	                    #Act_XTS.Index_pos := #Act_XTS.Mem_Force_Index;
+	                END_IF;
+	                #Act_XTS.MemoryPos := -99;
+	                #Act_XTS.MoverOUT.bGrpBothWay := FALSE;
+	                #Act_XTS.MoverOUT.bEnable := TRUE;
+	                IF #Act_XTS.Index_pos > #Act_XTS.Cfg_LastPos THEN
+	                    FOR #Act_XTS.N := 0 TO "Cfg_XTS_NbrMaxPosition" DO
+	                        #Act_XTS.Sts_Pos[#Act_XTS.N] := #Act_XTS.Empty_StatusPos;
+	                    END_FOR;
+	                    #Act_XTS.Index_pos := 0;
+	                END_IF;
+	            ELSIF (NOT #Act_XTS.MoverIN.bGroupFF) THEN
+	                #Act_XTS.Tmr_Grp_TO(IN := TRUE,
+	                                    PT := #Act_XTS.Par_TimeOut);
+	                IF #Act_XTS.Tmr_Grp_TO.Q THEN
+	                    #Act_XTS.Sts_Alms.%X4 := TRUE; // Alm Mover Group Change
+	                    #Act_XTS.Sts_Idle := TRUE;
+	                END_IF;
+	            ELSIF #Act_XTS.MoverIN.bGroupFF THEN
+	                #Act_XTS.Tmr_Grp_TO(IN := FALSE,
+	                                    PT := #Act_XTS.Tmr_Grp_TO.PT);
+	                IF (NOT #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Used) THEN
+	                    #Act_XTS.Index_pos := #Act_XTS.Index_pos + 1;
+	                    #Act_XTS.Mem_Force_Index := 0;
+	                    #Act_XTS.Cmd_Seq := 100;
+	                ELSIF #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Allow THEN
+	                    #Act_XTS.MoverOUT.rTargetSpeed := #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Speed;
+	                    #Act_XTS.MoverOUT.rDec := #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Dec;
+	                    #Act_XTS.MoverOUT.rAcc := #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Acc;
+	                    #Act_XTS.MoverOUT.rTargetPosition := #Act_XTS.TargetPosition;
+	                    #Act_XTS.Mem_Index_pos := #Act_XTS.Index_pos;
+	                    #Act_XTS.Cmd_Seq := 101;
+	                    #Act_XTS.Mem_Force_Index := 0;
+	                END_IF;
+	            END_IF;
+	            
+	        101:// Step management mover position
+	            IF #Act_XTS.Sts_SeqOns THEN
+	                #Act_XTS.Tmr_Pos_TO1(IN := FALSE,
+	                                     PT := #Act_XTS.Tmr_Pos_TO1.PT);
+	            END_IF;
+	            IF (NOT #Act_XTS.Sts_SeqOns) THEN
+	                IF #Act_XTS.Sts_HoldMotionNoCA AND (NOT #Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].bGroupFF OR #Act_XTS.Cmd_HaltMotion) THEN
+	                    #Act_XTS.MoverOUT.bStopMoving := TRUE;
+	                END_IF;
+	                IF #Act_XTS.Index_pos = #Act_XTS.Mem_Index_pos AND (NOT #Act_XTS.Cmd_HaltMotion) AND #Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].bGroupFF AND (NOT #Act_XTS.MoverIN_Mover[#Act_XTS.IN_NextMover].bNoGroupCA) THEN
+	                    #Act_XTS.MoverOUT.bStopMoving := FALSE;
+	                    #Act_XTS.MoverOUT.rTargetPosition := #Act_XTS.TargetPosition;
+	                END_IF;
+	                IF (NOT #Act_XTS.MoverOUT.bStopMoving) AND #Act_XTS.LastIndex_Pos = -1 AND (NOT #Act_XTS.Sync_PosFromXTS[#Act_XTS.Index_pos].Cmd_Cycle) AND (NOT #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Sts_Cycle) AND #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Force_Index = 0
+	                    AND (#Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] = 0 OR #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] = #Act_XTS.Cfg_MoverNumber) THEN
+	                    #Act_XTS.Tmr_Pos_TO1(IN := (NOT #Act_XTS.MoverIN.bIsMoving) AND (NOT #Act_XTS.Sts_Mover_ColAvoidFF OR ((NOT #Act_XTS.Cfg_InhbtMotionAlarm) AND (#Act_XTS.MoverIN.rPos >= #Act_XTS.TargetPosition))),
+	                                         PT := #Act_XTS.Par_TimeOut);
+	                    IF #Act_XTS.Sts_Mover_AnticipOk OR #Act_XTS.Sts_Mover_PosOk THEN
+	                        #Act_XTS.Tmr_Wait(IN := FALSE,
+	                                          PT := #Act_XTS.Tmr_Wait.PT);
+	                        #Act_XTS.Cmd_Seq := 102;
+	                    END_IF;
+	                    IF #Act_XTS.Tmr_Pos_TO1.Q THEN
+	                        #Act_XTS.MoverOUT.rTargetPosition := - #Act_XTS.Cfg_LenghtRail;
+	                        #Act_XTS.Sts_Alms.%X0 := TRUE; // Alm Mover Motion Error
+	                        #Act_XTS.Sts_Idle := TRUE;
+	                    END_IF;
+	                END_IF;
+	                IF #Act_XTS.Index_pos <> #Act_XTS.Mem_Index_pos AND #Act_XTS.Index_pos <> 0 AND #Act_XTS.Mem_Index_pos <> 0 THEN
+	                    #Act_XTS.Cmd_Seq := 100;
+	                END_IF;
+	                IF #Act_XTS.MoverOUT.rTargetSpeed = 0 THEN
+	                    #Act_XTS.MoverOUT.rTargetPosition := - #Act_XTS.Cfg_LenghtRail;
+	                    #Act_XTS.Sts_Alms.%X0 := TRUE; // Alm Mover Motion Error
+	                    #Act_XTS.Sts_Idle := TRUE;
+	                END_IF;
+	            END_IF;
+	            
+	        102:// Check is station is present at index position
+	            IF #Act_XTS.Sts_SeqOns THEN
+	                #Act_XTS.Tmr_Pos_TO3 (IN := FALSE,
+	                PT := #Act_XTS.Tmr_Pos_TO3.PT);
+	            END_IF;
+	            
+	            #Act_XTS.Tmr_Wait(IN := #Act_XTS.Sts_Mover_PosOk OR #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].WaitTime = 0,
+	                              PT := #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].WaitTime);
+	            #Act_XTS.Tmr_Pos_TO3 (IN := (NOT #Act_XTS.MoverIN.bIsMoving) AND ((NOT #Act_XTS.Sts_Mover_ColAvoidFF) OR ((NOT #Act_XTS.Cfg_InhbtMotionAlarm) AND (#Act_XTS.MoverIN.rPos >= #Act_XTS.TargetPosition))),
+	            PT := #Act_XTS.Par_TimeOut);
+	            
+	            IF #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Station_Present THEN
+	                #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] := #Act_XTS.Cfg_MoverNumber;
+	                #Act_XTS.Sync_PosFromXTS[#Act_XTS.Index_pos].Cmd_Cycle := TRUE;
+	                #Act_XTS.Cmd_Seq := 103;
+	            ELSIF #Act_XTS.Tmr_Wait.Q OR #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].WaitTime = 0 THEN
+	                #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] := 0;
+	                #Act_XTS.Index_pos := #Act_XTS.Index_pos + 1;
+	                IF #Act_XTS.Cfg_Pos[#Act_XTS.Index_pos].Anticip <> -1 OR (NOT #Act_XTS.Sts_MD_Exec) THEN
+	                    #Act_XTS.Sts_Idle := TRUE;
+	                ELSE
+	                    #Act_XTS.Cmd_Seq := 100;
+	                END_IF;
+	            ELSIF #Act_XTS.Tmr_Pos_TO3.Q THEN
+	                #Act_XTS.MoverOUT.rTargetPosition := - #Act_XTS.Cfg_LenghtRail;
+	                #Act_XTS.Sts_Alms.%X0 := TRUE; // Alm Mover Motion Error
+	                #Act_XTS.Sts_Idle := TRUE;
+	            END_IF;
+	            
+	        103:// End of Cmd_Cycle
+	            IF #Act_XTS.Sts_SeqOns THEN
+	                #Act_XTS.Tmr_Pos_TO2(IN := FALSE,
+	                                     PT := #Act_XTS.Tmr_Pos_TO2.PT);
+	            END_IF;
+	            
+	            #Act_XTS.Tmr_Pos_TO2(IN := (NOT #Act_XTS.Sts_Mover_PosOk) AND (NOT #Act_XTS.MoverIN.bIsMoving) AND ((NOT #Act_XTS.Sts_Mover_ColAvoidFF) OR (#Act_XTS.MoverIN.rPos >= #Act_XTS.TargetPosition AND #Act_XTS.Sts_Mover_OutOfAnticip)),
+	                                 PT := #Act_XTS.Par_TimeOut);
+	            
+	            IF #Act_XTS.Tmr_Pos_TO2.Q THEN
+	                #Act_XTS.Sts_Alms.%X0 := TRUE; // Alm Mover Motion Error
+	                #Act_XTS.Sts_Idle := TRUE;
+	            END_IF;
+	            IF #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Sts_Cycle AND #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Force_Index > 0 THEN
+	                #Act_XTS.Mem_Force_Index := #Act_XTS.Sync_PosToXTS[#Act_XTS.Index_pos].Cmd_Force_Index;
+	                #Act_XTS.Sync_PosFromXTS[#Act_XTS.Index_pos].Cmd_Cycle := FALSE;
+	                #Act_XTS.LastIndex_Pos := #Act_XTS.Index_pos;
+	                #Act_XTS.Pos_LastIndex_Pos := #Act_XTS.MoverIN.rPos;
+	                IF (NOT #Act_XTS.Sts_MD_Exec) THEN
+	                    #Act_XTS.Sts_Idle := TRUE;
+	                ELSE
+	                    #Act_XTS.Cmd_Seq := 100;
+	                END_IF;
+	            END_IF;
+	            
+	        110:// ExecManual  Begin - Switch to group BothWay
+	            IF #Act_XTS.Sts_SeqOns THEN
+	                #Act_XTS.MoverOUT.bStopMoving := FALSE;
+	                #Act_XTS.MoverOUT.bGrpBothWay := TRUE;
+	                IF NOT #Act_XTS.Sts_ManExe THEN
+	                    #Act_XTS.Mem_Index_pos := #Act_XTS.Index_pos;
+	                    #Act_XTS.MemoryPos := #Act_XTS.MoverIN.rPos;
+	                END_IF;
+	                IF #Act_XTS.Index_pos <> #Act_XTS.InterfaceHMi.Cmd_ForceIndex AND #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] = #Act_XTS.Cfg_MoverNumber THEN
+	                    #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] := 0;
+	                END_IF;
+	                #Act_XTS.Index_pos := #Act_XTS.InterfaceHMi.Cmd_ForceIndex;
+	                #Act_XTS.Mem_MoverNb_Pos := #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.InterfaceHMi.Cmd_ForceIndex];
+	            ELSIF #Act_XTS.Sts_TimeOut THEN
+	                #Act_XTS.Sts_Alms.%X4 := TRUE; // Alm Mover Group Change
+	                #Act_XTS.Sts_Idle := TRUE;
+	            ELSIF (NOT #Act_XTS.MoverIN.bGroupFF) AND (NOT #Act_XTS.MoverIN.bNoGroupCA) THEN
+	                #Act_XTS.Cmd_Seq := 111;
+	            END_IF;
+	            
+	        111: // Start Mover to Position 
+	            IF #Act_XTS.Sts_SeqOns THEN
+	                #Act_XTS.MoverOUT.rDec := #Act_XTS.Cfg_AccDec_During_Reset;
+	                #Act_XTS.MoverOUT.rAcc := #Act_XTS.Cfg_AccDec_During_Reset;
+	                #Act_XTS.MoverOUT.rTargetSpeed := #Act_XTS.Cfg_Speed_During_Reset;
+	                #Act_XTS.MoverOUT.rTargetPosition := #Act_XTS.TargetPosition;
+	                #Act_XTS.Sts_ManExe := TRUE;
+	            ELSIF #Act_XTS.Sts_Mover_PosOk OR #Act_XTS.Sts_Mover_ColAvoidFF OR #Act_XTS.Sts_Mover_ColAvoidBW THEN
+	                #Act_XTS.Sync_PosFromXTS[#Act_XTS.Mem_Index_pos].Cmd_Cycle := FALSE;
+	                #Act_XTS.Sync_PosFromXTS[#Act_XTS.Index_pos].Cmd_Cycle := TRUE;
+	                #Act_XTS.Sts_MoverNb_Pos[#Act_XTS.Index_pos] := #Act_XTS.Cfg_MoverNumber;
+	                #Act_XTS.LastIndex_Pos := -1;
+	                #Act_XTS.Sts_Idle := TRUE;
+	            END_IF;
+	            
+	    END_CASE;
+	END_REGION
+	
+	REGION Update Direction FOR motion
+	    #Act_XTS.MoverOUT.bPositive_Direction := #Act_XTS.Cfg_Positive_Direction;
+	END_REGION
+	
+	REGION New Motion
+	    //Rising Edge
+	    #Act_XTS.ONS.%X0 := #Act_XTS.Cmd_NewRqst AND NOT #Act_XTS.RisingEdge1;
+	    #Act_XTS.RisingEdge1 := #Act_XTS.Cmd_NewRqst;
+	    
+	    IF #Act_XTS.ONS.%X0 THEN
+	        #Act_XTS.Sts_NewMotionAck := FALSE;
+	        IF #Act_XTS.MoverIN.bNewMotionAck THEN
+	            #Act_XTS.Memo_NewMotionAck := true;
+	        ELSE
+	            #Act_XTS.Memo_NewMotionAck := false;
+	        END_IF;
+	    END_IF;
+	END_REGION
+	
+	REGION Alarms management
+	    #Act_XTS.Sts_AlmOns := #Act_XTS.Sts_Alms <> 0 AND #Act_XTS.Sts_NoAlm;
+	    IF #Act_XTS.Sts_AlmOns THEN
+	        #Act_XTS.MoverOUT.bStopMoving := TRUE;
+	    END_IF;
+	    #Act_XTS.Sts_NoAlm := #Act_XTS.Sts_Alms = 0;
+	END_REGION
+	
+	REGION Clear Status AND Command in Idle
+	    IF #Act_XTS.Sts_Idle THEN
+	        #Act_XTS.Cmd_Seq := 0;
+	        #Act_XTS.Sts_Seq := 0;
+	        #Act_XTS.Cmd_Out := 0;
+	    END_IF;
+	END_REGION
+	
+	REGION Save Index_pos
+	    #Act_XTS.Index_Pos_Mover[#Act_XTS.Cfg_MoverNumber] := #Act_XTS.Index_pos;
+	END_REGION
+	
+	REGION Loop
+	    IF (#Act_XTS.Sts_Seq = 101 AND #Act_XTS.Cmd_Seq = 102) OR (#Act_XTS.Sts_Seq = 103 AND #Act_XTS.Cmd_Seq = 100) THEN
+	        GOTO Loop;
+	    END_IF;
+	END_REGION
+END_FUNCTION
+

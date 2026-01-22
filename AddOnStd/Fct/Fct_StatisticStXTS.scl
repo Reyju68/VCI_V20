@@ -1,0 +1,103 @@
+﻿FUNCTION_BLOCK "Fct_StatisticStXTS"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT RETAIN
+      Prog : "Typ_MgrProg";
+      Sts_CmdSuspend : Bool;
+      NbrOfNest : DInt;
+      NoPuckNoMover : Bool;
+      TrackNumber : DInt;
+      EnableTmrMainSeq : Bool;
+   END_VAR
+
+   VAR_IN_OUT 
+      Station : "Typ_StationMgtXTS";
+   END_VAR
+
+   VAR 
+      Sts_CmdHold : Bool;
+      Sts_MemoLastCycleTime : Array[1..#LEN] of DInt;
+      Sts_AvrCycleTime : DInt;
+      Sts_AvrPartRate : DInt;
+      Tmr_StCycleTime {InstructionName := 'TON_TIME'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON_TIME;
+      N { S7_SetPoint := 'True'} : DInt;
+      AllCycleTime : DInt;
+      Size : DInt;
+      rTriqIdle {InstructionName := 'R_TRIG'; LibVersion := '1.0'; S7_SetPoint := 'False'} : R_TRIG;
+   END_VAR
+
+   VAR_TEMP 
+      MemoLastCycleTime : Array[1..#LEN] of DInt;
+      Tmp_TrackDsblCtr : DInt;
+   END_VAR
+
+   VAR CONSTANT 
+      LEN : DInt := 10;
+   END_VAR
+
+
+BEGIN
+	// Average Cycle Time Calculation
+	IF (NOT #Prog.Sts_Idle) THEN
+	    #AllCycleTime := 0;
+	    #Size := #LEN;
+	    FOR #N := 1 TO #Size DO
+	        #AllCycleTime := #AllCycleTime + #Sts_MemoLastCycleTime[#N];
+	        IF #Sts_MemoLastCycleTime[#N] = 0 THEN
+	            EXIT;
+	        END_IF;
+	    END_FOR;
+	    
+	    IF #N = 11 THEN
+	        #Sts_AvrCycleTime := #AllCycleTime / (#N - 1);
+	    ELSIF #N > 1 THEN
+	        #Sts_AvrCycleTime := #AllCycleTime / #N;
+	    ELSE
+	        #Sts_AvrCycleTime := #AllCycleTime;
+	    END_IF;
+	END_IF;
+	//  Slow Status Update
+	#Tmr_StCycleTime.IN := (#EnableTmrMainSeq AND (NOT #Prog.Cfg_SeqStep));
+	#Tmr_StCycleTime.PT := T#7158M47S295MS;
+	#Station.Sts_Slow := #Tmr_StCycleTime.IN AND #Tmr_StCycleTime.ET > #Prog.Par_TimeIdeal;
+	#Sts_CmdHold := #Station.Sts_Slow AND (NOT #Sts_CmdSuspend);
+	#Station.Sts_Slow := #Station.Sts_Slow OR #Sts_AvrCycleTime > (#Prog.Par_TimeIdeal + (#Prog.Par_TimeIdeal * 0.1));
+	
+	
+	// Average Part Rate Calculation
+	#Tmp_TrackDsblCtr := 0;
+	IF #Station.Sts_LimpManu.%X1 THEN
+	    #Tmp_TrackDsblCtr := #Tmp_TrackDsblCtr + #NbrOfNest;
+	END_IF;
+	IF #Station.Sts_LimpManu.%X2 THEN
+	    #Tmp_TrackDsblCtr := #Tmp_TrackDsblCtr + #NbrOfNest;
+	END_IF;
+	IF #Station.Sts_LimpManu.%X3 THEN
+	    #Tmp_TrackDsblCtr := #Tmp_TrackDsblCtr + #NbrOfNest;
+	END_IF;
+	IF #Station.Sts_LimpManu.%X4 THEN
+	    #Tmp_TrackDsblCtr := #Tmp_TrackDsblCtr + #NbrOfNest;
+	END_IF;
+	IF #NoPuckNoMover AND #Station.Sts_LimpManu <> 0 THEN
+	    #Tmp_TrackDsblCtr := #TrackNumber;
+	END_IF;
+	IF #Sts_AvrCycleTime <> 0 THEN
+	    #Sts_AvrPartRate := (#TrackNumber - #Tmp_TrackDsblCtr) * 60000 / #Sts_AvrCycleTime;
+	END_IF;
+	#rTriqIdle(CLK := #Prog.Sts_Idle);
+	// Reset Timer and Memorize Datas
+	IF #Prog.Sts_State.%X2 AND #rTriqIdle.Q THEN
+	    
+	    FOR #N := 1 TO #Size DO
+	        #MemoLastCycleTime[#N] := #Sts_MemoLastCycleTime[#N];
+	    END_FOR;
+	    FOR #N := 1 TO #Size - 1 DO
+	        #Sts_MemoLastCycleTime[#N + 1] := #MemoLastCycleTime[#N];
+	    END_FOR;
+	    #Sts_MemoLastCycleTime[1] := #Tmr_StCycleTime.ET;
+	    #Tmr_StCycleTime.IN := FALSE;
+	END_IF;
+	
+	
+END_FUNCTION_BLOCK
+

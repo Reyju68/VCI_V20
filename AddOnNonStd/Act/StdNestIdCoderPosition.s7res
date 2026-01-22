@@ -1,0 +1,44 @@
+﻿MultiLingualTexts:
+  - id: MLC_3Ah
+    en-US: StdNestIdCoderPosition
+  - id: MLC_3md
+    en-US: |-
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+  - id: MLC_Nz
+    en-US: Actual Position, Coder Input
+  - id: MLC_de
+    en-US: Number of  KSL or KSD Positions
+  - id: MLC_5Aa
+    en-US: Nest Before ST01 for Teaching
+  - id: MLC_54r
+    en-US: Actual Position / 360 Deg
+  - id: MLC_4SM
+    en-US: Actual Nest on ST01, NestID
+  - id: MLC_3fg
+    en-US: Command for Teach Coder
+  - id: MLC_4pN
+    en-US: Status Coder Teached
+  - id: MLC_4Ya
+    en-US: Max Point Number, Nb Position x 360
+  - id: MLC_4ZR
+    en-US: Actual Converted Postion (Real)
+  - id: MLC_3CT
+    en-US: Actual Converted Postion (Dint)
+  - id: MLC_tB
+    en-US: Offset of Converted Value
+  - id: MLC_4X2
+    en-US: Offset of Input Value
+  - id: MLC_4wr
+    en-US: Retrieve coder position
+  - id: MLC_3Tw
+    en-US: Max Points Number
+  - id: MLC_e4
+    en-US: Write offset
+  - id: MLC_56u
+    en-US: Actual Position
+  - id: MLC_3NL
+    en-US: NestID
+  - id: MLC_4zH
+    en-US: Actual Position / 360

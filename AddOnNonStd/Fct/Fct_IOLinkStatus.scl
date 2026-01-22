@@ -1,0 +1,124 @@
+﻿FUNCTION_BLOCK "Fct_IOLinkStatus"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_MasterHw : HW_DEVICE;   // Hardware address for Master PNIO
+      Cfg_EnablePort0 : Bool;   // Configuration Port 0 Enable
+      Cfg_EnablePort1 : Bool;   // Configuration Port 1 Enable
+      Cfg_EnablePort2 : Bool;   // Configuration Port 2 Enable
+      Cfg_EnablePort3 : Bool;   // Configuration Port 3 Enable
+      Cfg_EnablePort4 : Bool;   // Configuration Port 4 Enable
+      Cfg_EnablePort5 : Bool;   // Configuration Port 5 Enable
+      Cfg_EnablePort6 : Bool;   // Configuration Port 6 Enable
+      Cfg_EnablePort7 : Bool;   // Configuration Port 7 Enable
+   END_VAR
+
+   VAR_OUTPUT 
+      OUT_Pins2 : Byte;   // Outputs for pins 2
+      Sts_NoAlm : Bool;   // Status No Alarm
+      Sts_Port0_InError : Bool;   // Status Port 0 In Error
+      Sts_Port1_InError : Bool;   // Status Port 1 In Error
+      Sts_Port2_InError : Bool;   // Status Port 2 In Error
+      Sts_Port3_InError : Bool;   // Status Port 3 In Error
+      Sts_Port4_InError : Bool;   // Status Port 4 In Error
+      Sts_Port5_InError : Bool;   // Status Port 5 In Error
+      Sts_Port6_InError : Bool;   // Status Port 6 In Error
+      Sts_Port7_InError : Bool;   // Status Port 7 In Error
+   END_VAR
+
+   VAR_IN_OUT 
+      Cmd_Ack : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      tmpStatus : Array[0..128] of Bool;
+      RetValStates : Int;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	    //===============================================================================
+	    // IMA Automation Switzerland / (c)Copyright 2022
+	    //-------------------------------------------------------------------------------
+	    // Title:            Fct_IOLinkStatus
+	    // Function:         Io_Link slave status management
+	    // Library:          Mechatronic TIA
+	    // Author:           RJA
+	    // Tested with:      CPU 1517TF-3 PN/DP
+	    // Engineering:      TIA Portal V17
+	    // Restrictions:     S7-1200/1500
+	    // Requirements:     --
+	    //-------------------------------------------------------------------------------
+	    // Change log table:
+	    // Version  | Date       | Expert in charge       | Changes applied
+	    //----------|------------|------------------------|------------------------------
+	    // 00.00.01 | 23.09.2022 | RJA                    | First release for TIA Portal V17
+	    //          |            |                        | 
+	    //===============================================================================
+	END_REGION
+	REGION Reset Master Status
+	    IF #Cmd_Ack THEN
+	        #Cmd_Ack := FALSE;
+	        #Sts_Port0_InError := FALSE;
+	        #Sts_Port1_InError := FALSE;
+	        #Sts_Port2_InError := FALSE;
+	        #Sts_Port3_InError := FALSE;
+	        #Sts_Port4_InError := FALSE;
+	        #Sts_Port5_InError := FALSE;
+	        #Sts_Port6_InError := FALSE;
+	        #Sts_Port7_InError := FALSE;
+	    END_IF;
+	END_REGION
+	
+	REGION Status Master
+	    #RetValStates := ModuleStates(LADDR := #Cfg_MasterHw, MODE := 5, STATE := #tmpStatus);
+	    IF #tmpStatus[3] AND #Cfg_EnablePort0 THEN
+	        #Sts_Port0_InError := TRUE;
+	    END_IF;
+	    IF #tmpStatus[4] AND #Cfg_EnablePort1 THEN
+	        #Sts_Port1_InError := TRUE;
+	    END_IF;
+	    IF #tmpStatus[5] AND #Cfg_EnablePort2 THEN
+	        #Sts_Port2_InError := TRUE;
+	    END_IF;
+	    IF #tmpStatus[6] AND #Cfg_EnablePort3 THEN
+	        #Sts_Port3_InError := TRUE;
+	    END_IF;
+	    IF #tmpStatus[7] AND #Cfg_EnablePort4 THEN
+	        #Sts_Port4_InError := TRUE;
+	    END_IF;
+	    IF #tmpStatus[8] AND #Cfg_EnablePort5 THEN
+	        #Sts_Port5_InError := TRUE;
+	    END_IF;
+	    IF #tmpStatus[9] AND #Cfg_EnablePort6 THEN
+	        #Sts_Port6_InError := TRUE;
+	    END_IF;
+	    IF #tmpStatus[10] AND #Cfg_EnablePort7 THEN
+	        #Sts_Port7_InError := TRUE;
+	    END_IF;
+	END_REGION
+	
+	REGION Handle outputs for pin2
+	    #OUT_Pins2.%X0 := #Cfg_EnablePort0;
+	    #OUT_Pins2.%X1 := #Cfg_EnablePort1;
+	    #OUT_Pins2.%X2 := #Cfg_EnablePort2;
+	    #OUT_Pins2.%X3 := #Cfg_EnablePort3;
+	    #OUT_Pins2.%X4 := #Cfg_EnablePort4;
+	    #OUT_Pins2.%X5 := #Cfg_EnablePort5;
+	    #OUT_Pins2.%X6 := #Cfg_EnablePort6;
+	    #OUT_Pins2.%X7 := #Cfg_EnablePort7;
+	END_REGION
+	
+	REGION Main alarm
+	    #Sts_NoAlm := NOT #Sts_Port0_InError AND
+	    NOT #Sts_Port1_InError AND
+	    NOT #Sts_Port2_InError AND
+	    NOT #Sts_Port3_InError AND
+	    NOT #Sts_Port4_InError AND
+	    NOT #Sts_Port5_InError AND
+	    NOT #Sts_Port6_InError AND
+	    NOT #Sts_Port7_InError;
+	END_REGION
+END_FUNCTION_BLOCK
+

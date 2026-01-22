@@ -1,0 +1,112 @@
+﻿MultiLingualTexts:
+  - id: MLC_3Ld
+    en-US: Active Pulse-Flip/Flop Module
+  - id: MLC_3PS
+    en-US: |-
+      02 Sep. 2022
+       - New Revision Roles (StdAddonsTIA_SCN_V004.docx)
+
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+
+      19 Jun 2025
+      - Ajout du controle du First Scan avant les temporisations
+  - id: MLC_3Hg
+    en-US: Parameter to define the ideal execution time
+  - id: MLC_4nn
+    en-US: Parameter to define the timer ON preset
+  - id: MLC_3c7
+    en-US: Parameter to define the timer OFF preset
+  - id: MLC_3Eu
+    en-US: Configuration to deactivate the statistic management
+  - id: MLC_Tp
+    en-US: Configuration instruction to request emulated mode
+  - id: MLC_4Ad
+    en-US: Configurable instruction to automatically update Cmd_Out versus Cmd_Inp (i.e. probe)
+  - id: MLC_Ut
+    en-US: Configurable instruction to disable any alarm
+  - id: MLC_34K
+    en-US: Configuration to define the activation time of the pulses
+  - id: MLC_uq
+    en-US: Command to reset the statistic informations
+  - id: MLC_36w
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_3HT
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_3jp
+    en-US: Command to update versus physical input
+  - id: MLC_3rt
+    en-US: Command send by the station sequence to enable or disable the actuator
+  - id: MLC_3LF
+    en-US: Status to inform about or to emulate physical input
+  - id: MLC_3m6
+    en-US: Status to control physical output
+  - id: MLC_3Yv
+    en-US: Status to inform that time ON has been reached
+  - id: MLC_567
+    en-US: Status to inform that time OFF has been reached
+  - id: MLC_48j
+    en-US: 'Status to inform when Cmd_Out:=0 was not able to complete before end of time out'
+  - id: MLC_53u
+    en-US: 'Status to inform when Cmd_Out:=1 was not able to complete before end of time out'
+  - id: MLC_4Ki
+    en-US: Status to inform while no alarm pending
+  - id: MLC_4QX
+    en-US: Status to inform tick
+  - id: MLC_4R2
+    en-US: Status to inform command edge
+  - id: MLC_vM
+    en-US: Status to inform alarm coming edge
+  - id: MLC_3aR
+    en-US: Reporting value to give current execution elapsed time
+  - id: MLC_iS
+    en-US: Reporting counter for failed actions since last clear
+  - id: MLC_38e
+    en-US: Reporting counter for total executed actions since last clear
+  - id: MLC_3Wk
+    en-US: Reporting statistic information
+  - id: MLC_3LV
+    en-US: Tick Report
+  - id: MLC_4bz
+    en-US: TimeOut
+  - id: MLC_3wC
+    en-US: OFF Timer
+  - id: MLC_3Vw
+    en-US: ON Timer
+  - id: MLC_4kj
+    en-US: Tick Timer
+  - id: MLC_Lp
+    en-US: Actuator Statistics
+  - id: MLC_3Nf
+    en-US: First PLC Scan
+  - id: MLC_32A
+    en-US: Acknowledge management
+  - id: MLC_4TD
+    en-US: Miror mode management
+  - id: MLC_37Q
+    en-US: Mode Emulate management
+  - id: MLC_t7
+    en-US: Timer ON management
+  - id: MLC_4wY
+    en-US: |-
+      TimeON management: If the input (Sts_inp) is activated continiousliy during the TON time, the output (Sts_Done) is activated and will stay active until the end of the TimeOFF
+      Note: With the Cmd_Trig, it's possible to force the output without have to wait the entire time.
+  - id: MLC_4qx
+    en-US: 'TimeOFF Management: The Output (Sts_Doff) will be activated only when the TimeON will be deactivated'
+  - id: MLC_3UY
+    en-US: Timer Tick Control
+  - id: MLC_54M
+    en-US: |-
+      Pulsed output management: A train of pulse will be generated. 
+      Train of pulse: 
+      Start -> Changing state of Cmd_Out (Low to High)
+      End -> at the end of the pulse when Cmd_Out == 0 or if the TimeON is done (Sts_Done == 1)
+      Cycle time -> TimeOFF parameter
+      Duration of the pulse -> (1 - 1/Cfg_TckPar) * Cycle time
+  - id: MLC_3aX
+    en-US: If NO Command Reset AND NO Status_Alarm AND TimeOut is over AND NO Config_NoAlarm THEN set Status_Alarm
+  - id: MLC_3FQ
+    en-US: Update Status_Input versus Command_Input
+  - id: MLC_3w4
+    en-US: Actuators Statistics

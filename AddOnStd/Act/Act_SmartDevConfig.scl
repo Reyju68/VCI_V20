@@ -1,0 +1,318 @@
+﻿FUNCTION_BLOCK "Act_SmartDevConfig"
+TITLE = Act_SmartDevConfig
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+AUTHOR : RJA
+FAMILY : IMA
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_CheckTimeOut : DInt;   // Time period for Autocheck of configurations (minutes)
+      Cfg_AutoCheck : Bool;   // Enable AutoCheck (0=Disable;1=Enable)
+      Cfg_Cap : UInt;   // Client Acces Point (See manual Manufacteror)
+      Cfg_Port : Int;   // Port on master
+      Cfg_PortHw : HW_IO;   // Port hardware address
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts_Alm0 : Bool;   // Alarm Autocheck failed
+      Sts_Alm1 : Bool;   // Alarms communication; See StsCfgER - Sts_Exerr - Sts_ERR
+      Sts_NoAlm : Bool;   // No alarms present
+      Sts_CfgEr : DInt;   // Index of configuration that caused error
+      Sts_ERR : DInt;   // Communication Error
+      Sts_Exerr : DInt;   // Communication extended Error
+      Rep_AutocheckTime : DInt;   // Remaning time before Autocheck
+      Sts_AutoCheckStep : DInt;   // Status of AutoCheck sequence
+      Sts_ReadStep : DInt;   // Status of Read sequence
+      Sts_WriteStep : DInt;   // Status of Write sequence
+   END_VAR
+
+   VAR_IN_OUT 
+      Cmd_Ack : Bool;   // Acknowledge of Alarms
+      Cmd_Write : Bool;   // Command write configurations to device
+      Cmd_Read : Bool;   // Command read configurations from device
+      Cmd_ReadAndSave : Bool;   // Command read from device; then save in SmartDevCfg array
+      SmartDevCfg : Array[*] of "Typ_IoLinkCfgSmartDev";   // Array with SmartDev configurations
+   END_VAR
+
+   VAR 
+      FS : Bool;   // FirstScan
+      ArrayIndex : DInt;
+      ArraySize : DInt;
+      AutoCheckStep : DInt;
+      ReadStep : DInt;
+      WriteStep : DInt;
+      AutoCheckTmr {InstructionName := 'TON_TIME'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON_TIME;
+      DataLen { S7_SetPoint := 'True'} : DInt;
+      iCount : DInt;
+      StartData : DInt;
+      Data : Array[0..231] of Byte;
+      CheckNotOk : Bool;
+      OneShotMSG : Bool;
+      StartMsg : Bool;
+      SmartDevMSG { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : "LIOLink_Device";
+      Response { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Int;
+   END_VAR
+
+   VAR_TEMP 
+      BufferPos : DInt;
+   END_VAR
+
+   VAR CONSTANT 
+      "False" : Bool := FALSE;
+      "True" : Bool := TRUE;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	    //===============================================================================
+	    // IMA Automation Switzerland / (c)Copyright 2022
+	    //-------------------------------------------------------------------------------
+	    // Title:            Act_SmartDevConfig
+	    // Function:         Io_Link Smart Devices Configurator
+	    // Library:          Mechatronic RA
+	    // Author:           RJA
+	    // Tested with:      CPU 1517TF-3 PN/DP
+	    // Engineering:      TIA Portal V17
+	    // Restrictions:     S7-1200/1500
+	    // Requirements:     --
+	    //-------------------------------------------------------------------------------
+	    // Change log table:
+	    // Version  | Date       | Expert in charge       | Changes applied
+	    //----------|------------|------------------------|------------------------------
+	    // 00.00.01 | 17.02.2022 | RJA                    | First release for TIA Portal V17
+	    // 00.00.10 | 01.04.2022 | RJA                    | Add input: "Cfg_Cap"
+	    // 00.00.20 | 15.09.2022 | RJA                    | Add Status bits
+	    // 01.00.10 | 19.10.2022 | RJA                    | Correction AutoCheck Routine: No check for ReadOnly Pars
+	    //          |            |                        | 
+	    //===============================================================================
+	END_REGION
+	
+	REGION FIRST SCAN
+	    IF #FS THEN
+	        #ReadStep := 0;
+	        #WriteStep := 0;
+	        #Sts_Alm0 := 0;
+	        #Sts_Alm1 := 0;
+	        #FS := 1;
+	    END_IF;
+	END_REGION
+	
+	REGION RESET
+	    IF #Cmd_Ack THEN
+	        #Sts_Alm0 := 0;
+	        #Sts_Alm1 := 0;
+	        #Cmd_Ack := 0;
+	        #Sts_CfgEr := 0;
+	        #Sts_ERR := 0;
+	        #Sts_Exerr := 0;
+	    END_IF;
+	END_REGION
+	
+	REGION INITIALIZATION AND TIMING
+	    //Handle timer for AutoCheck
+	    #AutoCheckTmr(IN := (#Cfg_CheckTimeOut <> 0) AND #Cfg_AutoCheck AND NOT #AutoCheckTmr.Q,
+	                  PT := #Cfg_CheckTimeOut * 60000);
+	    #Rep_AutocheckTime := 0;              //reset remaining time
+	    
+	    IF (#Cfg_CheckTimeOut <> 0) AND #Cfg_AutoCheck THEN
+	        #Rep_AutocheckTime := #AutoCheckTmr.PT - #AutoCheckTmr.ET;    //Calculate remaining time
+	    END_IF;
+	    #ArraySize := UPPER_BOUND(ARR := #SmartDevCfg, DIM := 1);
+	    #SmartDevMSG."port" := #Cfg_Port + 1;
+	    #SmartDevMSG.hwID := #Cfg_PortHw;
+	    #SmartDevMSG.cap := #Cfg_Cap;     // Manufacteror specofique Balluff=255 Murr= 16#B400
+	END_REGION
+	
+	REGION COMMANDS
+	    //Handle Commands
+	    IF #WriteStep = 0 AND #ReadStep = 0 AND #AutoCheckStep = 0 THEN
+	        IF #AutoCheckTmr.Q AND #Cfg_AutoCheck THEN
+	            #AutoCheckStep := 1;             //Start AutoCheck Sequence
+	        ELSIF #Cmd_Write THEN
+	            #WriteStep := 1;              //Start write of parameters to device
+	        ELSIF #Cmd_Read OR #Cmd_ReadAndSave THEN
+	            #ReadStep := 1;              //Start read of parameters from device
+	        END_IF;
+	    END_IF;
+	END_REGION
+	
+	
+	REGION READ DATA
+	    //Read sequence
+	    CASE #ReadStep OF
+	        1:
+	            #Sts_Alm0 := 0;                 //Reset Akarms from previous commands
+	            #Sts_Alm1 := 0;
+	            #Sts_CfgEr := 0;
+	            #Sts_ERR := 0;
+	            #Sts_Exerr := 0;
+	            #ArrayIndex := 1;
+	            #SmartDevMSG.readWrite := 0;    //SetMsg to READ
+	            #ReadStep := 2;                 //Next step
+	        2:
+	            IF #SmartDevCfg[#ArrayIndex].Index = 0 THEN     //If valid parametre continue to next step
+	                #ReadStep := 5;
+	            ELSE
+	                #ReadStep := 3;
+	            END_IF;
+	            
+	        3:
+	            FILL_BLK(IN := 0,
+	                     COUNT := 32,
+	                     OUT => #Data[0]); //Clear Data
+	            #SmartDevMSG.readLen := 0;         //set read lenght
+	            #SmartDevMSG.index := #SmartDevCfg[#ArrayIndex].Index;
+	            #SmartDevMSG.subindex := #SmartDevCfg[#ArrayIndex].SubIndex;
+	            #StartMsg := 1;            //Start sending MSG
+	            #ReadStep := 4;
+	        4:
+	            IF NOT #StartMsg THEN
+	                IF #SmartDevMSG.error THEN               //Store errors from SmartDevMsg
+	                    #Sts_CfgEr := #ArrayIndex;
+	                    #Sts_ERR := #SmartDevMSG.status;
+	                    #Sts_Exerr := DWORD_TO_DINT(#SmartDevMSG.diagnostics.subfunctionStatus);
+	                    #Sts_Alm1 := True;
+	                ELSE
+	                    #SmartDevCfg[#ArrayIndex].OnlineData := 0;                  //Restore received bytes (Data[0..3] to OnlineData
+	                    IF #SmartDevMSG.readLen = 1 THEN
+	                        #SmartDevCfg[#ArrayIndex].OnlineData.%B0 := #Data[0];
+	                    ELSIF #SmartDevMSG.readLen = 2 THEN
+	                        #SmartDevCfg[#ArrayIndex].OnlineData.%B0 := #Data[1];
+	                        #SmartDevCfg[#ArrayIndex].OnlineData.%B1 := #Data[0];
+	                    ELSE
+	                        #SmartDevCfg[#ArrayIndex].OnlineData.%B0 := #Data[3];
+	                        #SmartDevCfg[#ArrayIndex].OnlineData.%B1 := #Data[2];
+	                        #SmartDevCfg[#ArrayIndex].OnlineData.%B2 := #Data[1];
+	                        #SmartDevCfg[#ArrayIndex].OnlineData.%B3 := #Data[0];
+	                    END_IF;
+	                    
+	                    IF #Cmd_ReadAndSave THEN
+	                        #SmartDevCfg[#ArrayIndex].Data := #SmartDevCfg[#ArrayIndex].OnlineData; //Copie to parametre if Cmd_ReadAndSave
+	                    END_IF;
+	                END_IF;
+	                #ReadStep := 5;    //MESSAGE done goto next step
+	            END_IF;
+	        5:
+	            #ArrayIndex := #ArrayIndex + 1;  //Next parameter
+	            IF #ArrayIndex >= #ArraySize THEN
+	                #ArrayIndex := 1;   //Reset ArrayIndex
+	                #Cmd_Read := 0;    //Reste commands
+	                #Cmd_ReadAndSave := 0;
+	                #ReadStep := 0;    //End of cycle
+	            ELSE
+	                #ReadStep := 2;    //Loop for next parameter
+	            END_IF;
+	    END_CASE;
+	    //End of Read cycle
+	END_REGION
+	
+	REGION WRITE DATA
+	    //Write sequence
+	    CASE #WriteStep OF
+	        1:
+	            #Sts_Alm0 := 0;            //Reset Akarms from previous commands
+	            #Sts_Alm1 := 0;
+	            #Sts_CfgEr := 0;
+	            #Sts_ERR := 0;
+	            #Sts_Exerr := 0;
+	            #ArrayIndex := 1;
+	            #SmartDevMSG.readWrite := 1;    //SetMsg to WRITE
+	            #SmartDevMSG.cap := #Cfg_Cap;     // Manufacteror specofique Balluff=255 Murr= 16#B400
+	            #WriteStep := 2;            //Next step
+	        2:
+	            IF (#SmartDevCfg[#ArrayIndex].Index = 0) OR
+	                (#SmartDevCfg[#ArrayIndex].ReadOnly) THEN     //If valid parametre continue to next step
+	                #WriteStep := 5;
+	            ELSE
+	                #WriteStep := 3;
+	            END_IF;
+	            
+	        3:
+	            FILL_BLK(IN := 0,
+	                     COUNT := 32,
+	                     OUT => #Data[0]); //Clear Data
+	            #SmartDevMSG.writeLen := #SmartDevCfg[#ArrayIndex].Len;          //set SmartDevMsg intereface
+	            #SmartDevMSG.index := #SmartDevCfg[#ArrayIndex].Index;
+	            #SmartDevMSG.subindex := #SmartDevCfg[#ArrayIndex].SubIndex;
+	            
+	            IF #SmartDevMSG.writeLen = 1 THEN                               //Transfer bytes from Data (DINT) to send Data byte 0 to 3                
+	                #Data[0] := #SmartDevCfg[#ArrayIndex].Data.%B0;
+	            ELSIF #SmartDevMSG.writeLen = 2 THEN
+	                #Data[0] := #SmartDevCfg[#ArrayIndex].Data.%B1;
+	                #Data[1] := #SmartDevCfg[#ArrayIndex].Data.%B0;
+	            ELSE
+	                #Data[0] := #SmartDevCfg[#ArrayIndex].Data.%B3;
+	                #Data[1] := #SmartDevCfg[#ArrayIndex].Data.%B2;
+	                #Data[2] := #SmartDevCfg[#ArrayIndex].Data.%B1;
+	                #Data[3] := #SmartDevCfg[#ArrayIndex].Data.%B0;
+	            END_IF;
+	            #StartMsg := 1;                  //Start sending MSG
+	            #WriteStep := 4;
+	        4:
+	            IF NOT #StartMsg THEN
+	                #WriteStep := 5;       //MESSAGE done goto next step
+	                IF #SmartDevMSG.error THEN               //Store errors from SmartDevMsg
+	                    #Sts_CfgEr := #ArrayIndex;
+	                    #Sts_ERR := #SmartDevMSG.status;
+	                    #Sts_Exerr := DWORD_TO_DINT(#SmartDevMSG.diagnostics.subfunctionStatus);
+	                    #Sts_Alm1 := True;
+	                END_IF;
+	            END_IF;
+	        5:
+	            #ArrayIndex := #ArrayIndex + 1;  //Next parameter
+	            IF #ArrayIndex >= #ArraySize THEN
+	                #ArrayIndex := 1;   //Reset ArrayIndex
+	                #Cmd_Write := 0;    //Reste commands
+	                #WriteStep := 0;    //End of cycle
+	                #Cmd_Read := 1;    //Start a read cycle
+	            ELSE
+	                #WriteStep := 2;    //Loop for next parameter
+	            END_IF;
+	    END_CASE;
+	    //End of Write cycle
+	END_REGION
+	
+	REGION AUTOCHECK
+	    //AutoCheck Sequence
+	    CASE #AutoCheckStep OF
+	        1: //Handle to AutoCheck timer
+	            RESET_TIMER(#AutoCheckTmr);
+	            #ReadStep := 1;     //Read the parametres from the device
+	            #AutoCheckStep := 2;
+	        2: //Wait for read done then compare parameters
+	            IF #ReadStep = 0 THEN
+	                #CheckNotOk := 0;
+	                FOR #iCount := 1 TO #ArraySize - 1 DO
+	                    #CheckNotOk := (#SmartDevCfg[#iCount].Data <> #SmartDevCfg[#iCount].OnlineData) AND NOT #SmartDevCfg[#iCount].ReadOnly;
+	                    IF #CheckNotOk THEN
+	                        EXIT;
+	                    END_IF;
+	                END_FOR;
+	                #AutoCheckStep := 3;
+	            END_IF;
+	        3: //Handle Alarm if AutoCheck failed
+	            IF #CheckNotOk THEN
+	                #Sts_Alm0 := 1;
+	                #CheckNotOk := 0;
+	            END_IF;
+	            #AutoCheckStep := 0;    //End of sequence
+	    END_CASE;
+	    //End AutoCheck Sequence
+	END_REGION
+	
+	REGION IO_LINK_DEVICE
+	    #SmartDevMSG(execute := #StartMsg,
+	                 record := #Data);
+	    IF #SmartDevMSG.done OR #SmartDevMSG.error THEN
+	        #StartMsg := 0;
+	        
+	    END_IF;
+	END_REGION
+	REGION STATUS
+	    #Sts_NoAlm := NOT #Sts_Alm0 AND NOT #Sts_Alm1;  //Handle Alarms
+	    #Sts_AutoCheckStep := #AutoCheckStep;           //Output status AutoCheck sequence
+	    #Sts_ReadStep := #ReadStep;                     //Output status Read sequence
+	    #Sts_WriteStep := #WriteStep;                   //Output status Write sequence
+	END_REGION
+END_FUNCTION_BLOCK
+

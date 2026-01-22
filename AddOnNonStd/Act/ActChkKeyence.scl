@@ -1,0 +1,294 @@
+﻿FUNCTION_BLOCK "ActChkKeyence"
+TITLE = Actuator Ckecker Keyence
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//Keyence IV 500 CA
+   VAR_INPUT 
+      CfgParameters : Struct   // Configuration parameters
+         NoAlm : Bool;   // Configurable instruction to disable any alarm
+         NoInterlock : Bool := TRUE;   // Configurable No Interlock for movement
+         Emulate : Bool;   // Configurable Emulate state
+         OEEOff : Bool;   // Configurable instruction to clear the OEE reports
+         TimeBaseOEE : Bool;   // Raising edge clock OEE calculations
+      END_STRUCT;
+      CtlParameters : Struct   // Control Parameters used in block
+         ParTimeOutOEE : DInt;   // Parameter Timeout for OEE calculations
+         ParTimeOut : DInt;   // Parameter Timeout return Keyence
+         ParJobSelect : DInt;   // Parameter Job code number to use
+         KeyenceInRun : Bool;   // Keyence Run state
+         KeyenceInBusy : Bool;   // Keyence Busy state
+         KeyenceInLogic1 : Bool;   // Keyence result logic1 = Part present
+         KeyenceInLogic2 : Bool;   // Keyence result logic2 = Control Parts Good
+      END_STRUCT;
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts : Struct   // List Block States
+         Run : Bool;   // State Block Run
+         Busy : Bool;   // State Block busy  / In action
+         Logic1Present : Bool;   // State result Logic 1 parts present
+         Logic2Control : Bool;   // State result Logic 2 parts present
+         ControlGood : Bool;   // State Control correct Parts Good
+         KeyenceOutTrigger : Bool;   // Keyence Out Trigger job
+         KeyenceOutClearError : Bool;   // Keyence Clear Error
+         KeyenceOutJobBit0 : Bool;   // Keyence Job Number bit 0
+         KeyenceOutJobBit1 : Bool;   // Keyence Job Number bit 1
+         KeyenceOutJobBit2 : Bool;   // Keyence Job Number bit 2
+         KeyenceOutJobBit3 : Bool;   // Keyence Job Number bit 3
+         ErrorID : Word;   // State Information internal block error
+         NoAlm : Bool;   // State no Alarm active
+         AlmChkError : Bool;   // State Alarm 0 = Error Control time out
+         AlmHW : Bool;   // State Alarm 1 = Hardware Keyence Run not active
+         JobBusyTmr : DInt;   // Time last job took to complete
+         CurrentJobCode : DInt;   // Current job code number last update
+      END_STRUCT;
+      Hmi : Struct   // Datafor HMI display
+         ActualPosition { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Copy Actual Axis position
+         ActualVelocity { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : LReal;   // Copy Actual Velocity / Speed
+      END_STRUCT;
+      RepOEE { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Struct   // Reporting information
+         Ctr_Total { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Counter total of action
+         Ctr_NoAlm { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Counter total of action without alarm
+         Ctr_Alm { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Counter total of action with alarm
+         TMR_LastAction { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Execution Time Last action
+         TMR_Theoretical { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Total theoretical time
+         TMR_Real { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Total real execution time
+         OEE { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Calculation OEE
+      END_STRUCT;
+   END_VAR
+
+   VAR_IN_OUT 
+      CmdCheck : Bool;   // Trigger Check Job
+      CmdClearError : Bool;   // Clear Error / Reset Result Output Keyence
+      CmdLoadNewCode : Bool;   // Update new job code
+      CmdResetBlk : Bool;   // Reset Block
+      CmdAck : Bool;   // Command alarm acknowledgement
+      CmdFirstScan : Bool;   // FirstScan PLC startup
+   END_VAR
+
+   VAR 
+      instStdStatActuator : "StdStatActuator";   // OEE Calculations
+      SfcCheckParts : Int;   // SFC step number Check parts
+      TmrBusy {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer duration busy last job
+      TmrRun {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer Run missing
+      TmrTimeOut {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer Time out Job Good
+      nbstep1 : Int;
+      nbstep2 : Int;
+   END_VAR
+
+   VAR CONSTANT 
+      TIMEOUTBUSY : DInt := 100;   // Time out Waiting return Busy
+      TIMEOUTRUN : DInt := 200;   // Time out State run missing error checker
+   END_VAR
+
+
+BEGIN
+	//=============================================================================
+	// KOMAX System LCF SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: _Library_Std_v1.00
+	// Engineering: TIA Portal v13 SP1 upd9
+	// Restrictions: (.)
+	// Requirements: (Keyence IV500CA, configuration Keyence_komax_IV500CA, Program 0 Keyence must be enabled with the same configuration I/O as the another Programs Keyence)
+	// 01.00.00 dd.mm.yyyy (Name of expert) First released version
+	// 
+	// MSA Le 07/11/2016  Add Sts.noalm  See end of the block
+	// WWA Le 05/12/2016  Add Function Emulate / Reset All Alarms
+	// MIS Le 07/07/2017  reset the cmd_check in the end of function
+	//=============================================================================
+	// Block Error ID Codes :
+	// 001 = Hardware fault / Empty program
+	// 002 = Time out Error Part Bad
+	// 003 = Time out Busy change of state not received
+	// 004 = 
+	// 
+	
+	// 1 *** Begin Reset block
+	IF #CmdResetBlk = TRUE OR #CmdFirstScan = TRUE THEN
+	  // Reset block all data
+	  #SfcCheckParts := 0;
+	  // Reset  Job Code to number 0
+	  #Sts.CurrentJobCode := 0;
+	  // Reset States
+	  #Sts.KeyenceOutTrigger := FALSE;
+	  #Sts.KeyenceOutClearError := FALSE;
+	  #Sts.ControlGood := FALSE;
+	  
+	  // Reset Alarms
+	  #Sts.AlmChkError := FALSE;
+	  #Sts.AlmHW := FALSE;
+	  #Sts.ErrorID := 000;
+	  
+	  // Reset Commands
+	  #CmdCheck := FALSE;
+	  #CmdClearError := FALSE;
+	  #CmdLoadNewCode := FALSE;
+	  #CmdResetBlk := FALSE;
+	END_IF;
+	// *** End Reset Block 
+	
+	
+	// 2 *** Begin Update New job code
+	IF #CmdLoadNewCode = TRUE AND #SfcCheckParts = 0 THEN
+	  // Update Job code number
+	  #Sts.#CurrentJobCode := #CtlParameters.ParJobSelect;
+	  #CmdLoadNewCode := FALSE;
+	END_IF;
+	// *** End Update New job code
+	
+	// 3  *** Begin Check parts sequence
+	CASE #SfcCheckParts OF
+	    
+	  0:  // Step
+	    IF #CtlParameters.KeyenceInRun = TRUE AND NOT #CtlParameters.KeyenceInBusy = TRUE AND #CmdCheck = TRUE THEN
+	      // Next Step
+	      #Sts.ControlGood := FALSE;
+	      #SfcCheckParts := 1;
+	      
+	    END_IF;
+	    
+	  1:  // Statement section case 1  Trigger Job
+	    #Sts.KeyenceOutTrigger := TRUE;
+	    IF #Sts.KeyenceOutTrigger = TRUE AND #CtlParameters.KeyenceInBusy = TRUE THEN
+	      // Next Step
+	      #SfcCheckParts := 2;
+	      #nbstep1 := 12;
+	    END_IF;
+	    IF #Sts.KeyenceOutTrigger = TRUE AND #CtlParameters.KeyenceInBusy = False AND #TmrBusy.Q = TRUE THEN
+	      // next Step 5
+	      #SfcCheckParts := 5;
+	      #Sts.ErrorID := 003;
+	      #nbstep1 := 15;
+	    END_IF;
+	    
+	    
+	  2:  // Statement section case 2  Job in action Busy
+	    // Timer Job duration Busy
+	    #Sts.KeyenceOutTrigger := FALSE;
+	    // Timer TimeOut
+	    IF #CtlParameters.KeyenceInLogic2 AND #CtlParameters.KeyenceInLogic1 AND NOT #TmrTimeOut.Q THEN
+	      // next Step 3
+	      #SfcCheckParts := 3;
+	    END_IF;
+	    
+	    IF ((NOT #CtlParameters.KeyenceInLogic2) OR (NOT #CtlParameters.KeyenceInLogic1)) AND #TmrTimeOut.Q THEN
+	      // next Step 5
+	      #SfcCheckParts := 5;
+	      #Sts.ErrorID := 002;
+	      #nbstep2 := 25;
+	    END_IF;
+	    
+	  3:  // Statement section case 3  Rest Trigger Job
+	    #Sts.JobBusyTmr := #TmrTimeOut.ET;
+	    #Sts.KeyenceOutTrigger := FALSE;
+	    IF #Sts.KeyenceOutTrigger = FALSE THEN
+	      // Next step
+	      #SfcCheckParts := 4;
+	    END_IF;
+	    
+	  4:  // Statement section case 4  Control OK Part Good
+	    #Sts.ControlGood := TRUE;
+	    IF #Sts.ControlGood = TRUE THEN
+	      // Next step
+	      #SfcCheckParts := 0;
+	      #CmdCheck := FALSE;
+	    END_IF;
+	    
+	  5:  // Statement section case 5
+	    #Sts.KeyenceOutTrigger := FALSE;
+	    //#Sts.ControlGood := FALSE;
+	    #Sts.AlmChkError := TRUE;
+	    #Sts.ErrorID := 002;
+	    #SfcCheckParts := 0;
+	    #CmdCheck := FALSE;
+	    
+	  ELSE  // Statement section ELSE
+	    #SfcCheckParts := 0;
+	END_CASE;
+	// Associated Timer Actions
+	// Time Out Busy
+	#TmrBusy(IN := (#SfcCheckParts = 1),
+	         PT := #TIMEOUTBUSY);
+	// Time Out Checker
+	#TmrTimeOut(IN := (#SfcCheckParts = 2),
+	            PT := #CtlParameters.ParTimeOut);
+	// *** End Check parts sequence
+	
+	// 4 *** Begin Clear Error / Output States  Keyence
+	IF #CmdClearError = TRUE THEN
+	  //  Clear Error and Check logic 1 and 2  States
+	  IF #CtlParameters.KeyenceInLogic1 = TRUE OR #CtlParameters.KeyenceInLogic2 = TRUE THEN
+	    // Statement section IF
+	    #Sts.KeyenceOutClearError := TRUE;
+	    #Sts.ControlGood := FALSE;
+	  ELSE
+	    #Sts.KeyenceOutClearError := FALSE;
+	    #CmdClearError := FALSE;
+	  END_IF;
+	  
+	END_IF;
+	// *** End Clear Error / Output States
+	
+	// 5 *** Begin Acknowledge Alarm
+	IF #CmdAck = TRUE THEN
+	  // Alarm 
+	  #Sts.AlmChkError := FALSE;
+	  #Sts.AlmHW := FALSE;
+	  #Sts.ErrorID := 000;
+	  #CmdAck := FALSE;
+	END_IF;
+	// *** End Acknowledge Alarm
+	
+	// 6 *** Begin CurrentJobCode 
+	#Sts.KeyenceOutJobBit0 := #Sts.CurrentJobCode.%X0;
+	#Sts.KeyenceOutJobBit1 := #Sts.CurrentJobCode.%X1;
+	#Sts.KeyenceOutJobBit2 := #Sts.CurrentJobCode.%X2;
+	#Sts.KeyenceOutJobBit3 := #Sts.CurrentJobCode.%X3;
+	// *** End CurrentJobCode 
+	
+	// 7 *** Begin Associated States Update
+	// Hardware Alarm
+	// Time Out Run
+	#TmrRun(IN := NOT #CtlParameters.KeyenceInRun,
+	        PT := #TIMEOUTRUN);
+	IF #TmrRun.Q THEN
+	  // Statement section IF
+	  #Sts.AlmHW := 1;
+	  #Sts.ErrorID := 001;
+	END_IF;
+	#Sts.Run := #CtlParameters.KeyenceInRun;
+	#Sts.Busy := #CtlParameters.KeyenceInBusy;
+	#Sts.Logic1Present := #CtlParameters.KeyenceInLogic1;
+	#Sts.Logic2Control := #CtlParameters.KeyenceInLogic2;
+	// *** End Associated States Update
+	// 
+	// 8 *** Begin OEE Data Preparation 
+	#instStdStatActuator(Cfg_TimeBase := #CfgParameters.TimeBaseOEE,
+	                     Cfg_OEEOff := #CfgParameters.OEEOff,
+	                     Sts_Cmd_Act := #Sts.Busy,
+	                     Sts_Alm_Act := #Sts.NoAlm,
+	                     Par_TimeOut_Act := #CtlParameters.ParTimeOutOEE,
+	                     Rep_Stat_Act => #RepOEE);
+	// *** End  OEE Data Preparation
+	// Function Emulate, Reset Alarms
+	IF #CfgParameters.Emulate THEN
+	  // Statement section IF
+	  #Sts.AlmChkError := FALSE;
+	  #Sts.AlmHW := FALSE;
+	END_IF;
+	// State No Alarm
+	IF (#Sts.AlmChkError OR #Sts.AlmHW) AND NOT #CfgParameters.Emulate THEN
+	  #Sts.NoAlm := FALSE;
+	ELSE
+	  #Sts.NoAlm := true;
+	END_IF;
+	
+	
+	
+	
+	
+END_FUNCTION_BLOCK
+

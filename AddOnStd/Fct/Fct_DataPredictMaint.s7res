@@ -1,0 +1,50 @@
+﻿MultiLingualTexts:
+  - id: MLC_3SK
+    en-US: Function block for Data Predictive Maintenance
+  - id: MLC_4C3
+    en-US: "23 Jun 2025\r\n- Fisrt Released Version "
+  - id: MLC_3s3
+    en-US: Configurable instruction to disable any alarm
+  - id: MLC_55L
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_4bC
+    en-US: Command Alarms Reset
+  - id: MLC_4pe
+    en-US: Machine States
+  - id: MLC_3dd
+    en-US: Machine in Production Mode
+  - id: MLC_d8
+    en-US: Frequency Time Parameter (Min)
+  - id: MLC_3Fe
+    en-US: Trigger Dashboard request for data Acquisition
+  - id: MLC_4zR
+    en-US: Trigger Error (no Data acquisition from Dashboard)
+  - id: MLC_3EN
+    en-US: Status to Enable the update of Predictive Maintenance Data
+  - id: MLC_iR
+    en-US: Status to Update the Predictive Maintenance Data
+  - id: MLC_Ww
+    en-US: Status Wait Trigger Acknowledgement From Dashboard
+  - id: MLC_5Aj
+    en-US: ONS Management
+  - id: MLC_39i
+    en-US: Sequence
+  - id: MLC_4Se
+    en-US: Production Timer
+  - id: MLC_4pp
+    en-US: Production Timer Preset
+  - id: MLC_3wm
+    en-US: First scan
+  - id: MLC_45u
+    en-US: Alarms Reset
+  - id: MLC_3kL
+    en-US: Reset Warning trigger acknoledge from Dashboard
+  - id: MLC_3Cc
+    en-US: |+
+      Enable the Update of Predictive Maintenance Data
+  - id: MLC_4Zi
+    en-US: Check machine in execute
+  - id: MLC_3Rm
+    en-US: Step1 - Check Trigger (DashBoard acknoledge)
+  - id: MLC_3pk
+    en-US: Step2 - Update Actuators Statistics and Set Trigger for Data Acquisition

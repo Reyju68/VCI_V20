@@ -1,0 +1,143 @@
+﻿FUNCTION_BLOCK "Fct_XTS_HMi"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_LastPos : DInt;   // Last Position number : used to reset position index
+      Cfg_MoverInMD : DInt;   // Configuration Mover Present in Module
+      Cfg_MoverNumber : DInt;   // Configuration Mover number
+      Cfg_NbrHMI : DInt;   // Configuration number of HMI
+      Sts_ActualPos : Real;   // Status Actual Position
+      Sts_Idle : Bool;   // Status to inform end of command
+      Sts_Mover_ColAvoidBW : Bool;   // Status Mover in Collision Avoidance Both Way
+      Sts_Mover_ColAvoidFF : Bool;   // Status Mover in Collision Avoidance Fast Forward
+      Sts_NoAlm : Bool;   // Status to inform while no alarm pending
+      Cfg_Scaling : Real;   // Configuration scaling of Position t
+      Cfg_Pos : Array[0.."Cfg_XTS_NbrMaxPosition"] of "Typ_XTS_Config_Pos";
+      MoverIN : "Typ_XTS_In_Mover";   // Mover Input data
+   END_VAR
+
+   VAR_IN_OUT 
+      Cmd_FromHMi : DInt;   // Command From HMi
+      MemoryPos : Real;   // Memory of Mover Position for Abort cycle
+      Cmd_Out : DInt;   // Command send by the station sequence
+      InterfaceHMi : "Typ_XTS_AxSiHMi";   // XTS System Interface HMi
+      Sts_Pos : Array[0.."Cfg_XTS_NbrMaxPosition"] of "Typ_XTS_StatusPos";   // UDT Position Status
+      MoverOUT : "Typ_XTS_Out_Mover";   // Mover Output data
+      IN_InterfaceHMi : Array[0..10] of "Typ_XTS_AxSiHMi";   // XTS System Interface HMi
+   END_VAR
+
+   VAR 
+      iLoop_HMI : DInt;   // Index for Loop HMI interface
+      iLoop_ManExe : DInt;   // Index for Loop to set all position status ManExe
+      Sts_ManExe : Bool;   // Local Status Manual Exec
+      Tmp_Index_pos_HMi : DInt;   // Temp index select ARRAY value FROM HMI
+      Index_pos_HMi : Array[1..10] of DInt;   // Index select ARRAY value FROM HMI
+   END_VAR
+
+   VAR_TEMP 
+      N : Bool;
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	//******** Interface between HMI and Act_XTS Add-On Instruction
+	//============================================================================
+	// Reset Status Command From Hmi
+	IF #Sts_Idle THEN
+	    #Cmd_FromHMi := 0;
+	END_IF;
+	
+	// Loop HMI
+	FOR #iLoop_HMI := 1 TO #Cfg_NbrHMI DO
+	    //**************** Position management ****************
+	    // Set Target pos with recorded value when selected position change 
+	    #Index_pos_HMi[#iLoop_HMI] := #IN_InterfaceHMi[#iLoop_HMI].Cmd_SelectPosition;
+	    #Tmp_Index_pos_HMi := #Index_pos_HMi[#iLoop_HMI];
+	    #IN_InterfaceHMi[#iLoop_HMI].Cmd_ValueTargetPos := #Cfg_Pos[#Tmp_Index_pos_HMi].Position;
+	    #IN_InterfaceHMi[#iLoop_HMI].Cmd_ForceIndex := #Index_pos_HMi[#iLoop_HMI];
+	    //**************** Mover Selection ****************
+	    IF #IN_InterfaceHMi[#iLoop_HMI].Cmd_SelectMover = #Cfg_MoverNumber THEN
+	        #IN_InterfaceHMi[#iLoop_HMI].Sts_TargetPos := #MoverOUT.rTargetPosition * #Cfg_Scaling;
+	        #IN_InterfaceHMi[#iLoop_HMI].Sts_ActualPos := #Sts_ActualPos;
+	        #IN_InterfaceHMi[#iLoop_HMI].Sts_ErrorID := #MoverIN.uiErrorID;
+	        #IN_InterfaceHMi[#iLoop_HMI].Sts_Ready := (NOT #MoverIN.bError) AND #MoverIN.uiErrorID = 0;
+	        #IN_InterfaceHMi[#iLoop_HMI].Sts_Alarm := (NOT #Sts_NoAlm);
+	        #IN_InterfaceHMi[#iLoop_HMI].Sts_Fault := (NOT #IN_InterfaceHMi[#iLoop_HMI].Sts_Ready);
+	        #IN_InterfaceHMi[#iLoop_HMI].Sts_MoverEnabled := (NOT #MoverIN.bNoGroupCA) AND #MoverOUT.bEnable;
+	        #IN_InterfaceHMi[#iLoop_HMI].Sts_CollAvoidance := #Sts_Mover_ColAvoidFF OR #Sts_Mover_ColAvoidBW;
+	        IF "Fc_TestBit"(IN_BoolToTest :=#iLoop_HMI, IN_Data := #Cfg_MoverInMD) THEN
+	            #IN_InterfaceHMi[#iLoop_HMI].Cfg_NoInterlock := TRUE;
+	        ELSE
+	            #IN_InterfaceHMi[#iLoop_HMI].Cfg_NoInterlock := FALSE;
+	        END_IF;
+	        
+	        // Abort
+	        IF #IN_InterfaceHMi[#iLoop_HMI].Cmd_Abort THEN
+	            #Cmd_Out.%X0 := TRUE;
+	            #Cmd_FromHMi.%X0 := FALSE;
+	            #MemoryPos := -99;
+	            #IN_InterfaceHMi[#iLoop_HMI].Cmd_Abort := FALSE;
+	            #InterfaceHMi := #IN_InterfaceHMi[#iLoop_HMI];
+	            #Sts_ManExe := TRUE;
+	        END_IF;
+	        // Reset
+	        IF #IN_InterfaceHMi[#iLoop_HMI].Cmd_Reset THEN
+	            #Cmd_Out.%X1 := TRUE;
+	            #Cmd_FromHMi.%X1 := TRUE;
+	            #MemoryPos := -99;
+	            #IN_InterfaceHMi[#iLoop_HMI].Cmd_Reset := 0;
+	            #InterfaceHMi := #IN_InterfaceHMi[#iLoop_HMI];
+	            #Sts_ManExe := 1;
+	        END_IF;
+	        // Manual Exec          
+	        IF #IN_InterfaceHMi[#iLoop_HMI].Cmd_ExecManual THEN
+	            #Cmd_Out.%X4 := TRUE;
+	            #MemoryPos := -99;
+	            #IN_InterfaceHMi[#iLoop_HMI].Cmd_ExecManual := 0;
+	            #InterfaceHMi := #IN_InterfaceHMi[#iLoop_HMI];
+	            #Sts_ManExe := TRUE;
+	        END_IF;
+	        // Reset Memory Position        
+	        IF #IN_InterfaceHMi[#iLoop_HMI].Cmd_ResetMemPos THEN
+	            #Cmd_Out.%X7 := TRUE;
+	            #IN_InterfaceHMi[#iLoop_HMI].Cmd_ResetMemPos := 0;
+	            #InterfaceHMi := #IN_InterfaceHMi[#iLoop_HMI];
+	        END_IF;
+	        // 
+	        IF  NOT "Fc_TestBit"(IN_BoolToTest :=#iLoop_HMI, IN_Data :=  #Cfg_MoverInMD) THEN
+	            #IN_InterfaceHMi[#iLoop_HMI].Cmd_Abort := FALSE;
+	            #IN_InterfaceHMi[#iLoop_HMI].Cmd_Reset := FALSE;
+	            #IN_InterfaceHMi[#iLoop_HMI].Cmd_ExecManual := FALSE;
+	            #IN_InterfaceHMi[#iLoop_HMI].Cmd_ResetMemPos := FALSE;
+	        END_IF;
+	    END_IF;
+	END_FOR;
+	
+	// Update Status Sts_ManExe for all position
+	IF #Sts_ManExe THEN
+	    FOR #iLoop_ManExe := 1 TO #Cfg_LastPos DO
+	        IF #iLoop_ManExe < _."Cfg_XTS_NbrMaxPosition" THEN
+	            #Sts_Pos[#iLoop_ManExe].Mover_ManExe := TRUE;
+	        END_IF;
+	    END_FOR;
+	    #Sts_ManExe := FALSE;
+	END_IF;
+	
+	// Update HMi interface 0 (used from PLC Loop)
+	//**************** Mover Selection ****************
+	IF #IN_InterfaceHMi[0].Cmd_SelectMover = #Cfg_MoverNumber THEN
+	    #IN_InterfaceHMi[0].Sts_TargetPos := #MoverOUT.rTargetPosition * #Cfg_Scaling;
+	    #IN_InterfaceHMi[0].Sts_ActualPos := #Sts_ActualPos;
+	    #IN_InterfaceHMi[0].Sts_ErrorID := #MoverIN.uiErrorID;
+	    #IN_InterfaceHMi[0].Sts_Ready := (NOT #MoverIN.bError) AND #MoverIN.uiErrorID = 0;
+	    #IN_InterfaceHMi[0].Sts_Alarm := (NOT #Sts_NoAlm);
+	    #IN_InterfaceHMi[0].Sts_Fault := (NOT #IN_InterfaceHMi[0].Sts_Ready);
+	    #IN_InterfaceHMi[0].Sts_MoverEnabled := (NOT #MoverIN.bNoGroupCA);
+	    #IN_InterfaceHMi[0].Sts_CollAvoidance := #Sts_Mover_ColAvoidFF OR #Sts_Mover_ColAvoidBW;
+	    #IN_InterfaceHMi[0].Cfg_NoInterlock := FALSE;
+	END_IF;
+	
+	
+END_FUNCTION_BLOCK
+

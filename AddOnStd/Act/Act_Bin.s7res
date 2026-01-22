@@ -1,0 +1,162 @@
+﻿MultiLingualTexts:
+  - id: MLC_4Rp
+    en-US: Actuator Binary module
+  - id: MLC_3bq
+    en-US: |-
+      02 Sep. 2022
+       - New Revision Roles (StdAddonsTIA_SCN_V004.docx)
+
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+
+      19 Jun 2025
+      - Mise a niveau
+      - Added Predictive Maintenance
+      (Refer to GitLab - Issues #23)
+  - id: MLC_xr
+    en-US: Parameter to define the ideal execution time
+  - id: MLC_45c
+    en-US: Time of the delay on desactivation of the Cmd_InpDly
+  - id: MLC_45k
+    en-US: Time of the delay on activation of the Cmd_InpDly
+  - id: MLC_3ac
+    en-US: Configuration to deactivate the statistic management
+  - id: MLC_tL
+    en-US: Config to enable the statistics updates
+  - id: MLC_4ns
+    en-US: Configuration instruction to request emulated mode
+  - id: MLC_3Mq
+    en-US: Configurable instruction to automatically update Cmd_Out versus Cmd_Inp (i.e. probe)
+  - id: MLC_qg
+    en-US: Configurable instruction to disable any alarm
+  - id: MLC_wZ
+    en-US: Configurable No Interlock for movement
+  - id: MLC_sc
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_3cm
+    en-US: Command to reset the statistic informations
+  - id: MLC_48t
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_4XJ
+    en-US: Feedback from equipment under control
+  - id: MLC_5Bi
+    en-US: Command send by the station sequence to enable or disable the actuator
+  - id: MLC_4td
+    en-US: Command to clear all statistics after actuator replacement
+  - id: MLC_4Dq
+    en-US: Status to inform about or to emulate physical input
+  - id: MLC_3k2
+    en-US: Status to control physical output
+  - id: MLC_4Q9
+    en-US: Status to inform that the requested movement is finished without error
+  - id: MLC_3wd
+    en-US: Status to inform that timeout has been reached
+  - id: MLC_4Q3
+    en-US: 'Status to inform when Cmd_Out:=0 was not able to complete before end of time out'
+  - id: MLC_39f
+    en-US: 'Status to inform when Cmd_Out:=1 was not able to complete before end of time out'
+  - id: MLC_4Ya
+    en-US: Status to inform while no alarm pending
+  - id: MLC_57h
+    en-US: No interlock for movement
+  - id: MLC_3VK
+    en-US: Status to inform command edge
+  - id: MLC_4wL
+    en-US: Status to inform alarm coming edge
+  - id: MLC_3V8
+    en-US: Average time between Cmd_Out=0  and reach input signal off
+  - id: MLC_5AD
+    en-US: Average  time between Cmd_Out=1  and reach input signal on
+  - id: MLC_PK
+    en-US: Report Sensor Configuration (xxx.0=With Stat / xxx.1=With Sensor)
+  - id: MLC_4kj
+    en-US: Maximum time between Cmd_Out=0  and reach input signal off
+  - id: MLC_3aL
+    en-US: Maximum time between Cmd_Out=1  and reach input signal on
+  - id: MLC_54Z
+    en-US: Total cycle counter
+  - id: MLC_ni
+    en-US: Complete time for Cmd_Out=0  (input off and stabilsation time)
+  - id: MLC_4FK
+    en-US: Complete time for Cmd_Out=1  (input on and stabilsation time)
+  - id: MLC_4G2
+    en-US: Time between Cmd_Out=0 and reach input signal off
+  - id: MLC_bN
+    en-US: Time between Cmd_Out=1 and reach input signal on
+  - id: MLC_3rv
+    en-US: Image of the Cmd_Inp but with a delay on the activation
+  - id: MLC_TV
+    en-US: Image of the Cmd_Inp but with no delay on the activation
+  - id: MLC_3Hv
+    en-US: TimeOut
+  - id: MLC_3aY
+    en-US: Timer for the activation delay on Cmd_InpDly
+  - id: MLC_35x
+    en-US: Timer for the activation delay on Cmd_InpDly
+  - id: MLC_43A
+    en-US: TimeOut - Time Parameter
+  - id: MLC_4J4
+    en-US: Timer for the activation delay on Cmd_InpDly - Time Parameter
+  - id: MLC_4gp
+    en-US: Timer for the activation delay on Cmd_InpDly - Time Parameter
+  - id: MLC_c6
+    en-US: Counter for average calculatiion
+  - id: MLC_hZ
+    en-US: Memo alarm during cycle
+  - id: MLC_4KQ
+    en-US: Memo counter cycle
+  - id: MLC_4Ra
+    en-US: ONS for time off management
+  - id: MLC_dP
+    en-US: ONS for time on management
+  - id: MLC_3fZ
+    en-US: Temporary tag for average time input signal off calculation
+  - id: MLC_4eF
+    en-US: Temporary tag for average time input signal on calculation
+  - id: MLC_4Zy
+    en-US: Temporary tag for Maximum Time Signal Off
+  - id: MLC_Y5
+    en-US: Temporary tag for Maximum Time Signal On
+  - id: MLC_r3
+    en-US: Timer for time off calculation
+  - id: MLC_3mp
+    en-US: Timer for time on calculation
+  - id: MLC_4AT
+    en-US: First PLC Scan
+  - id: MLC_uJ
+    en-US: Reset of the alarms management
+  - id: MLC_3qq
+    en-US: Input Delay Update
+  - id: MLC_4am
+    en-US: Miror mode management
+  - id: MLC_4rE
+    en-US: Activation of the physical output
+  - id: MLC_3JN
+    en-US: Reset of the timers when the physical output is activated
+  - id: MLC_3GV
+    en-US: Alarms management
+  - id: MLC_4Ym
+    en-US: Reset of the timers when the TimeOut is reached
+  - id: MLC_32c
+    en-US: TimeOut management
+  - id: MLC_39v
+    en-US: Update of the status input with and withou delay (Sts_Inp & Sts_InpNoDly)
+  - id: MLC_569
+    en-US: Sts_NoInterlock is used to enable command from HMI
+  - id: MLC_b9
+    en-US: Status Done Management
+  - id: MLC_4uD
+    en-US: Time Reportings for Movement Off
+  - id: MLC_3Ma
+    en-US: Time Reportings for Movement On
+  - id: MLC_46C
+    en-US: Clear All Predivtive Maintenance Statistics after Replace Actuator
+  - id: MLC_mx
+    en-US: Inform the dashboard that the actuator uses the predictive maintenance statistics
+  - id: MLC_39S
+    en-US: Upadate Max and Average Values for DashBoard and clear temporary values
+  - id: MLC_3CY
+    en-US: Memorize alarm during cycle
+  - id: MLC_gi
+    en-US: Update Max and Average values

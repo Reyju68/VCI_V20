@@ -1,0 +1,19 @@
+﻿MultiLingualTexts:
+  - id: MLC_4jZ
+    en-US: Manager for WPH Status and Statistics
+  - id: MLC_35e
+    en-US: "23 Jun 2025\r\n- New revision roles\r\n(StdAddons_SCN_V003.docx) "
+  - id: MLC_3sE
+    en-US: Initialize the pointer
+  - id: MLC_56E
+    en-US: Loop begining - Command and status update
+  - id: MLC_3tk
+    en-US: Copy and transfert part ID
+  - id: MLC_t9
+    en-US: If Pallet.Nests is reject then reject all the nest
+  - id: MLC_52K
+    en-US: Update counter
+  - id: MLC_bW
+    en-US: Scan nest
+  - id: MLC_4XY
+    en-US: Jump to begining

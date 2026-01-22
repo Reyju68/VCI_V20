@@ -1,0 +1,133 @@
+﻿MultiLingualTexts:
+  - id: MLC_4BE
+    en-US: Jog Mode Command
+  - id: MLC_4Kq
+    en-US: Jog Button Command
+  - id: MLC_56h
+    en-US: 'No Blending Trajectory : NOT USED Actually'
+  - id: MLC_3hG
+    en-US: Speed override (percentage of speed)
+  - id: MLC_qt
+    en-US: Scaling position unit
+  - id: MLC_4PV
+    en-US: AxCoordinate Execute Command
+  - id: MLC_4Qs
+    en-US: Gantry movement in progress
+  - id: MLC_4cN
+    en-US: Gantry Process complete (trajectory done)
+  - id: MLC_pi
+    en-US: Gantry in wait position (Move to point not enable)
+  - id: MLC_4zX
+    en-US: Gantry in Error
+  - id: MLC_N9
+    en-US: Current move to point number
+  - id: MLC_Xv
+    en-US: Error Code Reporting
+  - id: MLC_4gi
+    en-US: Move to Point Number in Error
+  - id: MLC_4Ms
+    en-US: Coordinates of the points to perform
+  - id: MLC_rA
+    en-US: Coordinated group of axes
+  - id: MLC_3X8
+    en-US: 'MLA - Move to point #  of the trajectory'
+  - id: MLC_4tB
+    en-US: Instance of Stop movement Block
+  - id: MLC_vD
+    en-US: Speed after override correction
+  - id: MLC_45i
+    en-US: Acceleration after override correction
+  - id: MLC_54V
+    en-US: Deceleration after override correction
+  - id: MLC_3vC
+    en-US: MLA - Move to wait position
+  - id: MLC_P6
+    en-US: Sequencer
+  - id: MLC_4yH
+    en-US: Sequencer
+  - id: MLC_L7
+    en-US: Wait point number to reach
+  - id: MLC_V3
+    en-US: Toggle MLCM for the first movement
+  - id: MLC_3pB
+    en-US: Select MI[0] or MI[1] for the first movement
+  - id: MLC_4ay
+    en-US: Memo of speed override
+  - id: MLC_3Up
+    en-US: Current speed override
+  - id: MLC_x6
+    en-US: Speed coef value
+  - id: MLC_4zD
+    en-US: Change speed value
+  - id: MLC_3ux
+    en-US: Stop movement variable
+  - id: MLC_3wm
+    en-US: Move Linear Absolute Position after scaling
+  - id: MLC_3g6
+    en-US: Move Linear Absolute Transition after scaling
+  - id: MLC_4KH
+    en-US: 2 is the value for a blending without segmentation of the path
+  - id: MLC_3SR
+    en-US: 5 is the value to accept a blending
+  - id: MLC_54S
+    en-US: INIT
+  - id: MLC_4sK
+    en-US: MLA1_Select and MLA1_Toggle management can be used for Palmo for example.
+  - id: MLC_xE
+    en-US: Update Speed Override
+  - id: MLC_4Z2
+    en-US: Jog Mode Speed Configuration
+  - id: MLC_38E
+    en-US: Launch Execute
+  - id: MLC_34n
+    en-US: MLA1_Select and MLA1_Toggle management can be used for Palmo for example.
+  - id: MLC_3SM
+    en-US: Change Speed Request
+  - id: MLC_55w
+    en-US: Conversion of Speed from Dint to Lreal
+  - id: MLC_3Jt
+    en-US: Start Move 1
+  - id: MLC_3x6
+    en-US: Each call of the gantry change the MLA1_Select state. This state define if MI_Move[1] or [0] is used
+  - id: MLC_3Ht
+    en-US: Jump Step Loop if needed
+  - id: MLC_4Ux
+    en-US: Start Move 2 ->10
+  - id: MLC_ZL
+    en-US: Position and Transition configuration for Move 2
+  - id: MLC_4CU
+    en-US: Instances of Move Linear Absolute
+  - id: MLC_4ye
+    en-US: 'Call of Move Linear Absolute Blocks '
+  - id: MLC_nc
+    en-US: Jump to step loop if needed
+  - id: MLC_3YB
+    en-US: Call MC Interrupt
+  - id: MLC_4LS
+    en-US: Call MC Continue
+  - id: MLC_3va
+    en-US: Update Current Move
+  - id: MLC_3dv
+    en-US: Current Move of the Kinematics Management
+  - id: MLC_4hm
+    en-US: Check Wait point request
+  - id: MLC_4TM
+    en-US: If a Wait Point during a Blending is called, this Network deserve to do a controlled Stop in the Blending Point
+  - id: MLC_4Y8
+    en-US: Stop Kinematics
+  - id: MLC_47z
+    en-US: Stop of the movement in the Blending point. The group stop deserve to fill the buffer of the Move Linear Absolute Blocks
+  - id: MLC_3Y7
+    en-US: Go to Wait Point
+  - id: MLC_56T
+    en-US: Position and Transition configuration for WaitPoint Move
+  - id: MLC_4z6
+    en-US: Instance MLA to Wait Point
+  - id: MLC_4EH
+    en-US: Call of Wait Point Move Linear Absolute Block
+  - id: MLC_3zA
+    en-US: Instruction Error
+  - id: MLC_3Fv
+    en-US: 'Error ID Management. The ID''s '
+  - id: MLC_335
+    en-US: MC_Reset

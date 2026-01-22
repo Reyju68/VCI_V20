@@ -1,0 +1,32 @@
+﻿MultiLingualTexts:
+  - id: MLC_RD
+    en-US: Waiting For Command
+  - id: MLC_4WN
+    en-US: Sequencer managenment
+  - id: MLC_4g7
+    en-US: 'Zone XTS '
+  - id: MLC_452
+    en-US: |+
+      - Update Zone Vision
+
+      - Zone 1 For Execute Cycle
+
+      - Zone 2 For Calibration Cycle
+
+      - Zone 3 For RnR Cycle
+  - id: MLC_4Aw
+    en-US: Actualize the mover number on the Calibration/RnR Zone
+  - id: MLC_3pt
+    en-US: 'Step 100: Start Calibration cycle - Send Mover to trigger position'
+  - id: MLC_rp
+    en-US: 'Step 101: Execute Mover - Wait calibration done by user'
+  - id: MLC_3gw
+    en-US: 'Step 102: Calibration End clear Calibration position information'
+  - id: MLC_qX
+    en-US: 'Step 200: Start RnR Cycle Memorized all Mover Information For reset '
+  - id: MLC_34w
+    en-US: 'Step 201: Execute Mover '
+  - id: MLC_VZ
+    en-US: 'Step 202: Execute RnR Finished - Send Mover Information'
+  - id: MLC_3WN
+    en-US: Clear Status and Command in Idle

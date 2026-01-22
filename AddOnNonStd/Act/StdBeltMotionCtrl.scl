@@ -1,0 +1,91 @@
+﻿FUNCTION_BLOCK "StdBeltMotionCtrl"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Par_TimeCheckCtrl : Time;
+      In_ActualPosition : Real;
+      In_SensorBelt : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts_CtrlFail : Bool;
+   END_VAR
+
+   VAR 
+      statMemPosition : DInt;
+      statMemSensor : Bool;
+      statActivityInProg : Bool;
+      statTimerSignalSensor {InstructionName := 'TON_TIME'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : TON_TIME;
+      statStartTimeSignal : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      tempActualPosition : DInt;
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	// IMA Medtech Switzerland SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: 
+	// Engineering: TIA Portal v13 SP1 upd9
+	// Restrictions: None
+	// Requirements: None
+	// Functionality: 
+	// This block manage a control belt presence during a motion movement .
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	//-----------------------------------------------------------------------------
+	// Version       Date         Expert in charge           
+	// v0.0.1        2017-05-12   SAINTOT Mickael          
+	// Changes applied:
+	// First release.
+	//-----------------------------------------------------------------------------
+	//============================================================================
+	//******** Init
+	//Reset Outputs
+	#Sts_CtrlFail := 0;
+	//============================================================================
+	//******** Timers
+	//Timer signal sensor
+	#statTimerSignalSensor(IN:=#statStartTimeSignal,
+	                       PT:=#Par_TimeCheckCtrl);
+	//============================================================================
+	//******** Trunc actualposition
+	#tempActualPosition := TRUNC_DINT(#In_ActualPosition);
+	//============================================================================
+	//******** Control activity motion
+	//Control activity motion
+	IF (#tempActualPosition <> #statMemPosition) THEN
+	    #statActivityInProg := TRUE;
+	ELSE
+	    #statActivityInProg := FALSE;
+	END_IF;
+	//Check time between to signal sensor during the activity of motion
+	//
+	#statStartTimeSignal := FALSE;
+	IF #statActivityInProg = TRUE THEN
+	    //Test activity of the sensor
+	    IF ((#In_SensorBelt AND #statMemSensor) OR (NOT #In_SensorBelt AND NOT #statMemSensor)) THEN
+	        #statStartTimeSignal := TRUE;
+	    END_IF;
+	    //No activity = Control fail
+	    IF #statTimerSignalSensor.Q THEN
+	        #Sts_CtrlFail := TRUE;
+	    END_IF;
+	END_IF;
+	//Memorize the sensor state
+	IF #In_SensorBelt = TRUE THEN
+	    #statMemSensor := TRUE;
+	ELSE
+	    #statMemSensor := FALSE;
+	END_IF;
+	//Memorize the actual position value
+	#statMemPosition := #tempActualPosition;
+	
+END_FUNCTION_BLOCK
+

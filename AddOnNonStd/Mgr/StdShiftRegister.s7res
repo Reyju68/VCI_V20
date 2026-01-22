@@ -1,0 +1,12 @@
+﻿MultiLingualTexts:
+  - id: MLC_4jS
+    en-US: Execute a shift register of linear med
+  - id: MLC_434
+    en-US: |-
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+  - id: MLC_4FH
+    en-US: Shift Forward
+  - id: MLC_nj
+    en-US: Shift Backward

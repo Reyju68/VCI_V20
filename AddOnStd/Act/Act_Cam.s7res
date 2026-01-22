@@ -1,0 +1,171 @@
+﻿MultiLingualTexts:
+  - id: MLC_55X
+    en-US: Actuator Came Driven Module
+  - id: MLC_gz
+    en-US: |-
+      02 Sep. 2022
+       - New Revision Roles (StdAddonsTIA_SCN_V004.docx)
+
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+  - id: MLC_4yL
+    en-US: Parameter to define customised command (specialized code required)
+  - id: MLC_58S
+    en-US: Parameter to define the ideal execution time
+  - id: MLC_3L5
+    en-US: Configuration instruction to define the angle for anticipation
+  - id: MLC_3Hy
+    en-US: Configuration instruction to define the angle for postpone
+  - id: MLC_4Td
+    en-US: Configuration instruction to define the camshaft range
+  - id: MLC_37C
+    en-US: Configuration instruction to request emulated mode
+  - id: MLC_52h
+    en-US: Configurable instruction to automatically update Cmd_Out versus Cmd_Inp (i.e. probe)
+  - id: MLC_4fz
+    en-US: Configurable instruction to disable any alarm
+  - id: MLC_3Ea
+    en-US: Configurable instruction to clear the OEE reports
+  - id: MLC_X9
+    en-US: Configuration instruction to define the slow speed ratio versus nominal speed
+  - id: MLC_4dP
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_4E8
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_gm
+    en-US: Command to reset the statistic informations
+  - id: MLC_4PG
+    en-US: Machine encoder
+  - id: MLC_NN
+    en-US: Defined postion value input
+  - id: MLC_4W9
+    en-US: Command to request slow motion
+  - id: MLC_3WT
+    en-US: Command to request direct hold motion
+  - id: MLC_4FH
+    en-US: Command to request a complete cam revolution
+  - id: MLC_3KS
+    en-US: Command to force the reset of the timer
+  - id: MLC_39s
+    en-US: Command Jog Is Running
+  - id: MLC_L2
+    en-US: Status to inform when physical input is in position versus Ante and Post
+  - id: MLC_wv
+    en-US: Status to inform about or to emulate physical input
+  - id: MLC_4TN
+    en-US: Status to control physical output
+  - id: MLC_4EE
+    en-US: Status to inform that timeout has been reached
+  - id: MLC_38H
+    en-US: 'Status to inform when Cmd_Out:=0 was not able to complete before end of time out'
+  - id: MLC_3Y9
+    en-US: 'Status to inform when Cmd_Out:=1 was not able to complete before end of time out'
+  - id: MLC_4P9
+    en-US: Status to inform while no alarm pending
+  - id: MLC_4JS
+    en-US: Status to inform position is before anticipation point
+  - id: MLC_4K9
+    en-US: Status to inform position is after postpone point
+  - id: MLC_mp
+    en-US: Status to inform the slow command
+  - id: MLC_3U5
+    en-US: Status to inform a loop is in progress
+  - id: MLC_R7
+    en-US: Status to control clockwise or counter-clockwise rotation
+  - id: MLC_4jL
+    en-US: Status to inform alarm coming edge
+  - id: MLC_RG
+    en-US: Status to inform command edge
+  - id: MLC_Ux
+    en-US: Reporting value to give current execution elapsed time
+  - id: MLC_4SA
+    en-US: Reporting counter for failed actions since last clear
+  - id: MLC_ej
+    en-US: Reporting counter for total executed actions since last clear
+  - id: MLC_P8
+    en-US: Reporting statistic information
+  - id: MLC_54F
+    en-US: Reporting of the ante position of the stop zone
+  - id: MLC_3jx
+    en-US: Reporting of the post position of the stop zone
+  - id: MLC_542
+    en-US: Ante Limit
+  - id: MLC_4mP
+    en-US: En + Camshaft range
+  - id: MLC_4rm
+    en-US: Memory
+  - id: MLC_4r8
+    en-US: Mn + Camshaft range
+  - id: MLC_vz
+    en-US: Post Limit
+  - id: MLC_55v
+    en-US: Camshaft range / 2
+  - id: MLC_3QB
+    en-US: Xn + Camshaft range
+  - id: MLC_YM
+    en-US: TimeOut
+  - id: MLC_49Q
+    en-US: Actuator Statistics
+  - id: MLC_3af
+    en-US: Memo for one shot control
+  - id: MLC_4LD
+    en-US: First PLC Scan
+  - id: MLC_3KP
+    en-US: Reset of the alarms management
+  - id: MLC_3jw
+    en-US: Command reset timer from external
+  - id: MLC_4MH
+    en-US: Update Status_Slow speed
+  - id: MLC_yv
+    en-US: Mirror mode management
+  - id: MLC_4JP
+    en-US: Direct hold motion management
+  - id: MLC_VZ
+    en-US: Check Command_Output (Setpoint)
+  - id: MLC_3FN
+    en-US: 'Command edge management. Note: Due to the OTE, the activation at first scan is done here.'
+  - id: MLC_3uc
+    en-US: Change Timeout value in case of slow motion
+  - id: MLC_349
+    en-US: Calculate Border's Angles
+  - id: MLC_gi
+    en-US: Alarm management
+  - id: MLC_kd
+    en-US: TimeOut management
+  - id: MLC_4Fc
+    en-US: Emulate mode management
+  - id: MLC_4Y9
+    en-US: Update of the status of the machine encoder
+  - id: MLC_4fM
+    en-US: If not emulating, Update Status_Inumeric versus Command_Inumeric
+  - id: MLC_4EA
+    en-US: Update Status_Input versus Status_Ante and Status_Post
+  - id: MLC_bN
+    en-US: |-
+      Update of the status to inform if the position is:
+      - Before the minimal position (Sts_Ante)
+      - After the maximal position (Sts_Post)
+      - between the minimal and maximal position (Sts_Inp)
+
+      Note: Case of the 0° position IS NOT between the Ante and Post limit
+  - id: MLC_4BF
+    en-US: Update Status_Input versus Status_Ante and Status_Post
+  - id: MLC_38m
+    en-US: |-
+      Update of the status to inform if the position is:
+      - Before the minimal position (Sts_Ante)
+      - After the maximal position (Sts_Post)
+      - between the minimal and maximal position (Sts_Inp)
+
+      Note: Case of the 0° position IS between the Ante and Post limit
+  - id: MLC_3TD
+    en-US: End Status_Loop
+  - id: MLC_4Pb
+    en-US: End Command_Loop
+  - id: MLC_4k3
+    en-US: Begin Status_Loop
+  - id: MLC_3JR
+    en-US: 'Update the reporting of the both Ante and Post position value. '
+  - id: MLC_jB
+    en-US: Actuators Statistics

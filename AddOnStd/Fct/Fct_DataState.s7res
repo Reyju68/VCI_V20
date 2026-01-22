@@ -1,0 +1,58 @@
+﻿MultiLingualTexts:
+  - id: MLC_Ri
+    en-US: Fct_DataState
+  - id: MLC_uq
+    en-US: |+
+      To provide the origin and the description two codes are needed, Station ID and State.
+       
+      Station ID is coded as show below:
+      For machine have the value: - MM (Negative machine)
+      Station ID is code in a DINT SS (Station)
+
+      The machine state is coded as show below:
+      -Aborting: Value 1
+      -Aborted: Value 2
+      -Stopping: Value 3
+      -Stopped: Value 4
+      -Resetting: Value 5
+      -Idle: Value 6
+      -Starting: Value 7
+      -Execute: Value 8
+      -Holding: Value 9
+      -Held: Value 10
+      -Suspending: Value 11
+      -Suspend: Value 12
+
+      The station state is coded as show below:
+      -Station Ready: Value 1
+      -Active alarm Aborted: Value 2
+      -Active alarm Stopped: Value 4
+      -Active alarm Idle: Value 6
+      -Active alarm Held: Value 10
+      -Active alarm Suspend: Value 12
+
+      HISTORY:
+      23 Jun 2025
+      - Modif Update Pointer in the same instruction
+      (Refer to GitLab - Issues #39) 
+
+  - id: MLC_cp
+    en-US: HeartBeat frequency
+  - id: MLC_5Ae
+    en-US: Positif number if it s a stationNegatif number for machine number in adm
+  - id: MLC_3gP
+    en-US: The machine  and station alarm state, follow the state of TR88 between 0 and 12
+  - id: MLC_3UD
+    en-US: HeartBeat
+  - id: MLC_3Gi
+    en-US: Memo previous state idea
+  - id: MLC_3Bb
+    en-US: HearBeat
+  - id: MLC_3NC
+    en-US: Reset Timer
+  - id: MLC_423
+    en-US: Update data in value string
+  - id: MLC_3kS
+    en-US: Increase data pointer for next data transmition
+  - id: MLC_3tU
+    en-US: Jump END

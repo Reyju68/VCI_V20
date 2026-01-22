@@ -1,0 +1,180 @@
+﻿FUNCTION_BLOCK "Act_StopperCone"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_ModeManuel : Bool;
+      CmdHmi_Manuel : Bool;
+      EnableFeeder : Bool;
+      InProvidePart : Bool;
+      InTransfertAfter : Bool;
+      InSensorPartAfter : Bool;
+      InSensorPart : Bool;
+      RazTimeTfrTooLong : Bool;
+      StopTransfert : Bool;
+      TimeStopperOn : Time := T#500MS;
+      TimeTransfertTooLong : Time := T#1S;
+   END_VAR
+
+   VAR_OUTPUT 
+      OutStopper : Bool;
+      NeedPart : Bool;
+      AvailablePart : Bool;
+      TransfertPart : Bool;
+      TransfertTooLong : Bool;
+   END_VAR
+
+   VAR 
+      AskPart : Bool;
+      statNeedPart : Bool;
+      statAvailablePart : Bool;
+      statTransfertPart : Bool;
+      statOutstopper : Bool;
+      statSeq : Int;
+      instTofStopperOn {InstructionName := 'TOF_TIME'; LibVersion := '1.0'} : TOF_TIME;
+      instTonPartAfter {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;
+      instTonTransfert {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	// IMA Medtech Switzerland SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: SPECIFIC TO THE PROJECT PPM01
+	// Engineering: TIA Portal v13 SP1 upd9
+	// Restrictions: None
+	// Requirements: None
+	// Functionality: 
+	// This block manage a stopper from the feeder cone.
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	//-----------------------------------------------------------------------------
+	// Version       Date         Expert in charge           
+	// v0.0.1        2016-12-16   SAINTOT Mickael          
+	// Changes applied:
+	// First release.
+	//-----------------------------------------------------------------------------
+	// Version       Date         Expert in charge           
+	// v0.1.0        2017-03-21   SAINTOT Mickael          
+	// Changes applied:
+	// Update Library.
+	//-----------------------------------------------------------------------------
+	// Version       Date         Expert in charge           
+	// v0.1.1        2017-05-19   SAINTOT Mickael          
+	// Changes applied:
+	// Add timer transfert, for Reset if a part block during a transfert
+	//-----------------------------------------------------------------------------
+	//// Version       Date         Expert in charge           
+	// v0.1.2        2017-10-26   SAINTOT Mickael          
+	// Changes applied:
+	// Add status transfert too long and Raz time transfert too long
+	//-----------------------------------------------------------------------------
+	//============================================================================
+	//******** Declaration Timer
+	//Timer TOF Stopper
+	#instTofStopperOn(IN := #AskPart,
+	                  PT := #TimeStopperOn);
+	//Timer TON Part After
+	#instTonPartAfter(IN := #InSensorPartAfter,
+	                  PT := t#25ms);
+	//Timer TON Transfert too long
+	#instTonTransfert(IN := #statSeq=2 AND #RazTimeTfrTooLong = FALSE,
+	                  PT := #TimeTransfertTooLong);
+	//============================================================================
+	//******** Manual management
+	//Reset Command manual if not in mode manual
+	IF #Cfg_ModeManuel = FALSE THEN
+	  #CmdHmi_Manuel := FALSE;
+	ELSE
+	  ;
+	END_IF;
+	//Manage the output Manual mode ****************To see MAI 207-01-20**************
+	//  IF #CmdManuel = TRUE THEN
+	//    #statOutstopper := TRUE;
+	//  ELSE
+	//    #statOutstopper := FALSE;
+	//  END_IF;
+	//Manage the output
+	
+	
+	//============================================================================
+	//******** Manage the different Status
+	//***Need Part***
+	//The block send a status need part
+	IF #statOutstopper = False AND #InSensorPart = FALSE AND #statTransfertPart = FALSE THEN
+	  #statNeedPart := TRUE;
+	ELSE
+	  #statNeedPart := FALSE;
+	END_IF;
+	//Manage the output Need Part
+	IF #statNeedPart = TRUE THEN
+	  #NeedPart := TRUE;
+	ELSE
+	  #NeedPart := FALSE;
+	END_IF;
+	//***Available Part***
+	//The block send a status available part
+	IF #statOutstopper = FALSE AND #InSensorPart = TRUE THEN
+	  #statAvailablePart := TRUE;
+	ELSE
+	  #statAvailablePart := FALSE;
+	END_IF;
+	//Manage the output available Part
+	IF #statAvailablePart = TRUE THEN
+	  #AvailablePart := TRUE;
+	ELSE
+	  #AvailablePart := FALSE;
+	END_IF;
+	//***Transfert Part***
+	//The block send a status available part
+	IF #statSeq<>0 THEN
+	  #statTransfertPart := TRUE;
+	ELSE
+	  #statTransfertPart := FALSE;
+	END_IF;
+	//Manage the output available Part
+	IF #statTransfertPart = TRUE THEN
+	  #TransfertPart := TRUE;
+	ELSE
+	  #TransfertPart := FALSE;
+	END_IF;
+	//============================================================================
+	//******** Manage the stopper
+	//Ask stopperon
+	// IF (#EnableFeeder = TRUE AND #statNeedPart=FALSE AND #InProvidePart=TRUE AND #InTransfertAfter = FALSE AND #statAvailablePart=TRUE)  THEN
+	  IF (#EnableFeeder = TRUE AND #statNeedPart=FALSE AND #InProvidePart=TRUE AND #InTransfertAfter = FALSE)  THEN
+	  #AskPart := TRUE;
+	ELSE
+	  #AskPart := FALSE;
+	END_IF;
+	//Sequence
+	IF NOT #EnableFeeder THEN
+	    #statSeq := 0;
+	END_IF;
+	CASE #statSeq OF
+	  0: //Wait Ask part 
+	    IF #EnableFeeder AND #AskPart = true AND #StopTransfert =  false THEN
+	      #statSeq := 1;
+	    END_IF;
+	  1://Stopper On
+	    #statOutstopper := TRUE;
+	    #statSeq := 2;
+	  2://Wait Part after
+	       IF #instTonPartAfter.Q = TRUE OR #StopTransfert =  TRUE THEN
+	         #statSeq := 3;
+	      END_IF;
+	  3://Stopper Off
+	      #statOutstopper := False;
+	      #AskPart := False;
+	      #statSeq := 0;
+	  END_CASE;
+	  //Manage the output Out  
+	  #OutStopper := (#EnableFeeder AND #statOutstopper) OR (#Cfg_ModeManuel AND #CmdHmi_Manuel);
+	  #TransfertTooLong := #instTonTransfert.Q;
+	
+	
+END_FUNCTION_BLOCK
+

@@ -1,0 +1,24 @@
+﻿MultiLingualTexts:
+  - id: MLC_zE
+    en-US: Prog Imediat NewStep
+  - id: MLC_4XC
+    en-US: |-
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+  - id: MLC_5AF
+    en-US: Reference to the machine program manager
+  - id: MLC_4fb
+    en-US: Memo Previous Step
+  - id: MLC_4xR
+    en-US: Memo Previous Step Time
+  - id: MLC_3uU
+    en-US: Command Idle - End of sequence
+  - id: MLC_3KU
+    en-US: WORK ON THE SEQUENCER
+  - id: MLC_3w6
+    en-US: |-
+      If a changing state on the command of the sequencer (Cmd_Seq) is detected and if all working conditions are good, update the Status of the sequencer (Sts_Seq) to allow the execution of the next step of the sequencer
+      Note: Step by step management is also manage here
+  - id: MLC_3Zk
+    en-US: Update Steps history

@@ -1,0 +1,23 @@
+﻿MultiLingualTexts:
+  - id: MLC_4sJ
+    en-US: Fct_DataProductKnowledge
+  - id: MLC_cY
+    en-US: |-
+      A code for the product knowledge of a part
+
+      The productlnowledge is coded as describted below :
+      - TimeStamp is local date time of the CPU
+      - Part ID is the unique ID of the part
+      - Station ID is the station where the information occurs
+      - ProductValueDescription is the description of the value 
+      -ProductValue is the value of the information
+  - id: MLC_md
+    en-US: Jump to the END
+  - id: MLC_VQ
+    en-US: Update buffer
+  - id: MLC_XT
+    en-US: Conversion to string
+  - id: MLC_3ku
+    en-US: Increase data pointer for next data transmition
+  - id: MLC_4V7
+    en-US: '%M3.0'

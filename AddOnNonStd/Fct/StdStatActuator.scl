@@ -1,0 +1,135 @@
+﻿FUNCTION_BLOCK "StdStatActuator"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_TimeBase : Bool;
+      Cfg_OEEOff : Bool;
+      Sts_Cmd_Act : Bool;
+      Sts_Alm_Act : Bool;
+      Par_TimeOut_Act : DInt;
+   END_VAR
+
+   VAR_OUTPUT 
+      Rep_Stat_Act : Struct
+         Ctr_Total : DInt;
+         Ctr_NoAlm : DInt;
+         Ctr_Alm : DInt;
+         TMR_LastAction : DInt;
+         TMR_Theoretical : DInt;
+         TMR_Real : DInt;
+         OEE : DInt;
+      END_STRUCT;
+   END_VAR
+
+   VAR 
+      Rep_Stat_Act_Static : Struct
+         Ctr_Total : DInt;
+         Ctr_NoAlm : DInt;
+         Ctr_Alm : DInt;
+         TMR_LastAction : DInt;
+         TMR_Theoretical : DInt;
+         TMR_Real : DInt;
+         OEE : DInt;
+      END_STRUCT;
+      Memo_R_Cmd_act : Bool;
+      Raising_Cmd_act : Bool;
+      Memo_F_Cmd_act : Bool;
+      Falling_Cmd_act : Bool;
+      Memo_R_Alm_act : Bool;
+      Raising_Alm_act : Bool;
+      Rep_TMR_Theoric : DInt;
+      Memo_Alm_During_Cmd : DInt;
+   END_VAR
+
+
+BEGIN
+	(*Std_FB_Stat_Actuator,
+	This block allows to calculate and report the statistic of a actuator
+	Rev: V0.00,Date: 20160512, Owner:MAI,Desc:First release*) 
+	//-----------------------------------------------------------------------------
+	// Version       Date         Expert in charge           
+	// v0.1.0        2017-03-21   SAINTOT Mickael          
+	// Changes applied:
+	// Update Library.
+	//-----------------------------------------------------------------------------
+	(*Reset Statistics*) 
+	IF #Cfg_OEEOff = 1 THEN
+	    #Rep_Stat_Act_Static.TMR_Real := 1;
+	    #Rep_Stat_Act_Static.Ctr_NoAlm := 0;
+	    #Rep_Stat_Act_Static.Ctr_Alm := 0;
+	    #Rep_Stat_Act_Static.TMR_LastAction := 0;
+	END_IF;
+	// -------------
+	(*Memory if alm during a command*) 
+	IF #Sts_Cmd_Act = 1 AND #Sts_Alm_Act = 1 THEN
+	    #Memo_Alm_During_Cmd := 1;
+	END_IF;
+	IF #Sts_Cmd_Act = 0 THEN
+	    #Memo_Alm_During_Cmd := 0;
+	END_IF;
+	(*Calculate the time of the last action*) 
+	IF #Cfg_TimeBase = 1 AND #Sts_Cmd_Act = 1 AND #Sts_Alm_Act = 0 THEN
+	    #Rep_Stat_Act_Static.TMR_LastAction := #Rep_Stat_Act_Static.TMR_LastAction + 1;
+	END_IF;
+	// -------------
+	(*Raising edge Cmd_act*)
+	IF #Sts_Cmd_Act = 0 THEN
+	    #Memo_R_Cmd_act := 0;
+	END_IF;
+	IF #Sts_Cmd_Act = 1 AND #Memo_R_Cmd_act = 0 THEN
+	    #Memo_R_Cmd_act := 1;
+	    #Raising_Cmd_act := 1;
+	ELSE
+	    #Raising_Cmd_act := 0;
+	END_IF;
+	(*Calculate the counter total*) 
+	IF #Raising_Cmd_act = 1 THEN
+	    #Rep_Stat_Act_Static.Ctr_Total := #Rep_Stat_Act_Static.Ctr_Total + 1;
+	END_IF;
+	// -------------
+	(*Raising edge Alm_act*)
+	IF #Sts_Alm_Act = 0 THEN
+	    #Memo_R_Alm_act := 0;
+	END_IF;
+	IF #Sts_Alm_Act = 1 AND #Memo_R_Alm_act = 0 THEN
+	    #Memo_R_Alm_act := 1;
+	    #Raising_Alm_act := 1;
+	ELSE
+	    #Raising_Alm_act := 0;
+	END_IF;
+	(*Calculate the counter alm*) 
+	IF #Raising_Alm_act = 1 THEN
+	    #Rep_Stat_Act_Static.Ctr_Alm := #Rep_Stat_Act_Static.Ctr_Alm + 1;
+	END_IF;
+	// -------------
+	(*Calculate the counter without alm*) 
+	// used for OEE calculation.
+	#Rep_Stat_Act_Static.Ctr_NoAlm := #Rep_Stat_Act_Static.Ctr_Total - #Rep_Stat_Act_Static.Ctr_Alm;
+	(*Falling edge Cmd_act*)
+	IF #Sts_Cmd_Act = 1 THEN
+	    #Memo_F_Cmd_act := 0;
+	END_IF;
+	IF #Sts_Cmd_Act = 0 AND #Memo_F_Cmd_act = 0 THEN
+	    #Memo_F_Cmd_act := 1;
+	    #Falling_Cmd_act := 1;
+	ELSE
+	    #Falling_Cmd_act := 0;
+	END_IF;
+	(*Calculate the time cumulated*)
+	// Total of execution times
+	IF #Falling_Cmd_act = 1 AND #Memo_Alm_During_Cmd = 0 THEN
+	    #Rep_Stat_Act_Static.TMR_Real := #Rep_Stat_Act_Static.TMR_Real + #Rep_Stat_Act_Static.TMR_LastAction;
+	    #Rep_Stat_Act_Static.TMR_LastAction := 0;
+	END_IF;
+	(*Calculate the time theoric and OEE*)
+	// OEE = Total theoretical time / total real time
+	// Total theoretical Time = ((Time Out * 100)* total number actions done without Alarm )
+	IF #Falling_Cmd_act = 1 THEN
+	    #Rep_Stat_Act_Static.TMR_Theoretical := (#Par_TimeOut_Act * 100) * #Rep_Stat_Act_Static.Ctr_NoAlm;
+	    #Rep_Stat_Act_Static.OEE := #Rep_Stat_Act_Static.TMR_Theoretical / #Rep_Stat_Act_Static.TMR_Real;
+	END_IF;
+	// Update Report output block
+	#Rep_Stat_Act := #Rep_Stat_Act_Static;
+	
+END_FUNCTION_BLOCK
+

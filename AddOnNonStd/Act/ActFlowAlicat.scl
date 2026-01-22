@@ -1,0 +1,717 @@
+﻿FUNCTION_BLOCK "ActFlowAlicat"
+TITLE = Flow Test ALICAT
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+AUTHOR : WWA
+VERSION : 0.1
+//Flow test software using ALICAT FLOWMETER
+   VAR_INPUT 
+      HW_ID : HW_IO;   // Hardware ID slave Track Unit
+      Cfg_Par : Struct   // Block configuration parameters
+         Unit_Flow : String;   // Selected Flow Unit
+         Unit_Temp : String;   // Selected Temperature Unit
+         Unit_Prs : String;   // Selected Pressure Unit
+         Unit_TFlow : String;   // Selected Mass Totalizer Unit
+         Emulate : Bool;   // Configuration instruction to request emulated mode
+         Tmr_delayChamber : DInt;   // Time delay before Chamber measurement
+         Tmr_delayFlow : DInt;   // Time delay before Flow measurement
+         OEEOff : Bool;   // Configurable instruction to clear the OEE reports
+         TimeBaseOEE : Bool;   // Raising edge clock OEE calculations
+         ParTimeOutOEE : DInt;   // Parameter Timeout for OEE calculations
+         Limits : Struct   // Limits Low/High
+            QV_LL : Real;   // VFlow Low Limit
+            QV_HL : Real;   // VFlow High Limit
+            QM_LL : Real;   // MFlow Low Limit
+            QM_HL : Real;   // MFlow High Limit
+            QR_LL : Real;   // Flow resistance Low Limit
+            QR_HL : Real;   // Flow resistance High Limit
+            Prel_LL : Real;   // Relative pressure Low Limit
+            Prel_HL : Real;   // Relative pressure High Limit
+         END_STRUCT;
+         QV_Select : Int := 1;   // Limit Selection result QVfinal
+         QM_Select : Int := 1;   // Limit Selection result Qmfinal
+         QR_Select : Int := 1;   // Limit Selection result QVRinal
+         Prel_Select : Int := 1;   // Limit Selection result Relative pressure
+      END_STRUCT;
+      Cfg_Calcul : Struct   // Parameters for internal calculations
+         "1stFactors" : Struct
+            QVoffSet : Real := 0.0;
+            QMoffset : Real := 0.0;
+            QRoffset : Real := 0.0;
+            QVratio : Real := 1.0;
+            QMratio : Real := 1.0;
+            QRratio : Real := 1.0;
+         END_STRUCT;
+         "2ndFactors" : Struct
+            A11 : Real;
+            A12 : Real;
+            A13 : Real;
+            A14 : Real;
+            A15 : Real;
+            A16 : Real;
+            A21 : Real;
+            A22 : Real;
+            A23 : Real;
+            A24 : Real;
+            A25 : Real;
+            A26 : Real := 1.0;
+            A31 : Real;
+            A32 : Real;
+            A33 : Real;
+            A34 : Real;
+            A35 : Real;
+            A36 : Real;
+            B11 : Real;
+            B12 : Real;
+            B13 : Real;
+            B14 : Real;
+            B15 : Real;
+            B16 : Real;
+            B21 : Real;
+            B22 : Real;
+            B23 : Real;
+            B24 : Real;
+            B25 : Real;
+            B26 : Real := 1.0;
+            B31 : Real;
+            B32 : Real;
+            B33 : Real;
+            B34 : Real;
+            B35 : Real;
+            B36 : Real;
+            C11 : Real;
+            C12 : Real;
+            C13 : Real;
+            C14 : Real;
+            C15 : Real;
+            C16 : Real;
+            C21 : Real;
+            C22 : Real;
+            C23 : Real;
+            C24 : Real;
+            C25 : Real;
+            C26 : Real := 1.0;
+            C31 : Real;
+            C32 : Real;
+            C33 : Real;
+            C34 : Real;
+            C35 : Real;
+            C36 : Real;
+         END_STRUCT;
+      END_STRUCT;
+   END_VAR
+
+   VAR_OUTPUT 
+      Status : Struct   // Regrouping Status
+         Sts_Unit_Flow : String;   // Selected Flow Unit
+         Sts_Unit_Temp : String;   // Selected Temperature Unit
+         Sts_Unit_Prs : String;   // Selected Pressure Unit
+         Sts_OutValve1 : Bool;   // Command Valve Blowing 1
+         Sts_OutValve2 : Bool;   // Command Valve Blowing 2
+         Sts_Alm_QVL : Bool;   // Alarm reading Vflow Low
+         Sts_Alm_QVH : Bool;   // Alarm reading Vflow High
+         Sts_Alm_QML : Bool;   // Alarm reading Mflow Low
+         Sts_Alm_QMH : Bool;   // Alarm reading Mflow High
+         Sts_Alm_QRL : Bool;   // Alarm reading flow resistance Low
+         Sts_Alm_QRH : Bool;   // Alarm reading flow resistance High
+         Sts_Alm_PrelL : Bool;   // Alarm reading Relative Pressure Low
+         Sts_Alm_PrelH : Bool;   // Alarm reading Relative Pressure High
+         Sts_NoAlm : Bool;   // No Alarm detected system OK
+         Sts_Alm0 : Bool;   // Alarm soft block
+         Sts_Alm1 : Bool;   // Alarm system Range Alicat
+         Sts_FlowConform : Bool;   // Flow Test conform no alarm
+         Sts_Ready : Bool;   // Block Ready after reset command.
+         Sts_GasType : String;   // Gas type setting Alicat
+         Sts_RangeFault : Struct
+            Bool0 : Bool;   // n/a
+            Bool1 : Bool;   // n/a
+            Bool2 : Bool;   // n/a
+            Bool3 : Bool;   // n/a
+            Total_Rollover : Bool;   // State Totalizer Roolover n/a
+            MassOverRange : Bool;   // State Mass Over range
+            VolOverRange : Bool;   // State Volume Over Range
+            PresOverRange : Bool;   // State Pressure Over Range
+         END_STRUCT;
+      END_STRUCT;
+      Result : Struct   // Regrouging Results
+         M_PrsChamber : Real;   // Measurement  Pressure Chamber
+         M_TempChamber : Real;   // Measurement  Temperature Chamber
+         M_VFlowPhase : Real;   // Measurement  Volumetric Flow during phase
+         M_MFlowPhase : Real;   // Measurement  Mass Flow during phase
+         M_TempPhase : Real;   // Measurement  Temperature during phase
+         M_PrsPhase : Real;   // Measurement  Pressure during phase
+         C_Prel : Real;   // Calculation Relative Pressure during phase
+         C_QR : Real;   // Calculation Flow resistance during phase
+         C_QVcomp : Real;   // Calculation volumetric flow compensation 2nd factors
+         C_QMcomp : Real;   // Calculation massic flow compensation 2nd factors
+         C_QRcomp : Real;   // Calculation flow resisitance compensation 2nd factors
+         C_QVfinal : Real;   // Final result volumetric flow
+         C_QMfinal : Real;   // Final result massic flow
+         C_QRfinal : Real;   // Final result Flow resistance
+      END_STRUCT;
+      Calibration : Struct   // Regrouging Calibration data
+         Sts_CalibInAction : Bool;   // Calib. In Action
+         Sts_OPintervent : Bool;   // Calib. Operator intervention needed
+         M_PrsChamber : Real;   // Calib.  Measurement  Pressure Chamber
+         M_TempChamber : Real;   // Calib.  Measurement  Temperature Chamber
+         M_VFlow_LRef : Real;   // Calib. Measurement  Volumetric Flow Low Reference
+         M_MFlow_LRef : Real;   // Calib. Measurement  Mass Flow Low Reference
+         M_VFlow_HRef : Real;   // Calib. Measurement  Volumetric Flow High Reference
+         M_MFlow_HRef : Real;   // Calib. Measurement  Mass Flow High Reference
+         C_OFFSET : Real;   // Calib. Offset Result end of calibation
+         C_RATIO : Real;   // Calib. Ratio Result end of calibation
+      END_STRUCT;
+      Rep_OEE { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Struct   // Reporting information
+         Ctr_Total { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Counter total of action
+         Ctr_NoAlm { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Counter total of action without alarm
+         Ctr_Alm { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Counter total of action with alarm
+         TMR_LastAction { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Execution Time Last action
+         TMR_Theoretical { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Total theoretical time
+         TMR_Real { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Total real execution time
+         OEE { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : DInt;   // Calculation OEE
+      END_STRUCT;
+   END_VAR
+
+   VAR_IN_OUT 
+      Cmd_Reset : Bool;   // Reset Block
+      Cmd_Chamber : Bool;   // Perform Chamber readings
+      Cmd_Flow : Bool;   // Perform Flow readings
+      Cmd_Calib : Bool;   // Perform Calibration
+      Cmd_ActionOP : Bool;   // Operator action completed
+      Cmd_Ack : Bool;   // Acknowledge Alarm(s)
+   END_VAR
+
+   VAR 
+      Return_ResultReadALICAT : Int;   // Error code instruction siemens io-link Main unit
+      Calib_StepNb : Int;   // Calib. Step number in action
+      Tmr_STEP1 : Bool;   // Start Timer Step 1
+      Tmr_STEP2 : Bool;   // Start Timer Step 2
+      Tmr_STEP4 : Bool;   // Start Timer Step 4
+      A1_2ndFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Factor sub results
+      A2_2ndFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Factor sub results
+      A3_2ndFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Factor sub results
+      B1_2ndFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Factor sub results
+      B2_2ndFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Factor sub results
+      B3_2ndFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Factor sub results
+      C1_2ndFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Factor sub results
+      C2_2ndFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Factor sub results
+      C3_2ndFactor { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Real;   // Factor sub results
+      Module_Buffer_ReadAlicat : Struct   // Input buffer from Io-link module Main unit
+         Absol_Prs : Real;   // Abolute Pressure reading
+         Temperature : Real;   // Temperature reading
+         VFLOW : Real;   // Volumetric Flow reading
+         MFLOW : Real;   // Mass Flow reading
+         Setpoint : Real;   // setpoint not used
+         ValveDrive : Real;   // Valve drive not used
+         Total : Real;   // Totalizer
+         Gas : Array[0..7] of Char;   // Type of Gas specified in ALICAT
+         Status : Struct
+            Bool0 : Bool;   // n/a
+            Bool1 : Bool;   // n/a
+            Bool2 : Bool;   // n/a
+            Bool3 : Bool;   // n/a
+            Total_Rollover : Bool;   // State Totalizer Roolover n/a
+            MassOverRange : Bool;   // State Mass Over range
+            VolOverRange : Bool;   // State Volume Over Range
+            PresOverRange : Bool;   // State Pressure Over Range
+         END_STRUCT;
+      END_STRUCT;
+      IEC_Timer_Chamber {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer delay chamber reading after receiving request
+      IEC_Timer_Phase {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer delay phase reading after receiving request
+      IEC_Timer_Calib1 {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer delay Calibration Step 1
+      IEC_Timer_Calib2 {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer delay Calibration Step 2
+      IEC_Timer_Calib4 {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer delay Calibration Step 4
+      OEE_DataPreparation : "StdStatActuator";
+   END_VAR
+
+   VAR_TEMP 
+      AbsolutePrs : Real;   // Absolute Pressure
+      Temperature : Real;   // Temperature
+      VFlow : Real;   // Volumetric Flow
+      MFlow : Real;   // Mass Flow
+      GazType : String;   // Gaz type Selected ALICAT
+      NoFlowAlarm : Bool;   // No Flow Alarm active
+      MemStep3 : Bool;   // Action Mem Data Step 3
+      MemStep5 : Bool;   // Action Mem Data Step 5
+   END_VAR
+
+
+BEGIN
+	//=============================================================================
+	// KOMAX System LCF SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: _Library_Std_v1.00
+	// Engineering: TIA Portal v13 SP1 upd9
+	// Restrictions: ()
+	// Requirements: (Alicat Scientific Profibus, Profibus,)
+	// Functionality: (Reading VFlow,MFlow, Absolute pressure, Temperature, Indexing amd Phase procedure, Calibration procedure)
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	// Version Date Expert in charge Changes applied
+	// 01.00.00 dd.mm.yyyy (Name of expert) First released version
+	//=============================================================================
+	
+	// Flow Test using ALICAT Flowmeter - Profibus
+	// Procedures Block
+	// 1) Reset block before using
+	// 2) Reading Input data from ALICAT via Profibus  telgram 37bytes
+	// 3) Measurement during machine indexing (Chamber)
+	// 4) Measurement during Station Phase
+	// 5) Calibration Function
+	// 6) Alarm State
+	// 7) OEE
+	// Note : Select limits type : 1=No limit, 2=Low limit only, 3=High Limit only, 4= both limits Low/High 
+	// *************************************************
+	// 1 Begin *************** Reset block **************** 
+	IF #Cmd_Reset THEN
+	    // Reset all block Data
+	    #Status.Sts_OutValve1 := 0;
+	    #Status.Sts_OutValve2 := 0;
+	    #Status.Sts_Alm_QVL := 0;
+	    #Status.Sts_Alm_QVH := 0;
+	    #Status.Sts_Alm_QML := 0;
+	    #Status.Sts_Alm_QMH := 0;
+	    #Status.Sts_Alm_QRL := 0;
+	    #Status.Sts_Alm_QRH := 0;
+	    #Status.Sts_Alm_PrelL := 0;
+	    #Status.Sts_Alm_PrelH := 0;
+	    #Status.Sts_FlowConform := 0;
+	    #Calibration.Sts_CalibInAction := 0;
+	    #Calibration.Sts_OPintervent := 0;
+	    #Calib_StepNb := 0;
+	    #Tmr_STEP1 := 0;
+	    #Tmr_STEP2 := 0;
+	    #Tmr_STEP4 := 0;
+	   // #Result.M_PrsChamber:= 0;
+	   // #Result.M_TempChamber:= 0;
+	    #Result.M_VFlowPhase:= 0;
+	    #Result.M_MFlowPhase:= 0;
+	    #Result.M_TempPhase:= 0;
+	    #Result.M_PrsPhase:= 0;
+	    #Result.C_Prel:= 0;
+	    #Result.C_QR:= 0;
+	    #Result.C_QVcomp:= 0;
+	    #Result.C_QMcomp:= 0;
+	    #Result.C_QRcomp:= 0;
+	    #Result.C_QVfinal:= 0;
+	    #Result.C_QMfinal:= 0;
+	    #Result.C_QRfinal:= 0;
+	    #Cmd_Chamber := 0;
+	    #Cmd_Flow := 0;
+	    #Cmd_Calib := 0;
+	    #Cmd_ActionOP := 0;
+	    #Cmd_Reset := 0;
+	    #Status.Sts_Ready := 1;
+	END_IF;
+	// Default values 
+	IF #Cfg_Calcul."2ndFactors".A26=0 THEN
+	    // Statement section IF
+	    #Cfg_Calcul."2ndFactors".A26:=1;
+	END_IF;
+	IF #Cfg_Calcul."2ndFactors".B26 = 0 THEN
+	    // Statement section IF
+	    #Cfg_Calcul."2ndFactors".B26 := 1;
+	END_IF;
+	IF #Cfg_Calcul."2ndFactors".C26 = 0 THEN
+	    // Statement section IF
+	    #Cfg_Calcul."2ndFactors".C26 := 1;
+	END_IF;
+	// 1 End ******************************* 
+	
+	// 2 Begin ***************** Read Data from Alicat vai Profibus *************
+	// Read Input ALICAT via Profibus
+	#Return_ResultReadALICAT := (DPRD_DAT(LADDR := #HW_ID, RECORD => #Module_Buffer_ReadAlicat));
+	// Transfer Module Data to Local Data
+	#AbsolutePrs := #Module_Buffer_ReadAlicat.Absol_Prs;
+	#Temperature := #Module_Buffer_ReadAlicat.Temperature;
+	#VFlow := #Module_Buffer_ReadAlicat.VFLOW;
+	#MFlow := #Module_Buffer_ReadAlicat.MFLOW;
+	// Gas type Alicat
+	Chars_TO_Strg(Chars:=#Module_Buffer_ReadAlicat.Gas,
+	              pChars:=0,
+	              Cnt:=0,
+	              Strg=>#GazType);
+	#Status.Sts_GasType := #GazType;
+	// 2 End *********************************
+	
+	// 3  Begin *************** Measurement during machine indexing *******************************
+	//  Chamber pressure and temperature after timer delay
+	#IEC_Timer_Chamber(IN:=#Cmd_Chamber,
+	                   PT:=#Cfg_Par.Tmr_delayChamber);
+	IF #Cmd_Chamber AND #IEC_Timer_Chamber.Q THEN
+	    #Status.Sts_Ready := 0;
+	    // Reading pressure / Temperature ALICAT 
+	    #Result.M_PrsChamber:=#AbsolutePrs;
+	    #Result.M_TempChamber := #Temperature;
+	    #Cmd_Chamber := 0;
+	END_IF;
+	// 3 End **********************************************
+	
+	// 4 Begin **************** Measurement during Station Phase ******************************
+	//  Flow, Pressure and Temperature
+	#IEC_Timer_Phase(IN:=#Cmd_Flow,
+	                 PT:=#Cfg_Par.Tmr_delayFlow);
+	IF #Cmd_Flow AND NOT #Calibration.Sts_CalibInAction AND  NOT #Status.Sts_OutValve1 THEN
+	    #Status.Sts_Ready := 0;
+	    // Command External equipment
+	    #Status.Sts_OutValve1:=1;
+	    #Status.Sts_FlowConform := 0;
+	    
+	END_IF;
+	// Reading,Calculations and Alarms
+	IF #Cmd_Flow AND #IEC_Timer_Phase.Q THEN
+	    // Reading Flow, Pressure and Temperature during Station Phase
+	    #Result.M_VFlowPhase := #VFlow;
+	    #Result.M_MFlowPhase := #MFlow;
+	    #Result.M_PrsPhase := #AbsolutePrs;
+	    #Result.M_TempPhase := #Temperature;
+	    // Calculations 
+	    // Relative Pressure Prel=Pabs-Proom
+	    #Result.C_Prel := #Result.M_PrsPhase - #Result.M_PrsChamber;
+	    // Flow resistance QR=sqrt(Prel)/QM
+	    #Result.C_QR := SQRT(#Result.C_Prel)/ #Result.M_MFlowPhase;
+	    // Pre-Calculation 2nd Factor compensation
+	    #A1_2ndFactor := #Cfg_Calcul."2ndFactors".A11 * SQR(#Result.C_Prel) + #Cfg_Calcul."2ndFactors".A12 * SQR(#Result.M_PrsChamber) + #Cfg_Calcul."2ndFactors".A13 * #Result.C_Prel * #Result.M_PrsChamber
+	    + #Cfg_Calcul."2ndFactors".A14 * #Result.C_Prel + #Cfg_Calcul."2ndFactors".A15 * #Result.M_PrsChamber + #Cfg_Calcul."2ndFactors".A16;
+	    //**
+	    #A2_2ndFactor := #Cfg_Calcul."2ndFactors".A21 * SQR(#Result.C_Prel) + #Cfg_Calcul."2ndFactors".A22 * SQR(#Result.M_PrsChamber) + #Cfg_Calcul."2ndFactors".A23 * #Result.C_Prel * #Result.M_PrsChamber
+	    + #Cfg_Calcul."2ndFactors".A24 * #Result.C_Prel + #Cfg_Calcul."2ndFactors".A25 * #Result.M_PrsChamber + #Cfg_Calcul."2ndFactors".A26;
+	    //**
+	    #A3_2ndFactor := #Cfg_Calcul."2ndFactors".A31 * SQR(#Result.C_Prel) + #Cfg_Calcul."2ndFactors".A32 * SQR(#Result.M_PrsChamber) + #Cfg_Calcul."2ndFactors".A33 * #Result.C_Prel * #Result.M_PrsChamber
+	    + #Cfg_Calcul."2ndFactors".A34 * #Result.C_Prel + #Cfg_Calcul."2ndFactors".A35 * #Result.M_PrsChamber + #Cfg_Calcul."2ndFactors".A36;
+	    //**
+	    #B1_2ndFactor := #Cfg_Calcul."2ndFactors".B11 * SQR(#Result.C_Prel) + #Cfg_Calcul."2ndFactors".B12 * SQR(#Result.M_PrsChamber) + #Cfg_Calcul."2ndFactors".B13 * #Result.C_Prel * #Result.M_PrsChamber
+	    + #Cfg_Calcul."2ndFactors".B14 * #Result.C_Prel + #Cfg_Calcul."2ndFactors".B15 * #Result.M_PrsChamber + #Cfg_Calcul."2ndFactors".B16;
+	    //**
+	    #B2_2ndFactor := #Cfg_Calcul."2ndFactors".B21 * SQR(#Result.C_Prel) + #Cfg_Calcul."2ndFactors".B22 * SQR(#Result.M_PrsChamber) + #Cfg_Calcul."2ndFactors".B23 * #Result.C_Prel * #Result.M_PrsChamber
+	    + #Cfg_Calcul."2ndFactors".B24 * #Result.C_Prel + #Cfg_Calcul."2ndFactors".B25 * #Result.M_PrsChamber + #Cfg_Calcul."2ndFactors".B26;
+	    //**
+	    #B3_2ndFactor := #Cfg_Calcul."2ndFactors".B31 * SQR(#Result.C_Prel) + #Cfg_Calcul."2ndFactors".B32 * SQR(#Result.M_PrsChamber) + #Cfg_Calcul."2ndFactors".B33 * #Result.C_Prel * #Result.M_PrsChamber
+	    + #Cfg_Calcul."2ndFactors".B34 * #Result.C_Prel + #Cfg_Calcul."2ndFactors".B35 * #Result.M_PrsChamber + #Cfg_Calcul."2ndFactors".B36;
+	    //**
+	    #C1_2ndFactor := #Cfg_Calcul."2ndFactors".C11 * SQR(#Result.C_Prel) + #Cfg_Calcul."2ndFactors".C12 * SQR(#Result.M_PrsChamber) + #Cfg_Calcul."2ndFactors".C13 * #Result.C_Prel * #Result.M_PrsChamber
+	    + #Cfg_Calcul."2ndFactors".C14 * #Result.C_Prel + #Cfg_Calcul."2ndFactors".C15 * #Result.M_PrsChamber + #Cfg_Calcul."2ndFactors".C16;
+	    //**
+	    #C2_2ndFactor := #Cfg_Calcul."2ndFactors".C21 * SQR(#Result.C_Prel) + #Cfg_Calcul."2ndFactors".C22 * SQR(#Result.M_PrsChamber) + #Cfg_Calcul."2ndFactors".C23 * #Result.C_Prel * #Result.M_PrsChamber
+	    + #Cfg_Calcul."2ndFactors".C24 * #Result.C_Prel + #Cfg_Calcul."2ndFactors".C25 * #Result.M_PrsChamber + #Cfg_Calcul."2ndFactors".C26;
+	    //**
+	    #C3_2ndFactor := #Cfg_Calcul."2ndFactors".C31 * SQR(#Result.C_Prel) + #Cfg_Calcul."2ndFactors".C32 * SQR(#Result.M_PrsChamber) + #Cfg_Calcul."2ndFactors".C33 * #Result.C_Prel * #Result.M_PrsChamber
+	    + #Cfg_Calcul."2ndFactors".C34 * #Result.C_Prel + #Cfg_Calcul."2ndFactors".C35 * #Result.M_PrsChamber + #Cfg_Calcul."2ndFactors".C36;
+	    // Volumetric Flow compensation 2nd factor 
+	    #Result.C_QVcomp := #A1_2ndFactor * SQR(#Result.M_VFlowPhase)  + #A2_2ndFactor*#Result.M_VFlowPhase + #A3_2ndFactor ;
+	    // Massic Flow compensation 2nd factor
+	    #Result.C_QMcomp := #B1_2ndFactor*SQR(#Result.M_MFlowPhase) + #B2_2ndFactor*#Result.M_MFlowPhase + #B3_2ndFactor;
+	    // Relative pressure compensation 2nd factor
+	    #Result.C_QRcomp := #C1_2ndFactor*SQR(#Result.C_QR) + #C2_2ndFactor*#Result.C_QR + #C3_2ndFactor;
+	    // Final calculations 
+	    #Result.C_QVfinal := #Result.C_QVcomp * #Cfg_Calcul."1stFactors".QVratio + #Cfg_Calcul."1stFactors".QVoffSet;
+	    #Result.C_QMfinal := #Result.C_QMcomp * #Cfg_Calcul."1stFactors".QMratio + #Cfg_Calcul."1stFactors".QMoffset;
+	    #Result.C_QRfinal := #Result.C_QRcomp * #Cfg_Calcul."1stFactors".QRratio + #Cfg_Calcul."1stFactors".QRoffset;
+	    // Limit Alarm check
+	    IF #Cfg_Par.Emulate = FALSE THEN
+	        // Statement section IF
+	         // QVfinal >> Check Limit Alarm Flow High/low range 
+	        CASE #Cfg_Par.QV_Select OF
+	            1:  // No Limit No Action  
+	                #Status.Sts_Alm_QVL := 0;
+	                #Status.Sts_Alm_QVH := 0;
+	                
+	            2:  // 1 Limit (Low only)
+	                #Status.Sts_Alm_QVL := 0;
+	                #Status.Sts_Alm_QVH := 0;
+	                IF #Result.C_QVfinal < #Cfg_Par.Limits.QV_LL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QVL := 1;
+	                END_IF;
+	                
+	            3:  // 1 Limit (High only)
+	                #Status.Sts_Alm_QVL := 0;
+	                #Status.Sts_Alm_QVH := 0;
+	                IF #Result.C_QVfinal > #Cfg_Par.Limits.QV_HL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QVH := 1;
+	                END_IF;
+	                
+	            4:  // 2 Limit (Low and High) 
+	                #Status.Sts_Alm_QVL := 0;
+	                #Status.Sts_Alm_QVH := 0;
+	                IF #Result.C_QVfinal > #Cfg_Par.Limits.QV_HL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QVH := 1;
+	                END_IF;
+	                IF #Result.C_QVfinal < #Cfg_Par.Limits.QV_LL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QVL := 1;
+	                END_IF;
+	                
+	            ELSE  // Statement section ELSE
+	                #Cfg_Par.QV_Select := 1;
+	        END_CASE;
+	        
+	        // QMfinal >> Check Limit Alarm Flow High/low range 
+	        CASE #Cfg_Par.QM_Select OF
+	            1:  // No Limit No Action  
+	                #Status.Sts_Alm_QML := 0;
+	                #Status.Sts_Alm_QMH := 0;
+	                
+	            2:  // 1 Limit (Low only)
+	                #Status.Sts_Alm_QML := 0;
+	                #Status.Sts_Alm_QMH := 0;
+	                IF #Result.C_QMfinal < #Cfg_Par.Limits.QM_LL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QML := 1;
+	                END_IF;
+	                
+	            3:  // 1 Limit (High only)
+	                #Status.Sts_Alm_QML := 0;
+	                #Status.Sts_Alm_QMH := 0;
+	                IF #Result.C_QMfinal > #Cfg_Par.Limits.QM_HL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QMH := 1;
+	                END_IF;
+	                
+	            4:  // 2 Limit (Low and High) 
+	                #Status.Sts_Alm_QML := 0;
+	                #Status.Sts_Alm_QMH := 0;
+	                IF #Result.C_QMfinal > #Cfg_Par.Limits.QM_HL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QMH := 1;
+	                END_IF;
+	                IF #Result.C_QMfinal < #Cfg_Par.Limits.QM_LL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QML := 1;
+	                END_IF;
+	                
+	            ELSE  // Statement section ELSE
+	                #Cfg_Par.QM_Select := 1;
+	        END_CASE;
+	        
+	        // QRfinal >> Check Limit Alarm Flow High/low range 
+	        CASE #Cfg_Par.QR_Select OF
+	            1:  // No Limit No Action  
+	                #Status.Sts_Alm_QRL := 0;
+	                #Status.Sts_Alm_QRH := 0;
+	                
+	            2:  // 1 Limit (Low only)
+	                #Status.Sts_Alm_QRL := 0;
+	                #Status.Sts_Alm_QRH := 0;
+	                IF #Result.C_QRfinal < #Cfg_Par.Limits.QR_LL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QRL := 1;
+	                END_IF;
+	                
+	            3:  // 1 Limit (High only)
+	                #Status.Sts_Alm_QRL := 0;
+	                #Status.Sts_Alm_QRH := 0;
+	                IF #Result.C_QRfinal > #Cfg_Par.Limits.QR_HL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QRH := 1;
+	                END_IF;
+	                
+	            4:  // 2 Limit (Low and High) 
+	                #Status.Sts_Alm_QRL := 0;
+	                #Status.Sts_Alm_QRH := 0;
+	                IF #Result.C_QRfinal > #Cfg_Par.Limits.QR_HL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QRH := 1;
+	                END_IF;
+	                IF #Result.C_QRfinal < #Cfg_Par.Limits.QR_LL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_QRL := 1;
+	                END_IF;
+	                
+	            ELSE  // Statement section ELSE
+	                #Cfg_Par.QR_Select := 1;
+	        END_CASE;
+	        
+	        // Prel final >> Check Limit Alarm Flow High/low range 
+	        CASE #Cfg_Par.Prel_Select OF
+	            1:  // No Limit No Action  
+	                #Status.Sts_Alm_PrelL := 0;
+	                #Status.Sts_Alm_PrelH := 0;
+	                
+	            2:  // 1 Limit (Low only)
+	                #Status.Sts_Alm_PrelL := 0;
+	                #Status.Sts_Alm_PrelH := 0;
+	                IF #Result.C_Prel < #Cfg_Par.Limits.Prel_LL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_PrelL := 1;
+	                END_IF;
+	                
+	            3:  // 1 Limit (High only)
+	                #Status.Sts_Alm_PrelL := 0;
+	                #Status.Sts_Alm_PrelH := 0;
+	                IF #Result.C_Prel > #Cfg_Par.Limits.Prel_HL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_PrelH := 1;
+	                END_IF;
+	                
+	            4:  // 2 Limit (Low and High) 
+	                #Status.Sts_Alm_PrelL := 0;
+	                #Status.Sts_Alm_PrelH := 0;
+	                IF #Result.C_Prel > #Cfg_Par.Limits.Prel_HL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_PrelH := 1;
+	                END_IF;
+	                IF #Result.C_Prel < #Cfg_Par.Limits.Prel_LL THEN
+	                    // High level Alarm
+	                    #Status.Sts_Alm_PrelL := 1;
+	                END_IF;
+	                
+	            ELSE  // Statement section ELSE
+	                #Cfg_Par.Prel_Select := 1;
+	        END_CASE;
+	    END_IF; // Not in Emulate mode
+	    
+	    #Status.Sts_OutValve1 := 0;
+	    #Cmd_Flow := 0;
+	    // Flow test completed 
+	    #NoFlowAlarm := NOT #Status.Sts_Alm_QVL AND NOT #Status.Sts_Alm_QVH AND NOT #Status.Sts_Alm_QML AND NOT #Status.Sts_Alm_QMH AND NOT #Status.Sts_Alm_QRL
+	    AND NOT #Status.Sts_Alm_QRH AND NOT #Status.Sts_Alm_PrelL AND NOT #Status.Sts_Alm_PrelH;
+	    #Status.Sts_FlowConform := #NoFlowAlarm;
+	    
+	END_IF;
+	// 4 End **********************************************
+	
+	
+	// 5 Begin **********************************************
+	// Calibration Function
+	//  Flow, Pressure and Temperature
+	//  Reception request Calibration Start Step 1
+	IF #Cmd_Calib AND NOT #Calibration.Sts_CalibInAction THEN
+	    // Starting Calibration 
+	    #Status.Sts_Ready := 0;
+	    #Calib_StepNb:=1;
+	    #Calibration.Sts_CalibInAction := 1;
+	    #Cmd_Calib := 0;
+	END_IF;
+	// SFC Calibration *********************************************
+	CASE #Calib_StepNb OF
+	    1:  // Calibration Step 1 *****************
+	        // Reset previous Values 
+	        #Calibration.M_PrsChamber := 0.0;
+	        #Calibration.M_VFlow_LRef := 0.0;
+	        #Calibration.M_MFlow_LRef := 0.0;
+	        #Calibration.M_VFlow_HRef := 0.0;
+	        #Calibration.M_MFlow_HRef := 0.0;
+	        #MemStep3 := FALSE;
+	        #MemStep5 := FALSE;
+	        // New Calibration procedure
+	        #Status.Sts_OutValve2:=1;
+	        #Tmr_STEP1 := 1;
+	        IF #IEC_Timer_Calib1.Q THEN
+	            // Next Step
+	            #Calib_StepNb := 2;
+	        END_IF;
+	    2:  // Calibration Step 2 *****************
+	        #Calibration.M_PrsChamber := #AbsolutePrs;
+	        #Calibration.M_TempChamber := #Temperature;
+	        #Status.Sts_OutValve1 := 1;
+	        #Tmr_STEP2 := 1;
+	        #Tmr_STEP1 := 0;
+	        IF #IEC_Timer_Calib2.Q THEN
+	            // Next Step
+	            #Calib_StepNb := 3;
+	        END_IF;
+	    3:  // Calibration Step 3 *****************
+	        IF NOT #MemStep3 THEN
+	            #Calibration.M_VFlow_LRef := #VFlow;
+	            #Calibration.M_MFlow_LRef := #MFlow;
+	            #MemStep3 := TRUE;
+	        END_IF;
+	        #Status.Sts_OutValve1 := 0;
+	        #Tmr_STEP2 := 0;
+	        #Calibration.Sts_OPintervent := 1;
+	        IF #Cmd_ActionOP THEN
+	            // Next Step
+	            #Calib_StepNb := 4;
+	            #Cmd_ActionOP := 0;
+	        END_IF;
+	    4:  // Calibration Step 4 *****************
+	        #Status.Sts_OutValve1 := 1;
+	        #Tmr_STEP4 := 1;
+	        IF #IEC_Timer_Calib4.Q THEN
+	            // Next Step
+	            #Calib_StepNb := 5;
+	        END_IF;
+	    5:  // Calibration Step 5 *****************
+	        IF NOT #MemStep5 THEN
+	            #Calibration.M_VFlow_HRef := #VFlow;
+	            #Calibration.M_MFlow_HRef := #MFlow;
+	            #MemStep5 := TRUE;
+	        END_IF;
+	        #Status.Sts_OutValve1 := 0;
+	        #Status.Sts_OutValve2 := 0;
+	        #Tmr_STEP4 := 0;
+	        IF #Cmd_ActionOP THEN
+	            // Request to update Offset / Ration with New date
+	            #Cmd_ActionOP := 0;
+	            #Calib_StepNb := 0;
+	        END_IF;
+	      //****************************************************
+	    ELSE  // STEP unknown so = 0
+	        #Calib_StepNb := 0;
+	        #Calibration.Sts_CalibInAction := 0;
+	        #Calibration.Sts_OPintervent := 0;
+	        #Cmd_ActionOP := 0;
+	        
+	        
+	END_CASE;
+	// Timers Used by Calibration SFC
+	#IEC_Timer_Calib1(IN:=#Tmr_STEP1,
+	                  PT:=#Cfg_Par.Tmr_delayChamber);
+	#IEC_Timer_Calib2(IN:=#Tmr_STEP2,
+	                  PT:=#Cfg_Par.Tmr_delayFlow);
+	#IEC_Timer_Calib4(IN:=#Tmr_STEP4,
+	                  PT:=#Cfg_Par.Tmr_delayFlow);
+	// 5 End SFC #Calibration   *******************************************
+	
+	// 6  Begin **********************************************
+	// Alarms including Limit fault, System range Fault
+	#Status.Sts_NoAlm := NOT #Status.Sts_Alm_QVL AND NOT #Status.Sts_Alm_QVH AND NOT #Status.Sts_Alm_QML AND NOT #Status.Sts_Alm_QMH AND NOT #Status.Sts_Alm_QRL
+	AND NOT #Status.Sts_Alm_QRH AND NOT #Status.Sts_Alm_PrelL AND NOT #Status.Sts_Alm_PrelH;
+	#Status.Sts_Alm0 := NOT #Status.Sts_NoAlm;
+	IF #Module_Buffer_ReadAlicat.Status.MassOverRange OR #Module_Buffer_ReadAlicat.Status.VolOverRange OR #Module_Buffer_ReadAlicat.Status.PresOverRange THEN
+	    // Statement section IF
+	    #Status.Sts_Alm1:= 1;
+	    #Status.Sts_RangeFault:= #Module_Buffer_ReadAlicat.Status ;
+	END_IF;
+	 
+	IF #Cmd_Ack THEN
+	    // Reset all alarms
+	    #Status.Sts_Alm_QVL := 0;
+	    #Status.Sts_Alm_QVH := 0;
+	    #Status.Sts_Alm_QML := 0;
+	    #Status.Sts_Alm_QMH := 0;
+	    #Status.Sts_Alm_QRL := 0;
+	    #Status.Sts_Alm_QRH := 0;
+	    #Status.Sts_Alm_PrelL := 0;
+	    #Status.Sts_Alm_PrelH := 0;
+	    #Status.Sts_Alm1 := 0;
+	    #Cmd_Ack := 0;
+	END_IF;
+	// End 6 **********************************************
+	
+	
+	// Conversion units For display only ???????
+	//Fahrenheit
+	//[°F] = [°C] × 9⁄5 + 32 [°C] = ([°F] − 32) × 5⁄9
+	//Kelvin
+	//[K] = [°C] + 273.15 [°C] = [K] − 273.15
+	//Rankine
+	//[°R] = ([°C] + 273.15) × 9⁄5
+	//
+	// 7 Begin ************ Report OEE *******************************
+	#OEE_DataPreparation(Cfg_TimeBase:=#Cfg_Par.TimeBaseOEE,
+	               Cfg_OEEOff:=#Cfg_Par.OEEOff,
+	               Sts_Cmd_Act:=#Status.Sts_OutValve1,
+	               Sts_Alm_Act:=#Status.Sts_NoAlm,
+	               Par_TimeOut_Act:=#Cfg_Par.ParTimeOutOEE,
+	               Rep_Stat_Act=> #Rep_OEE);
+	
+	// 7 End *********************************************************
+	
+END_FUNCTION_BLOCK
+

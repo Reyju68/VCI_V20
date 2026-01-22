@@ -1,0 +1,118 @@
+﻿FUNCTION_BLOCK "Fct_FastFeedingPosition"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Sys : "Typ_SiAdm";
+      Base : "Typ_SiBase";
+      Transport : "Typ_TransportXTS";
+   END_VAR
+   VAR_INPUT RETAIN
+      Cfg : "Typ_StationCfgXTS";
+   END_VAR
+   VAR_INPUT 
+      Prog : "Typ_MgrProg";
+      Sts_FastFeedingRdy : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      OUT_Sync_Pos : "Typ_XTS_SyncPosToXTS";
+   END_VAR
+
+   VAR_IN_OUT 
+      Station : "Typ_StationMgtXTS";
+   END_VAR
+   VAR_IN_OUT RETAIN
+      Feed_Seq : DInt;
+   END_VAR
+   VAR_IN_OUT 
+      Feed_Seq_Old : DInt;
+      Tmp_StationRqst : DInt;
+   END_VAR
+
+   VAR 
+      Cmd_FeedingRqst : Bool;
+      Tmp_StationRqst_Bool : Array[0..31] of Bool;
+      Tmp_PositionToFeed : DInt;
+   END_VAR
+
+   VAR_TEMP 
+      StationRqst : DWord;
+      _Adebigkal : DInt;
+   END_VAR
+
+
+BEGIN
+	                #StationRqst := DINT_TO_DWORD(#Tmp_StationRqst);
+	                SCATTER(IN := #StationRqst,
+	                        OUT => #Tmp_StationRqst_Bool);
+	REGION Sequence Feeding
+	    
+	    REPEAT
+	
+	        #Feed_Seq_Old := #Feed_Seq;
+	        CASE #Feed_Seq OF
+	                
+	            0:// Step0 - Wait For Feeding Request
+	                IF (#Base.Cmd_Exec OR #Sys.MainProg.Sts_Seq = 101) AND #Sts_FastFeedingRdy AND #Prog.Sts_Idle AND #Transport.Sts_XTS_Running AND #Station.Sts_StartFeeding AND #Cmd_FeedingRqst AND #Tmp_StationRqst >= 1 THEN
+	                    #Feed_Seq := 1;
+	                END_IF;
+	                
+	            1:// Step1 - Feed Position
+	                #Tmp_PositionToFeed := 1;
+	                
+	                WHILE (NOT #Tmp_StationRqst_Bool[#Tmp_PositionToFeed]) DO
+	                    #Tmp_PositionToFeed := #Tmp_PositionToFeed + 1;
+	                    IF #Tmp_PositionToFeed > 4 THEN
+	                        #Tmp_PositionToFeed := 1;
+	                        EXIT;
+	                    END_IF;
+	                END_WHILE;
+	                
+	                //Calculate position for feeding
+	
+	                #Station.Sts_MoverRqstd := #Tmp_StationRqst;
+	                #Tmp_StationRqst := 0;
+	                #Station.Sts_StationFeeded := #Tmp_PositionToFeed;
+	                
+	                #Feed_Seq := 2;
+	                
+	                //Start feeding     
+	            2:
+	                #OUT_Sync_Pos.Cmd_Force_Index := #Cfg.Nbr_XtsPos[#Station.Sts_StationFeeded];
+	                #OUT_Sync_Pos.Sts_Cycle := 1;
+	                
+	                #Feed_Seq := 3;
+	                    
+	            3:
+	                IF NOT #Station.Sts_StartFeeding THEN
+	                    #OUT_Sync_Pos.Cmd_Force_Index := 0;
+	                    #OUT_Sync_Pos.Sts_Cycle := 0;
+	                    #Feed_Seq := 0;
+	                    #Tmp_PositionToFeed := 0;
+	                    #Cmd_FeedingRqst := 0;
+	                END_IF;
+	
+	        END_CASE;
+	        
+	    UNTIL #Feed_Seq = #Feed_Seq_Old END_REPEAT;
+	END_REGION
+	    
+	REGION Clear Index Pos 0 During Reset 2
+	    IF #Base.Cmd_Reset2 THEN
+	        #OUT_Sync_Pos.Cmd_Force_Index := 0;
+	        #OUT_Sync_Pos.Sts_Cycle := 0;
+	        #Feed_Seq := 0;
+	    END_IF;
+	END_REGION
+	
+	REGION Mover Reset Function
+	    IF #Transport.Cmd_RqstResetFctMover.%X0 OR #Transport.Cmd_RqstResetFctMover.%X2 THEN
+	        #Tmp_StationRqst := 0;
+	        #Tmp_PositionToFeed := 0;
+	        #Station.Sts_MoverRqstd := 0;
+	        #Station.Sts_StationFeeded := 0;
+	    END_IF;
+	END_REGION
+	
+END_FUNCTION_BLOCK
+

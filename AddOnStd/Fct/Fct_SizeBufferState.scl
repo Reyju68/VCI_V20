@@ -1,0 +1,53 @@
+﻿FUNCTION "Fct_SizeBufferState" : Void
+TITLE = Array Of Bits at 1
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+//This ADD-On is used to check if all bits of an Array Of Bits are at 1
+   VAR_OUTPUT 
+      ArraySize : DInt;
+   END_VAR
+
+   VAR_IN_OUT 
+      Array_A : Array[*] of "Typ_State";
+   END_VAR
+
+   VAR_TEMP 
+      ArrLowerBound : DInt;
+      ArrUpperBound : DInt;
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	// IMA Automation SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: _Library_Std_v1.00
+	// Engineering: TIA Portal v17
+	// Restrictions: None
+	// Requirements: None
+	// Functionality: This ADD-On is used calculate the size of an array
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	//-----------------------------------------------------------------------------
+	// Version       Date              Expert in charge           
+	// v0.1        2022-Jan-14       REY Julien          
+	// Changes applied:
+	// Creation
+	//-----------------------------------------------------------------------------
+	
+	// Variable Assignment
+	ENO := 1;
+	
+	// Search Upper and Lower Bound of the Array
+	#ArrLowerBound := LOWER_BOUND(ARR := #Array_A, DIM := 1);
+	#ArrUpperBound := UPPER_BOUND(ARR := #Array_A, DIM := 1);
+	
+	// Calculate Array Size
+	#ArraySize := #ArrUpperBound - #ArrLowerBound + 1;
+	
+	    
+END_FUNCTION
+

@@ -1,0 +1,290 @@
+﻿{
+    S7_Author := "MIS";
+    S7_BlockComment := "MLC_3Uf";
+    S7_BlockTitle := "MLC_u4";
+    S7_Family := "Standard";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "11.1"
+}
+FUNCTION "Mgr_Nest" : Void
+    VAR_INPUT 
+        Cfg_Station : DInt;
+    END_VAR
+    VAR_IN_OUT 
+        { S7_MLC := "MLC_V8" }
+        Mgr_Nest : _.Typ_Nest;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3eE"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Nest.Cmd_ClrStat )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Nest.Rep_CtrGood, 
+                out2 => #Mgr_Nest.Rep_CtrBad
+            )
+            
+            Move(
+                in := 0.0, 
+                out1 => #Mgr_Nest.Rep_Quality
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4uu"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Nest.Cmd_Clear )
+            wire#w1
+            R_Coil( #Mgr_Nest.Sts_Bad )
+            R_Coil( #Mgr_Nest.Sts_Full )
+            R_Coil( #Mgr_Nest.Sts_Good )
+            R_Coil( #Mgr_Nest.Sts_NotInProd )
+            R_Coil( #Mgr_Nest.Sts_AuditRqst )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Nest.Sts_FullPos, 
+                out2 => #Mgr_Nest.Sts_BadPos, 
+                out3 => #Mgr_Nest.Sts_LastGoodStation, 
+                out4 => #Mgr_Nest.Sts_PartID
+            )
+            
+            FillBlockI(
+                IN := 0, 
+                COUNT := 64, 
+                OUT => #Mgr_Nest.Sts_OperationDone[0]
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Nest.Sts_StationFailID, 
+                out2 => #Mgr_Nest.Sts_SpecFailCode, 
+                out3 => #Mgr_Nest.Sts_FailWPHID, 
+                out4 => #Mgr_Nest.Sts_FailNestID, 
+                out5 => #Mgr_Nest.Sts_FailTrackID, 
+                out6 => #Mgr_Nest.Sts_FailSubAssembly
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Nest.Rep_Miscellaneous, 
+                out2 => #Mgr_Nest.Rep_User1, 
+                out3 => #Mgr_Nest.Rep_User2, 
+                out4 => #Mgr_Nest.Rep_User3, 
+                out5 => #Mgr_Nest.Rep_User4, 
+                out6 => #Mgr_Nest.Rep_User5
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_Qz"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Nest.Cmd_GoodPart )
+            
+            Add(
+                in1 := #Mgr_Nest.Rep_CtrGood, 
+                in2 := 1, 
+                out => #Mgr_Nest.Rep_CtrGood
+            )
+            
+            Sub(
+                in1 := #Mgr_Nest.Rep_Cons, 
+                in2 := 1, 
+                out => #Mgr_Nest.Rep_Cons
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3fu"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Nest.Cmd_RejectPart )
+            Contact( #Mgr_Nest.Sts_Full )
+            Contact( #Mgr_Nest.Sts_Good )
+            wire#w1
+            R_Coil( #Mgr_Nest.Sts_Good )
+            S_Coil( #Mgr_Nest.Sts_Bad )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Mgr_Nest.Cfg_SubAssembly, 
+                out1 => #Mgr_Nest.Sts_FailSubAssembly
+            )
+            
+            Move(
+                in := #Mgr_Nest.Sts_NestNb, 
+                out1 => #Mgr_Nest.Sts_FailNestID
+            )
+            
+            Move(
+                in := #Cfg_Station, 
+                out1 => #Mgr_Nest.Sts_StationFailID
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Mgr_Nest.Cfg_RejectCause, 
+                out1 => #Mgr_Nest.Sts_SpecFailCode
+            )
+            
+            Move(
+                in := #Mgr_Nest.Sts_NestID, 
+                out1 => #Mgr_Nest.Sts_FailWPHID
+            )
+            
+            Move(
+                in := #Mgr_Nest.Sts_TrackNb, 
+                out1 => #Mgr_Nest.Sts_FailTrackID
+            )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Mgr_Nest.Sts_TrackNb, 
+                in2 := 0
+            )
+            
+            Move(
+                in := #Mgr_Nest.Sts_StationFailID, 
+                out1 => #Mgr_Nest.Sts_FailTrackID
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Add(
+                in1 := #Mgr_Nest.Rep_CtrBad, 
+                in2 := 1, 
+                out => #Mgr_Nest.Rep_CtrBad
+            )
+            
+            Add(
+                in1 := #Mgr_Nest.Rep_Cons, 
+                in2 := 1, 
+                out => #Mgr_Nest.Rep_Cons
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_42t"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Nest.Cmd_Ack )
+            Contact( #Mgr_Nest.Sts_Alm )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Nest.Rep_Cons
+            )
+            R_Coil( #Mgr_Nest.Sts_Alm )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_5BQ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Mgr_Nest.Cfg_MaxCons, 
+                in2 := 0
+            )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #Mgr_Nest.Rep_Cons, 
+                in2 := #Mgr_Nest.Cfg_MaxCons
+            )
+            S_Coil( #Mgr_Nest.Sts_Alm )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3dH"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Add(
+                in1 := #Mgr_Nest.Rep_CtrGood, 
+                in2 := #Mgr_Nest.Rep_CtrBad, 
+                out => #Mgr_Nest.Rep_CtrTotal
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Mgr_Nest.Rep_CtrTotal, 
+                in2 := 0
+            )
+            {
+                S7_Templates := "SrcType := Real"; 
+                S7_Expression := "IN3*IN1/IN2"
+            }
+            Calculate(
+                in1 := #Mgr_Nest.Rep_CtrGood, 
+                in2 := #Mgr_Nest.Rep_CtrTotal, 
+                in3 := 100.0, 
+                out => #Mgr_Nest.Rep_Quality
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Mgr_Nest.Cfg_MaxCons, 
+                in2 := 0
+            )
+            wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Nest.Rep_Cons
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            LT_Contact(
+                in1 := #Mgr_Nest.Rep_Cons, 
+                in2 := 0
+            )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_Ws"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            R_Coil( #Mgr_Nest.Cmd_Ack )
+            R_Coil( #Mgr_Nest.Cmd_Clear )
+            R_Coil( #Mgr_Nest.Cmd_ClrStat )
+            R_Coil( #Mgr_Nest.Cmd_GoodPart )
+            R_Coil( #Mgr_Nest.Cmd_RejectPart )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Nest.Cfg_RejectCause
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION

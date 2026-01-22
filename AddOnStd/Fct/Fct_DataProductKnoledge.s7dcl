@@ -1,0 +1,179 @@
+﻿{
+    S7_BlockComment := "MLC_4Cn";
+    S7_BlockTitle := "MLC_3eg";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Fct_DataProductKnoledge"
+    VAR_INPUT 
+        Cfg_Buffer_Size : DInt;
+        { S7_MLC := "MLC_3GC" }
+        Cfg_Time_Stamp : LInt;
+        { S7_MLC := "MLC_3Ek" }
+        Cfg_PartID : DInt;
+        { S7_MLC := "MLC_38m" }
+        Cfg_StationID : DInt;
+        { S7_MLC := "MLC_55B" }
+        Cfg_ProductValueDescription : String;
+        { S7_MLC := "MLC_4xi" }
+        Cfg_ProductValue_DINT : DInt;
+        { S7_MLC := "MLC_4SL" }
+        Cfg_ProductValue_REAL : Real;
+        { S7_MLC := "MLC_4bh" }
+        Cfg_ProductValue_STRING : String;
+        { S7_MLC := "MLC_4Kz" }
+        Cfg_ProductTypeValue : SInt;
+        { S7_MLC := "MLC_4pE" }
+        Cmd_ProductKnowledge : Bool;
+    END_VAR
+    VAR_IN_OUT 
+        { S7_MLC := "MLC_3J6" }
+        Cfg_Pointer : DInt;
+        { S7_MLC := "MLC_5Ae" }
+        Cfg_ProductKnowledge : _.Typ_ProductKnowledge;
+        { S7_MLC := "MLC_53p" }
+        Cmd_DataWrite_Out : DInt;
+    END_VAR
+    VAR_TEMP 
+        "NOP" : Bool;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4c6"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Cmd_ProductKnowledge )
+            JumpCoil( End )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3pW"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Cfg_Time_Stamp, 
+                out1 => #Cfg_ProductKnowledge.TimeStamp
+            )
+            {
+                S7_Templates := "[src_type := DInt, dest_type := String]"
+            }
+            S_CONV(
+                in := #Cfg_PartID, 
+                out => #Cfg_ProductKnowledge.PartID
+            )
+            
+            Move(
+                in := #Cfg_StationID, 
+                out1 => #Cfg_ProductKnowledge.StationID
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            
+            S_Move(
+                in := #Cfg_ProductValueDescription, 
+                out => #Cfg_ProductKnowledge.Description
+            )
+            
+            Move(
+                in := #Cfg_ProductTypeValue, 
+                out1 => #Cfg_ProductKnowledge."Type"
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4LM"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := SInt" }
+            EQ_Contact(
+                in1 := #Cfg_ProductTypeValue, 
+                in2 := 1
+            )
+            {
+                S7_Templates := "[src_type := DInt, dest_type := String]"
+            }
+            S_CONV(
+                in := #Cfg_ProductValue_DINT, 
+                out => #Cfg_ProductKnowledge.Value
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := SInt" }
+            EQ_Contact(
+                in1 := #Cfg_ProductTypeValue, 
+                in2 := 2
+            )
+            {
+                S7_Templates := "[src_type := Real, dest_type := String]"
+            }
+            S_CONV(
+                in := #Cfg_ProductValue_REAL, 
+                out => #Cfg_ProductKnowledge.Value
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := SInt" }
+            EQ_Contact(
+                in1 := #Cfg_ProductTypeValue, 
+                in2 := 3
+            )
+            
+            S_Move(
+                in := #Cfg_ProductValue_STRING, 
+                out => #Cfg_ProductKnowledge.Value
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_pE"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            R_Coil( #Cmd_ProductKnowledge )
+            
+            Add(
+                in1 := #Cmd_DataWrite_Out, 
+                in2 := 1, 
+                out => #Cmd_DataWrite_Out
+            )
+            
+            Mod(
+                in1 := #Cmd_DataWrite_Out, 
+                in2 := #Cfg_Buffer_Size, 
+                out => #Cfg_Pointer
+            )
+            
+            Add(
+                in1 := #Cfg_Pointer, 
+                in2 := #Cfg_Buffer_Size, 
+                out => #Cfg_Pointer
+            )
+            
+            Mod(
+                in1 := #Cfg_Pointer, 
+                in2 := #Cfg_Buffer_Size, 
+                out => #Cfg_Pointer
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_45m"
+    }
+    NETWORK
+        Label(End)
+        RUNG wire#powerrail
+            Coil( #"NOP" )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

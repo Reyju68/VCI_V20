@@ -1,0 +1,28 @@
+﻿MultiLingualTexts:
+  - id: MLC_4ed
+    en-US: Fonction Data Part Out
+  - id: MLC_4R3
+    en-US: |-
+      A code is used to know the status of the part going out of the machine.
+
+      The part status is coded as show below:
+      -Good part out of the machine: Value 1
+      -Bad part Out of the machine: Value 2
+      -Audit part out of the machine: Value 3
+      -Not worked part out of the machine: Value 4 (Used in case of machine in cascade and the part enter in the machine already bad this one will credit the machine OEE)
+      If the part is bad then the data base need to know those information:
+      -Fail Station ID (Station who reject the part)
+      -Fail Track ID (Track who reject the part)
+      -Fail Code ID (Station reject identification example: Manual operation, Alarm occur during cycle, Vision inspection)
+      -Fail WPH ID (Part reject in Work piece Holder)
+      -Fail Nest ID (Part reject in Nest)
+  - id: MLC_55P
+    en-US: Jump at the End if Not Cmd_PartOut
+  - id: MLC_3kk
+    en-US: Update buffer
+  - id: MLC_3Xi
+    en-US: Update part status
+  - id: MLC_yF
+    en-US: Increase data pointer for next data transmition
+  - id: MLC_4Qv
+    en-US: Jump End

@@ -1,0 +1,104 @@
+﻿FUNCTION_BLOCK "Fct_CheckZoneXTS_ID"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      IN_Mover_StdInp : "Typ_XTS_In";   // XTS Data IN
+      Index_Pos_Mover : Array[1.."Cfg_XTS_NbrMaxMover"] of DInt;
+      Cfg_NbrOfToDetect : DInt;
+      Cfg_NbrOfMover : DInt;   // Configuration Number of Movers on the Loop
+      Cfg_Min_Zone : Real;   // Configuration OF Beginning OF Zone
+      Cfg_Max_Zone : Real;   // Configuration OF End OF Zone
+      Cfg_Min_IndexPos : DInt;
+      Cfg_Max_IndexPos : DInt;
+      Mover_ID : Array[1.."Cfg_XTS_NbrMaxMover"] of "Typ_Act_XTS";
+      MoverSts_Mover : Array[1.."Cfg_XTS_NbrMaxMover"] of "Typ_XTS_StatusMover";
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts_NbrOfMover_InZone : DInt;   // Status Number OF Movers in Zone
+      Array_IdInZone : Array[1..#LEN] of DInt;   // Id In Zone
+      Sts_AllmoverPosOk : Bool;   // All mover are in pos ok
+   END_VAR
+
+   VAR 
+      Max_NbrIdToDect : DInt;
+      ID_Loop : DInt;
+      Mover_Loop : DInt;
+      Memo_IndexError : Bool;
+      TmpArray : Array[1..#LEN] of DInt;
+      QtyToCopy : DInt;
+   END_VAR
+
+   VAR_TEMP 
+      E : DInt;
+      LoopMover : DInt;
+      MoverID : DInt;
+      Nb_Pos : DInt;
+   END_VAR
+
+   VAR CONSTANT 
+      LEN : SInt := 40;
+   END_VAR
+
+
+BEGIN
+	#Max_NbrIdToDect := #LEN;
+	// Reset Data
+	#Sts_NbrOfMover_InZone := 0;
+	
+	FOR #ID_Loop := 1 TO #Max_NbrIdToDect DO
+	    #Array_IdInZone[#ID_Loop] := 0;
+	END_FOR;
+	
+	#Memo_IndexError := 0;
+	IF #Cfg_Min_IndexPos < 0 THEN
+	    #Cfg_Min_IndexPos := 0;
+	END_IF;
+	IF #Cfg_Max_IndexPos < 0 THEN
+	    #Cfg_Max_IndexPos := 0;
+	END_IF;
+	
+	//Update array Id if the mover is in the Zone
+	FOR #Mover_Loop := 1 TO #Cfg_NbrOfMover DO
+	    IF (#Cfg_Min_Zone <= #Cfg_Max_Zone AND #IN_Mover_StdInp.MoverStatus[#Mover_Loop].rPos >= #Cfg_Min_Zone AND #IN_Mover_StdInp.MoverStatus[#Mover_Loop].rPos <= #Cfg_Max_Zone)
+	        OR
+	        (#Cfg_Max_Zone < #Cfg_Min_Zone AND (#IN_Mover_StdInp.MoverStatus[#Mover_Loop].rPos >= #Cfg_Min_Zone OR #IN_Mover_StdInp.MoverStatus[#Mover_Loop].rPos <= #Cfg_Max_Zone))
+	    THEN
+	        #Sts_NbrOfMover_InZone := #Sts_NbrOfMover_InZone + 1;
+	        #Array_IdInZone[#Sts_NbrOfMover_InZone] := #Mover_Loop;
+	        IF ((#Cfg_Min_IndexPos <= #Cfg_Max_IndexPos AND (#Index_Pos_Mover[#Mover_Loop] < #Cfg_Min_IndexPos OR #Index_Pos_Mover[#Mover_Loop] > #Cfg_Max_IndexPos)) OR
+	            (#Cfg_Min_IndexPos > #Cfg_Max_IndexPos AND (#Index_Pos_Mover[#Mover_Loop] < #Cfg_Min_IndexPos AND #Index_Pos_Mover[#Mover_Loop] > #Cfg_Max_IndexPos))) AND (#Cfg_Min_IndexPos <> 0 OR #Cfg_Max_IndexPos <> 0) THEN
+	            #Memo_IndexError := 1;
+	        END_IF;
+	        IF #Sts_NbrOfMover_InZone <= #Max_NbrIdToDect THEN
+	            #TmpArray[#Sts_NbrOfMover_InZone] := #Array_IdInZone[#Sts_NbrOfMover_InZone];
+	        END_IF;
+	    END_IF;
+	END_FOR;
+	
+	//Re-order Ids if the last mover of loop is in the zone
+	#TmpArray := #Array_IdInZone;
+	#QtyToCopy := 0;
+	IF #Sts_NbrOfMover_InZone > 1 AND #Sts_NbrOfMover_InZone <= #Max_NbrIdToDect THEN
+	    FOR #LoopMover := 1 TO #Sts_NbrOfMover_InZone - 1 DO
+	        IF #TmpArray[#LoopMover] + 1 <> #TmpArray[#LoopMover + 1] THEN
+	            #QtyToCopy := #Sts_NbrOfMover_InZone - #LoopMover;
+	            FOR #E := 1 TO #QtyToCopy DO
+	                #Array_IdInZone[#E] := #TmpArray[#LoopMover + #E];
+	            END_FOR;
+	            FOR #E := 1 TO #LoopMover DO
+	                #Array_IdInZone[#QtyToCopy + #E] := #TmpArray[#E];
+	            END_FOR;
+	            EXIT;
+	        END_IF;
+	    END_FOR;
+	END_IF;
+	
+	
+	
+	
+	
+	
+	
+END_FUNCTION_BLOCK
+

@@ -1,0 +1,76 @@
+﻿FUNCTION "Fct_Scaling" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Sensor_Input : Word;   // Sensor Input to scale
+      X_Range_Min : Real;   // Minimum X value for scaling
+      X_Range_Max : Real;   // Maximum X value for scaling
+      Y_Range_Min : Real;   // Minimum Y value for scaling
+      Y_Range_Max : Real;   // Maximum Y value for scaling
+   END_VAR
+
+   VAR_OUTPUT 
+      fScaled_Value : Real;   // Scaled Value in Real
+      nScaled_Value : DInt;   // Scaled Value in Integer
+   END_VAR
+
+   VAR_TEMP 
+      Sensor_Input_DINT : DInt;   // Sensor Input DINT
+      Sensor_Input_REAL : Real;   // Sensor Input Real
+      Coef : Real;
+      Offset : Real;
+      XA : Real;
+      XB : Real;
+      YA : Real;
+      YB : Real;
+      X : Real;
+      Y : Real;
+   END_VAR
+
+
+BEGIN
+	//--- READ ME
+	//X is the horizontal axis
+	//Y is the vertical axis
+	//Point A is the closest point from the center 
+	//Point B is the farthest point from the center
+	//Offset is the shift on vertical axis from the center
+	
+	//-------------------------------------------------------------------------------
+	//Scaling 
+	
+	//Conversion
+	#Sensor_Input_DINT := WORD_TO_DINT(#Sensor_Input);
+	#Sensor_Input_REAL := DINT_TO_REAL(#Sensor_Input_DINT);
+	
+	//X Value
+	#X := #Sensor_Input_REAL;
+	
+	//YA
+	#YA := #Y_Range_Min;
+	//YB
+	#YB := #Y_Range_Max;
+	
+	//XA
+	#XA := #X_Range_Min;
+	//XB
+	#XB := #X_Range_Max;
+	
+	//Calculation Coef
+	#Coef := (#YB - #YA) / (#XB - #XA);
+	
+	////Calculation ;#Offset
+	#Offset := #YA - (#Coef * #XA);
+	
+	//Calculation Scaling (y=ax+b)
+	#Y := #Coef * #X + #Offset;
+	
+	//Result in REAL
+	#fScaled_Value:= #Y;
+	//Result in INTEGER
+	#nScaled_Value:= REAL_TO_DINT(#Y);
+	
+	//-------------------------------------------------------------------------------
+	
+END_FUNCTION
+

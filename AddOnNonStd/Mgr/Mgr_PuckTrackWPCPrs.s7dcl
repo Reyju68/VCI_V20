@@ -1,0 +1,642 @@
+﻿{
+    S7_Author := "IMA_Medtech_Switzerland_Software_Team";
+    S7_BlockComment := "MLC_rR";
+    S7_BlockTitle := "MLC_3GQ";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "10.1"
+}
+FUNCTION_BLOCK "Mgr_PuckTrackWPCPrs"
+    VAR_INPUT 
+        { S7_MLC := "MLC_4tY" }
+        Cmd_FirstScan : Bool;
+        { S7_MLC := "MLC_5B7" }
+        Par_ConsPuckMty : DInt;
+        { S7_MLC := "MLC_xJ" }
+        Par_DlyBeforeReloadPuck : DInt;
+    END_VAR
+    VAR_OUTPUT 
+        { S7_MLC := "MLC_4wU" }
+        Rep_dT : DInt;
+        { S7_MLC := "MLC_XN" }
+        Rep_ConsPuckMty : DInt;
+        { S7_MLC := "MLC_4kv" }
+        Sts_ConsDetectedMty : Bool;
+        { S7_MLC := "MLC_VZ" }
+        Sts_Idle : Bool;
+        { S7_MLC := "MLC_dm" }
+        Sts_NoAlm : Bool;
+        { S7_MLC := "MLC_3MZ" }
+        Sts_Out : DInt;
+    END_VAR
+    VAR_IN_OUT 
+        WPCPrs : _.Act_Prs;
+        { S7_MLC := "MLC_mz" }
+        PartPr : _.Act_Prs;
+        { S7_MLC := "MLC_PH" }
+        Pusher : _.Act_Bix;
+        { S7_MLC := "MLC_3Zs" }
+        Desindexer : _.Act_Bix;
+        { S7_MLC := "MLC_4EG" }
+        Cfg_PuckRqst : Bool;
+    END_VAR
+    VAR 
+        { S7_MLC := "MLC_4aX" }
+        Cfg_DryCycle : Bool;
+        { S7_MLC := "MLC_3eL" }
+        Cfg_LoadStation : Bool;
+        { S7_MLC := "MLC_3Ce" }
+        Cmd_Ack : Bool;
+        { S7_MLC := "MLC_3kD" }
+        Cmd_DetectPucksEmpty : Bool;
+        { S7_MLC := "MLC_4da" }
+        Cmd_Out : DInt;
+        { S7_MLC := "MLC_4fw" }
+        Cmd_Seq : DInt;
+        { S7_MLC := "MLC_3pc" }
+        Sts_Seq : DInt;
+        { S7_MLC := "MLC_rX" }
+        Sts_SeqOns : Bool;
+        { S7_MLC := "MLC_4QG" }
+        Sts_Seqp : DInt;
+        { S7_MLC := "MLC_3fY" }
+        Sts_SeqT : DInt;
+        { S7_MLC := "MLC_3pM" }
+        Sts_TimeOut : Bool;
+        {
+            S7_MLC := "MLC_Pu";
+            S7_Setpoint := "False"
+        }
+        Tmr_Cmd : IEC_TIMER;
+        { S7_MLC := "MLC_4t4" }
+        Tmr_ReworkDelay : IEC_TIMER;
+        { S7_MLC := "MLC_Pm" }
+        Tmr_TO : IEC_TIMER;
+    END_VAR
+    VAR_TEMP 
+        { S7_MLC := "MLC_4Q6" }
+        ResTmr_Cmd : Bool;
+        { S7_MLC := "MLC_56t" }
+        ResTmr_TO : Bool;
+        { S7_MLC := "MLC_3Bp" }
+        ONS : DInt;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3vr"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+            S_Coil( #Cmd_Ack )
+            S_Coil( #Sts_Idle )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Sts_Seq
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Out
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4DB"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cfg_DryCycle )
+            Coil( #PartPr.Cfg_Emulate )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3EC"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Ack )
+            S_Coil( #ResTmr_TO )
+            R_Coil( #Cmd_Ack )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_55K"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Out, 
+                in2 := 0
+            )
+            wire#w1
+            
+            Move(
+                in := #Cmd_Out, 
+                out1 => #Sts_Out
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Sts_Idle )
+            wire#w2
+            Contact( #Cmd_Out.%X2 )
+            
+            Move(
+                in := 100, 
+                out1 => #Cmd_Seq
+            )
+            Coil( #ONS.%X0 )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cmd_Out.%X1 )
+            
+            Move(
+                in := 10, 
+                out1 => #Cmd_Seq
+            )
+            Coil( #ONS.%X1 )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cmd_Out.%X0 )
+            wire#w3
+            Contact( #Sts_Idle )
+            wire#w4
+            
+            Move(
+                in := 1, 
+                out1 => #Cmd_Seq
+            )
+            
+            Move(
+                in := 1, 
+                out1 => #Cmd_Out
+            )
+            Coil( #ONS.%X2 )
+        END_RUNG
+        RUNG wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 9
+            )
+        END_RUNG wire#w4
+        RUNG wire#powerrail
+            Contact( #ONS.%X0 )
+            wire#w5
+            S_Coil( #ResTmr_Cmd )
+            R_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #ONS.%X1 )
+        END_RUNG wire#w5
+        RUNG wire#powerrail
+            Contact( #ONS.%X2 )
+        END_RUNG wire#w5
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_37J"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Seq, 
+                in2 := 0
+            )
+            wire#w1
+            Contact( #Sts_NoAlm )
+            wire#w2
+            Coil( #Sts_SeqOns )
+            
+            Move(
+                in := #Cmd_Seq, 
+                out1 => #Sts_Seq
+            )
+            
+            Move(
+                in := #Sts_Seq, 
+                out1 => #Sts_Seqp
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq
+            )
+            S_Coil( #ResTmr_TO )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cmd_Out.%X0 )
+        END_RUNG wire#w2
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4SQ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_Idle )
+            wire#w1
+            I_Contact( #ResTmr_TO )
+            I_Contact( #Cmd_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr_TO.TON(
+                pt := T#11D_13H_46M_40S, 
+                et => #Sts_SeqT
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #ResTmr_Cmd )
+            I_Contact( #Cmd_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr_Cmd.TON(
+                pt := T#11D_13H_46M_40S, 
+                et => #Rep_dT
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Tmr_TO.Q )
+            Coil( #Sts_TimeOut )
+        END_RUNG
+        RUNG wire#powerrail
+            R_Coil( #ResTmr_TO )
+            R_Coil( #ResTmr_Cmd )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_uS"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 1, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            wire#w2
+            R_Coil( #WPCPrs.Cmd_StsOff )
+            R_Coil( #PartPr.Cmd_StsOff )
+            R_Coil( #WPCPrs.Cmd_StsOn )
+            R_Coil( #PartPr.Cmd_StsOn )
+            R_Coil( #Pusher.Cmd_Out )
+        END_RUNG
+        RUNG wire#w2
+            I_Contact( #Desindexer.Sts_NoAlm )
+            S_Coil( #Desindexer.Cmd_Out )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_5CQ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 10, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            R_Coil( #Pusher.Cmd_Out )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            I_Contact( #Pusher.Sts_NoAlm )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w2
+            I_Contact( #Sts_Idle )
+            Contact( #Pusher.Sts_CmdDone )
+            
+            Move(
+                in := 11, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4rF"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 11, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            R_Coil( #Desindexer.Cmd_Out )
+            S_Coil( #WPCPrs.Cmd_StsOn )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            Contact( #Desindexer.Sts_CmdDone )
+            wire#w3
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w2
+            I_Contact( #Desindexer.Sts_NoAlm )
+        END_RUNG wire#w3
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4ED"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 100, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #Desindexer.Cmd_Out )
+            R_Coil( #WPCPrs.Cmd_StsOn )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            I_Contact( #Desindexer.Sts_NoAlm )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w2
+            I_Contact( #Sts_Idle )
+            Contact( #Desindexer.Sts_CmdDone )
+            
+            Move(
+                in := 101, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3sJ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 101, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #Pusher.Cmd_Out )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            I_Contact( #Pusher.Sts_NoAlm )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w2
+            I_Contact( #Sts_Idle )
+            Contact( #Pusher.Sts_CmdDone )
+            
+            Move(
+                in := 102, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_5BA"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 102, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            R_Coil( #Pusher.Cmd_Out )
+            R_Coil( #Desindexer.Cmd_Out )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            I_Contact( #Desindexer.Sts_NoAlm )
+            wire#w3
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #WPCPrs.Sts_AlmNotOff )
+        END_RUNG wire#w3
+        RUNG wire#w2
+            I_Contact( #Sts_Idle )
+            Contact( #Desindexer.Sts_CmdDone )
+            I_Contact( #WPCPrs.Cmd_ChKOff )
+            
+            Move(
+                in := 103, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Jf"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 103, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #WPCPrs.Cmd_ChKOff )
+            wire#w2
+            I_Contact( #Cfg_LoadStation )
+            S_Coil( #PartPr.Cmd_ChKOff )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cfg_LoadStation )
+            wire#w3
+            Contact( #PartPr.Sts_Inp )
+            wire#w4
+            R_Coil( #Sts_ConsDetectedMty )
+            
+            Move(
+                in := 0, 
+                out1 => #Rep_ConsPuckMty
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Cfg_DryCycle )
+        END_RUNG wire#w4
+        RUNG wire#w3
+            I_Contact( #PartPr.Sts_Inp )
+            I_Contact( #Cfg_DryCycle )
+            wire#w5
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #Rep_ConsPuckMty )
+        END_RUNG
+        RUNG wire#w5
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Par_ConsPuckMty, 
+                in2 := 0
+            )
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #Rep_ConsPuckMty, 
+                in2 := #Par_ConsPuckMty
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Rep_ConsPuckMty
+            )
+            S_Coil( #Sts_ConsDetectedMty )
+            S_Coil( #PartPr.Sts_AlmNotOn )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w6
+            I_Contact( #PartPr.Sts_NoAlm )
+            wire#w7
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w6
+            Contact( #WPCPrs.Sts_AlmNotOff )
+        END_RUNG wire#w7
+        RUNG wire#w6
+            I_Contact( #Sts_Idle )
+            I_Contact( #PartPr.Cmd_ChKOff )
+            I_Contact( #WPCPrs.Cmd_ChKOff )
+            
+            Move(
+                in := 104, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4XX"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := 104, 
+                in2 := #Sts_Seq
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            wire#w2
+            I_Contact( #Cfg_LoadStation )
+            wire#w3
+            R_Coil( #Cfg_PuckRqst )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cfg_LoadStation )
+            wire#w4
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_ConsPuckMty, 
+                in2 := 0
+            )
+        END_RUNG wire#w3
+        RUNG wire#w4
+            Contact( #Cmd_DetectPucksEmpty )
+        END_RUNG wire#w3
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            I_Contact( #Pusher.Sts_Inp )
+            wire#w5
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Rep_ConsPuckMty, 
+                in2 := 0
+            )
+            S_Coil( #WPCPrs.Cmd_StsOn )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w5
+            Contact( #Cfg_LoadStation )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Rep_ConsPuckMty, 
+                in2 := 0
+            )
+            I_Contact( #Cmd_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr_ReworkDelay.TON(
+                pt := #Par_DlyBeforeReloadPuck, 
+                et =>  
+            )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4hL"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Pusher.Sts_NoAlm )
+            Contact( #Desindexer.Sts_NoAlm )
+            Contact( #WPCPrs.Sts_NoAlm )
+            Contact( #PartPr.Sts_NoAlm )
+            Coil( #Sts_NoAlm )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_45x"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Idle )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Sts_Seq
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Out
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

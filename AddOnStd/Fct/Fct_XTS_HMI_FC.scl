@@ -1,0 +1,106 @@
+﻿FUNCTION "Fct_XTS_HMI_FC" : Void
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_IN_OUT 
+      Fct_XTS_HMI : "Typ_Fct_XTS_HMi";
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	//******** Interface between HMI and Act_XTS Add-On Instruction
+	//============================================================================
+	// Reset Status Command From Hmi
+	IF #Fct_XTS_HMI.Sts_Idle THEN
+	    #Fct_XTS_HMI.Cmd_FromHMi := 0;
+	END_IF;
+	
+	// Loop HMI
+	FOR #Fct_XTS_HMI.iLoop_HMI := 1 TO #Fct_XTS_HMI.Cfg_NbrHMI DO
+	    //**************** Position management ****************
+	    // Set Target pos with recorded value when selected position change 
+	    #Fct_XTS_HMI.Index_pos_HMi[#Fct_XTS_HMI.iLoop_HMI] := #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_SelectPosition;
+	    #Fct_XTS_HMI.Tmp_Index_pos_HMi := #Fct_XTS_HMI.Index_pos_HMi[#Fct_XTS_HMI.iLoop_HMI];
+	    #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_ValueTargetPos := #Fct_XTS_HMI.Cfg_Pos[#Fct_XTS_HMI.Tmp_Index_pos_HMi].Position;
+	    #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_ForceIndex := #Fct_XTS_HMI.Index_pos_HMi[#Fct_XTS_HMI.iLoop_HMI];
+	    //**************** Mover Selection ****************
+	    IF #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_SelectMover = #Fct_XTS_HMI.Cfg_MoverNumber THEN
+	        #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Sts_TargetPos := #Fct_XTS_HMI.MoverOUT.rTargetPosition * #Fct_XTS_HMI.Cfg_Scaling;
+	        #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Sts_ActualPos := #Fct_XTS_HMI.Sts_ActualPos;
+	        #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Sts_ErrorID := #Fct_XTS_HMI.MoverIN.uiErrorID;
+	        #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Sts_Ready := (NOT #Fct_XTS_HMI.MoverIN.bError) AND #Fct_XTS_HMI.MoverIN.uiErrorID = 0;
+	        #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Sts_Alarm := (NOT #Fct_XTS_HMI.Sts_NoAlm);
+	        #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Sts_Fault := (NOT #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Sts_Ready);
+	        #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Sts_MoverEnabled := (NOT #Fct_XTS_HMI.MoverIN.bNoGroupCA) AND #Fct_XTS_HMI.MoverOUT.bEnable;
+	        #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Sts_CollAvoidance := #Fct_XTS_HMI.Sts_Mover_ColAvoidFF OR #Fct_XTS_HMI.Sts_Mover_ColAvoidBW;
+	        #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cfg_NoInterlock := #Fct_XTS_HMI.Cfg_MoverInMD[#Fct_XTS_HMI.iLoop_HMI];
+	        
+	        // Abort
+	        IF #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_Abort THEN
+	            #Fct_XTS_HMI.Cmd_Out.%X0 := TRUE;
+	            #Fct_XTS_HMI.Cmd_FromHMi.%X0 := FALSE;
+	            #Fct_XTS_HMI.MemoryPos := -99;
+	            #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_Abort := FALSE;
+	            #Fct_XTS_HMI.InterfaceHMi := #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI];
+	            #Fct_XTS_HMI.Sts_ManExe := TRUE;
+	        END_IF;
+	        // Reset
+	        IF #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_Reset THEN
+	            #Fct_XTS_HMI.Cmd_Out.%X1 := TRUE;
+	            #Fct_XTS_HMI.Cmd_FromHMi.%X1 := TRUE;
+	            #Fct_XTS_HMI.MemoryPos := -99;
+	            #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_Reset := 0;
+	            #Fct_XTS_HMI.InterfaceHMi := #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI];
+	            #Fct_XTS_HMI.Sts_ManExe := 1;
+	        END_IF;
+	        // Manual Exec          
+	        IF #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_ExecManual THEN
+	            #Fct_XTS_HMI.Cmd_Out.%X4 := TRUE;
+	            #Fct_XTS_HMI.MemoryPos := -99;
+	            #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_ExecManual := 0;
+	            #Fct_XTS_HMI.InterfaceHMi := #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI];
+	            #Fct_XTS_HMI.Sts_ManExe := TRUE;
+	        END_IF;
+	        // Reset Memory Position        
+	        IF #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_ResetMemPos THEN
+	            #Fct_XTS_HMI.Cmd_Out.%X7 := TRUE;
+	            #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_ResetMemPos := 0;
+	            #Fct_XTS_HMI.InterfaceHMi := #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI];
+	        END_IF;
+	        // 
+	        IF (NOT #Fct_XTS_HMI.Cfg_MoverInMD[#Fct_XTS_HMI.iLoop_HMI]) THEN
+	            #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_Abort := FALSE;
+	            #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_Reset := FALSE;
+	            #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_ExecManual := FALSE;
+	            #Fct_XTS_HMI.IN_InterfaceHMi[#Fct_XTS_HMI.iLoop_HMI].Cmd_ResetMemPos := FALSE;
+	        END_IF;
+	    END_IF;
+	END_FOR;
+	
+	// Update Status Sts_ManExe for all position
+	IF #Fct_XTS_HMI.Sts_ManExe THEN
+	    FOR #Fct_XTS_HMI.iLoop_ManExe := 1 TO #Fct_XTS_HMI.Cfg_LastPos DO
+	        IF #Fct_XTS_HMI.iLoop_ManExe < _."Cfg_XTS_NbrMaxPosition" THEN
+	            #Fct_XTS_HMI.Sts_Pos[#Fct_XTS_HMI.iLoop_ManExe].Mover_ManExe := TRUE;
+	        END_IF;
+	    END_FOR;
+	    #Fct_XTS_HMI.Sts_ManExe := FALSE;
+	END_IF;
+	
+	// Update HMi interface 0 (used from PLC Loop)
+	//**************** Mover Selection ****************
+	IF #Fct_XTS_HMI.IN_InterfaceHMi[0].Cmd_SelectMover = #Fct_XTS_HMI.Cfg_MoverNumber THEN
+	    #Fct_XTS_HMI.IN_InterfaceHMi[0].Sts_TargetPos := #Fct_XTS_HMI.MoverOUT.rTargetPosition * #Fct_XTS_HMI.Cfg_Scaling;
+	    #Fct_XTS_HMI.IN_InterfaceHMi[0].Sts_ActualPos := #Fct_XTS_HMI.Sts_ActualPos;
+	    #Fct_XTS_HMI.IN_InterfaceHMi[0].Sts_ErrorID := #Fct_XTS_HMI.MoverIN.uiErrorID;
+	    #Fct_XTS_HMI.IN_InterfaceHMi[0].Sts_Ready := (NOT #Fct_XTS_HMI.MoverIN.bError) AND #Fct_XTS_HMI.MoverIN.uiErrorID = 0;
+	    #Fct_XTS_HMI.IN_InterfaceHMi[0].Sts_Alarm := (NOT #Fct_XTS_HMI.Sts_NoAlm);
+	    #Fct_XTS_HMI.IN_InterfaceHMi[0].Sts_Fault := (NOT #Fct_XTS_HMI.IN_InterfaceHMi[0].Sts_Ready);
+	    #Fct_XTS_HMI.IN_InterfaceHMi[0].Sts_MoverEnabled := (NOT #Fct_XTS_HMI.MoverIN.bNoGroupCA);
+	    #Fct_XTS_HMI.IN_InterfaceHMi[0].Sts_CollAvoidance := #Fct_XTS_HMI.Sts_Mover_ColAvoidFF OR #Fct_XTS_HMI.Sts_Mover_ColAvoidBW;
+	    #Fct_XTS_HMI.IN_InterfaceHMi[0].Cfg_NoInterlock := FALSE;
+	END_IF;
+	
+	
+END_FUNCTION
+

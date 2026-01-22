@@ -1,0 +1,174 @@
+﻿MultiLingualTexts:
+  - id: MLC_4vk
+    en-US: Actuator Vision Cognex Firmware V4
+  - id: MLC_3CT
+    en-US: |-
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+  - id: MLC_3id
+    en-US: Config RR Enable
+  - id: MLC_4DW
+    en-US: Check Inspection complet toggle
+  - id: MLC_3KW
+    en-US: Request to load job on next cycle
+  - id: MLC_X9
+    en-US: Module has been seen in fault
+  - id: MLC_58c
+    en-US: Not used
+  - id: MLC_4Zs
+    en-US: Alarms Status
+  - id: MLC_ML
+    en-US: Status to inform about or to emulate physical input
+  - id: MLC_3T5
+    en-US: Inspection Results
+  - id: MLC_T9
+    en-US: Inspection Status
+  - id: MLC_3Db
+    en-US: Fail Code
+  - id: MLC_3UK
+    en-US: Current job loaded Vision
+  - id: MLC_4RX
+    en-US: Sequencer
+  - id: MLC_3uu
+    en-US: Counter PartFail
+  - id: MLC_4UE
+    en-US: Counter System Fail
+  - id: MLC_3E9
+    en-US: Counter Pass Status
+  - id: MLC_588
+    en-US: Counter Pixel Size Fail
+  - id: MLC_4Hp
+    en-US: Counter Light Level Fail
+  - id: MLC_4uR
+    en-US: Counter Focus Level Fail
+  - id: MLC_53w
+    en-US: Counter Revision Mismatch Fail
+  - id: MLC_3Pj
+    en-US: Counter System Fail
+  - id: MLC_3sZ
+    en-US: Counter Specific Fail Code 2
+  - id: MLC_388
+    en-US: Counter Specific Fail Code 3
+  - id: MLC_3Mn
+    en-US: Counter Specific Fail Code 4
+  - id: MLC_46c
+    en-US: Counter Specific Fail Code 5
+  - id: MLC_4KC
+    en-US: Counter Specific Fail Code 6
+  - id: MLC_RM
+    en-US: Counter Specific Fail Code 7
+  - id: MLC_ry
+    en-US: Counter Specific Fail Code 8
+  - id: MLC_4Ua
+    en-US: Counter Specific Fail Code 9
+  - id: MLC_3zy
+    en-US: Counter Specific Fail Code 10
+  - id: MLC_Px
+    en-US: Command
+  - id: MLC_3p7
+    en-US: Acquisition ID  memorize
+  - id: MLC_3Um
+    en-US: Counter PartFail
+  - id: MLC_4Ap
+    en-US: Counter System Fail
+  - id: MLC_3ap
+    en-US: Counter Pass Status
+  - id: MLC_54t
+    en-US: Counter Pixel Size Fail
+  - id: MLC_4XQ
+    en-US: Counter Light Level Fail
+  - id: MLC_44G
+    en-US: Counter Focus Level Fail
+  - id: MLC_kX
+    en-US: Counter Revision Mismatch Fail
+  - id: MLC_4Pz
+    en-US: Counter System Fail
+  - id: MLC_4uM
+    en-US: Counter Specific Fail Code 2
+  - id: MLC_3cc
+    en-US: Counter Specific Fail Code 3
+  - id: MLC_3y6
+    en-US: Counter Specific Fail Code 4
+  - id: MLC_3Dt
+    en-US: Counter Specific Fail Code 5
+  - id: MLC_3C9
+    en-US: Counter Specific Fail Code 6
+  - id: MLC_4wP
+    en-US: Counter Specific Fail Code 7
+  - id: MLC_3ie
+    en-US: Counter Specific Fail Code 8
+  - id: MLC_y9
+    en-US: Counter Specific Fail Code 9
+  - id: MLC_4WF
+    en-US: Counter Specific Fail Code 10
+  - id: MLC_4UX
+    en-US: 'Command Alias '
+  - id: MLC_3jx
+    en-US: Read Inputs
+  - id: MLC_3Ay
+    en-US: Acqusition ID
+  - id: MLC_4Cm
+    en-US: Input Communication Failure
+  - id: MLC_3iW
+    en-US: Load Data
+  - id: MLC_wP
+    en-US: Get Module Diagnostic
+  - id: MLC_3BZ
+    en-US: Clear Reporting
+  - id: MLC_4RS
+    en-US: Reset Alarms
+  - id: MLC_3QW
+    en-US: New Command Detected
+  - id: MLC_538
+    en-US: Status Done
+  - id: MLC_35J
+    en-US: Wait Command Abort or Reset
+  - id: MLC_43j
+    en-US: Clear Command and Status
+  - id: MLC_4dd
+    en-US: 'Step 1: RESET - Check vision online'
+  - id: MLC_P3
+    en-US: 'Step 0: Wait Command Execute Or Load Job'
+  - id: MLC_4b5
+    en-US: 'Step 10: EXECUTE - Trig vision'
+  - id: MLC_5C7
+    en-US: 'Step 11: Wait vision triggered '
+  - id: MLC_aa
+    en-US: 'Step 12: Check aquisition done increment of 1'
+  - id: MLC_dw
+    en-US: 'Step 13: Wait vision triggered OFF'
+  - id: MLC_4bt
+    en-US: 'Step 14 : Update Reults and Counter'
+  - id: MLC_3tJ
+    en-US: 'Step 30: LOADJOB Begin'
+  - id: MLC_3r9
+    en-US: 'Step 31: Write Job Number'
+  - id: MLC_3Pi
+    en-US: send JOB by message
+  - id: MLC_qH
+    en-US: Rep, Couter Alarm
+  - id: MLC_TT
+    en-US: 'Update Status_NoAlm '
+  - id: MLC_4xg
+    en-US: 'Step 90 : ALARM STATE'
+  - id: MLC_573
+    en-US: Detect if the camera was set offline OR the module has been seen in fault to load the job on the next vision cycle
+  - id: MLC_56n
+    en-US: Send R&R enable to the vision
+  - id: MLC_VW
+    en-US: Reporting of Quality
+  - id: MLC_4Lm
+    en-US: Update Report_dT
+  - id: MLC_uP
+    en-US: Clear Command
+  - id: MLC_4dm
+    en-US: Write Output
+  - id: MLC_3YJ
+    en-US: Output Communication Failure
+  - id: MLC_4jP
+    en-US: Current Job Loaded
+  - id: MLC_39P
+    en-US: Update Alarm state
+  - id: MLC_37y
+    en-US: Update command state

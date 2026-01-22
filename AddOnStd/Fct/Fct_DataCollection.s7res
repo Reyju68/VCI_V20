@@ -1,0 +1,58 @@
+﻿MultiLingualTexts:
+  - id: MLC_PT
+    en-US: Function block for Data Collection
+  - id: MLC_c7
+    en-US: "23 Jun 2025\r\n- Fisrt Released Version "
+  - id: MLC_49J
+    en-US: Configurable instruction to disable any alarm
+  - id: MLC_3yw
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_4at
+    en-US: Parameter Buffer Space Limit
+  - id: MLC_LG
+    en-US: Parameter Transaction Time Out
+  - id: MLC_3Ki
+    en-US: Data Part Out Free Space
+  - id: MLC_4nJ
+    en-US: Latest Transfer Time of Part Out
+  - id: MLC_3nT
+    en-US: Data State Free Space
+  - id: MLC_4HY
+    en-US: Latest Transfer Time of States
+  - id: MLC_4QH
+    en-US: Buffer Part Out is Full
+  - id: MLC_4tW
+    en-US: Transfer Part Out to Data Base is Slow
+  - id: MLC_4pa
+    en-US: Buffer State is Full
+  - id: MLC_rj
+    en-US: Transfer State to Data Base is Slow
+  - id: MLC_3q9
+    en-US: Buffer Part Out
+  - id: MLC_4ua
+    en-US: Buffer States
+  - id: MLC_35K
+    en-US: Previous Pointer Read of Part Out
+  - id: MLC_3pt
+    en-US: Data part out transfert time
+  - id: MLC_35B
+    en-US: Previous Pointer Read of States
+  - id: MLC_48m
+    en-US: Data state transfert time
+  - id: MLC_4yJ
+    en-US: First scan
+  - id: MLC_V4
+    en-US: PLC Control buffer space
+  - id: MLC_33N
+    en-US: |-
+      Free space:=Buffer size–(Modulo: Pointer Write - Pointer Read , Buffer size )
+      Free space := Buffer size- Free space / Buffer size
+      If Free space <  XX% Then
+        Alarm buffer full := TRUE
+      End if
+  - id: MLC_3eZ
+    en-US: Display Alarm if the buffer in full
+  - id: MLC_4J5
+    en-US: Check communication time
+  - id: MLC_Wp
+    en-US: Display message if the transaction is too long

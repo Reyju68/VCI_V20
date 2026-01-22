@@ -1,0 +1,268 @@
+﻿{
+    S7_BlockComment := "MLC_c7";
+    S7_BlockTitle := "MLC_PT";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Fct_DataCollection"
+    VAR_INPUT 
+        { S7_MLC := "MLC_49J" }
+        Cfg_NoAlm : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3yw";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_FirstScan : Bool;
+        { S7_MLC := "MLC_4at" }
+        Par_BufferSpaceLimit : DInt;
+        { S7_MLC := "MLC_LG" }
+        Par_TransactionTime : DInt;
+    END_VAR
+    VAR_OUTPUT 
+        { S7_MLC := "MLC_3Ki" }
+        DataPartOut_FreeSpace : Real;
+        { S7_MLC := "MLC_4nJ" }
+        DataPartOut_LatestTrsfTime : DInt;
+        { S7_MLC := "MLC_3nT" }
+        DataState_FreeSpace : Real;
+        { S7_MLC := "MLC_4HY" }
+        DataState_LatestTrsfTime : DInt;
+        { S7_MLC := "MLC_4QH" }
+        Sts_AlmPartOutBufferFull : Bool;
+        { S7_MLC := "MLC_4tW" }
+        Sts_AlmPartOutTrans : Bool;
+        { S7_MLC := "MLC_4pa" }
+        Sts_AlmStateBufferFull : Bool;
+        { S7_MLC := "MLC_rj" }
+        Sts_AlmStateTrans : Bool;
+    END_VAR
+    VAR_IN_OUT 
+        { S7_MLC := "MLC_3q9" }
+        DataPartOut : _.Typ_DataPartOut;
+        { S7_MLC := "MLC_4ua" }
+        DataState : _.Typ_DataState;
+    END_VAR
+    VAR 
+        { S7_MLC := "MLC_35K" }
+        DataPartOut_PreviousPointerRead : DInt;
+        {
+            S7_MLC := "MLC_3pt";
+            S7_Setpoint := "False"
+        }
+        DataPartOut_TrsfTime : IEC_TIMER;
+        { S7_MLC := "MLC_35B" }
+        DataState_PreviousPointerRead : DInt;
+        {
+            S7_MLC := "MLC_48m";
+            S7_Setpoint := "False"
+        }
+        DataState_TrsfTime : IEC_TIMER;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4yJ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+            wire#w1
+            R_Coil( #Cfg_NoAlm )
+            "Fct_SizeBufferPartOut"(
+                Array_A := #DataPartOut.Buffer, 
+                ArraySize => #DataPartOut.BufferSize
+            )
+            "Fct_SizeBufferState"(
+                Array_A := #DataState.Buffer, 
+                ArraySize => #DataState.BufferSize
+            )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Par_TransactionTime, 
+                in2 := 0
+            )
+            
+            Move(
+                in := T#1S_500MS, 
+                out1 => #DataPartOut_TrsfTime.PT, 
+                out2 => #DataState_TrsfTime.PT
+            )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Par_BufferSpaceLimit, 
+                in2 := 0
+            )
+            
+            Move(
+                in := 10, 
+                out1 => #Par_BufferSpaceLimit
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_33N";
+        S7_NetworkTitle := "MLC_V4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "( IN1 - IN2 ) MOD IN3 "
+            }
+            Calculate(
+                in1 := #DataPartOut.DataWrite_Out, 
+                in2 := #DataPartOut.DataRead_In, 
+                in3 := #DataPartOut.BufferSize, 
+                out => #DataPartOut_FreeSpace
+            )
+            {
+                S7_Templates := "SrcType := Real"; 
+                S7_Expression := "( IN1 - IN2) / IN3 * IN4"
+            }
+            Calculate(
+                in1 := #DataPartOut.BufferSize, 
+                in2 := #DataPartOut_FreeSpace, 
+                in3 := #DataPartOut.BufferSize, 
+                in4 := 100.0, 
+                out => #DataPartOut_FreeSpace
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := DInt"; 
+                S7_Expression := "( IN1 - IN2 ) MOD IN3 "
+            }
+            Calculate(
+                in1 := #DataState.DataWrite_Out, 
+                in2 := #DataState.DataRead_In, 
+                in3 := #DataState.BufferSize, 
+                out => #DataState_FreeSpace
+            )
+            {
+                S7_Templates := "SrcType := Real"; 
+                S7_Expression := "( IN1 - IN2) / IN3 * IN4"
+            }
+            Calculate(
+                in1 := #DataState.BufferSize, 
+                in2 := #DataState_FreeSpace, 
+                in3 := #DataState.BufferSize, 
+                in4 := 100.0, 
+                out => #DataState_FreeSpace
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3eZ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Cfg_NoAlm )
+            wire#w1
+            { S7_Templates := "SrcType := Real" }
+            LE_Contact(
+                in1 := #DataPartOut_FreeSpace, 
+                in2 := #Par_BufferSpaceLimit
+            )
+            Coil( #Sts_AlmPartOutBufferFull )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := Real" }
+            LE_Contact(
+                in1 := #DataState_FreeSpace, 
+                in2 := #Par_BufferSpaceLimit
+            )
+            Coil( #Sts_AlmStateBufferFull )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4J5"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #DataPartOut.DataRead_In, 
+                in2 := #DataPartOut_PreviousPointerRead
+            )
+            wire#w1
+            
+            Move(
+                in := #DataPartOut_TrsfTime.ET, 
+                out1 => #DataPartOut_LatestTrsfTime
+            )
+            
+            Move(
+                in := #DataPartOut.DataRead_In, 
+                out1 => #DataPartOut_PreviousPointerRead
+            )
+            RT_Coil( #DataPartOut_TrsfTime )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #DataPartOut.DataRead_In, 
+                in2 := #DataPartOut.DataWrite_Out
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #DataState.DataRead_In, 
+                in2 := #DataState_PreviousPointerRead
+            )
+            wire#w2
+            
+            Move(
+                in := #DataState_TrsfTime.ET, 
+                out1 => #DataState_LatestTrsfTime
+            )
+            
+            Move(
+                in := #DataState.DataRead_In, 
+                out1 => #DataState_PreviousPointerRead
+            )
+            RT_Coil( #DataState_TrsfTime )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #DataState.DataRead_In, 
+                in2 := #DataState.DataWrite_Out
+            )
+        END_RUNG wire#w2
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_Wp"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Cfg_NoAlm )
+            wire#w1
+            { S7_Templates := "time_type := Time" }
+            #DataPartOut_TrsfTime.TON(
+                pt := #DataPartOut_TrsfTime.PT, 
+                et =>  
+            )
+            Coil( #Sts_AlmPartOutTrans )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "time_type := Time" }
+            #DataState_TrsfTime.TON(
+                pt := #DataState_TrsfTime.PT, 
+                et =>  
+            )
+            Coil( #Sts_AlmStateTrans )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

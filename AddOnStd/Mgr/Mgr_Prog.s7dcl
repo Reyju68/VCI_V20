@@ -1,0 +1,460 @@
+﻿{
+    S7_Author := "MIS";
+    S7_BlockComment := "MLC_uN";
+    S7_BlockTitle := "MLC_4jA";
+    S7_Family := "Standard";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "11.2"
+}
+FUNCTION "Mgr_Prog" : Void
+    VAR_INPUT 
+        { S7_MLC := "MLC_3At" }
+        Cmd_FirstScan : Bool;
+    END_VAR
+    VAR_IN_OUT 
+        { S7_MLC := "MLC_xZ" }
+        Mgr_Prog : _.Typ_MgrProg;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3WW"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+            wire#w1
+            R_Coil( #Mgr_Prog.Cfg_SeqStep )
+            S_Coil( #Mgr_Prog.Cfg_Safe )
+            S_Coil( #Mgr_Prog.Sts_Idle )
+            R_Coil( #Mgr_Prog.Cfg_SeqStep )
+            S_Coil( #Mgr_Prog.Sts_SeqOns )
+            R_Coil( #Mgr_Prog.Cmd_ImAbort )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Prog.Sts_Seq, 
+                out2 => #Mgr_Prog.Cmd_Seq, 
+                out3 => #Mgr_Prog.Cmd_State
+            )
+            
+            Move(
+                in := T#17M, 
+                out1 => #Mgr_Prog.TmrSeq.PT
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := -1, 
+                out1 => #Mgr_Prog.Cfg_BtnNoInterlock
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Mgr_Prog.Cfg_Safe )
+            wire#w2
+            R_Coil( #Mgr_Prog.Cfg_ModularTst )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Mgr_Prog.Sts_Idle )
+            I_Contact( #Mgr_Prog.Mem_Idle )
+        END_RUNG wire#w2
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4x6"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Prog.Cmd_Idle )
+            R_Coil( #Mgr_Prog.Cmd_Idle )
+            S_Coil( #Mgr_Prog.Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_54C";
+        S7_NetworkTitle := "MLC_Zd"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            R_Coil( #Mgr_Prog.Sts_SeqOns )
+            wire#w1
+            Contact( #Mgr_Prog.Cfg_Safe )
+            wire#w2
+            I_Contact( #Mgr_Prog.Sts_Idle )
+            I_Contact( #Mgr_Prog.Cfg_ModularTst )
+            wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Mgr_Prog.Cmd_Seq, 
+                in2 := 0
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_Seq, 
+                out1 => #Mgr_Prog.Mem_SeqP
+            )
+            
+            Move(
+                in := #Mgr_Prog.Cmd_Seq, 
+                out1 => #Mgr_Prog.Sts_Seq
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Prog.Cmd_Seq
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqT, 
+                out1 => #Mgr_Prog.Mem_SeqPT
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Prog.Sts_SeqT
+            )
+            S_Coil( #Mgr_Prog.Sts_SeqOns )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Mgr_Prog.Cmd_State.%X0 )
+        END_RUNG wire#w2
+        RUNG wire#w2
+            I_Contact( #Mgr_Prog.Cfg_SeqStep )
+        END_RUNG wire#w3
+        RUNG wire#w2
+            Contact( #Mgr_Prog.Cmd_SeqOns )
+        END_RUNG wire#w3
+        RUNG wire#w2
+            I_Contact( #Mgr_Prog.Cfg_SeqStep )
+            wire#w4
+            R_Coil( #Mgr_Prog.Cmd_SeqOns )
+            Coil( #Mgr_Prog.Sts_SeqExe )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Mgr_Prog.Cmd_SeqOns )
+        END_RUNG wire#w4
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_34g"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Prog.Sts_Idle )
+            I_Contact( #Mgr_Prog.Mem_Idle )
+            
+            Move(
+                in := #Mgr_Prog.Sts_Seq, 
+                out1 => #Mgr_Prog.Mem_SeqP
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqT, 
+                out1 => #Mgr_Prog.Mem_SeqPT
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Prog.Sts_Seq, 
+                out2 => #Mgr_Prog.Sts_SeqT, 
+                out3 => #Mgr_Prog.Cmd_Seq, 
+                out4 => #Mgr_Prog.Cmd_State
+            )
+            R_Coil( #Mgr_Prog.Cfg_SeqStep )
+            S_Coil( #Mgr_Prog.Sts_SeqOns )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3St"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Prog.Cmd_ImAbort )
+            Contact( #Mgr_Prog.Sts_StateOns )
+            Contact( #Mgr_Prog.Cmd_State.%X0 )
+            R_Coil( #Mgr_Prog.Cmd_ImAbort )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Mgr_Prog.Sts_Idle )
+            Contact( #Mgr_Prog.Mem_Idle )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Mgr_Prog.Cmd_State, 
+                in2 := 0
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Prog.Mem_SeqP, 
+                out2 => #Mgr_Prog.Mem_SeqPT
+            )
+            
+            Move(
+                in := T#17M, 
+                out1 => #Mgr_Prog.TmrSeq.PT
+            )
+            wire#w1
+            
+            Move(
+                in := #Mgr_Prog.Cmd_State, 
+                out1 => #Mgr_Prog.Sts_State
+            )
+            
+            Add(
+                in1 := #Mgr_Prog.Par_TimeIdeal, 
+                in2 := #Mgr_Prog.Par_TimeIdeal, 
+                out => #Mgr_Prog.Max_dT
+            )
+            
+            Move(
+                in := T#17M, 
+                out1 => #Mgr_Prog.Tmr.PT
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Prog.Rep_dT, 
+                out2 => #Mgr_Prog.Sts_SeqT
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Mgr_Prog.Cmd_ImAbort )
+            
+            Move(
+                in := #Mgr_Prog.Sts_Seq, 
+                out1 => #Mgr_Prog.Mem_SeqP
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqT, 
+                out1 => #Mgr_Prog.Mem_SeqPT
+            )
+            R_Coil( #Mgr_Prog.Cfg_SeqStep )
+            S_Coil( #Mgr_Prog.Cmd_State.%X0 )
+        END_RUNG wire#w1
+        RUNG wire#w1
+            RT_Coil( #Mgr_Prog.Tmr )
+            Coil( #Mgr_Prog.Sts_StateOns )
+            S_Coil( #Mgr_Prog.Sts_SeqOns )
+            R_Coil( #Mgr_Prog.Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3jQ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Mgr_Prog.Sts_Idle )
+            I_Contact( #Mgr_Prog.Mem_Idle )
+            wire#w1
+            { S7_Templates := "time_type := Time" }
+            #Mgr_Prog.Tmr.TON(
+                pt := #Mgr_Prog.Tmr.PT, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Mgr_Prog.Tmr.ET, 
+                out1 => #Mgr_Prog.Rep_dT
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_nZ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Prog.Sts_Idle )
+            Coil( #Mgr_Prog.Mem_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_gq"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Mgr_Prog.Sts_Idle )
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Mgr_Prog.Rep_dT, 
+                in2 := #Mgr_Prog.Max_dT
+            )
+            Coil( #Mgr_Prog.Sts_dTing )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4pN"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Mgr_Prog.Sts_Idle )
+            I_Contact( #Mgr_Prog.Sts_SeqOns )
+            I_Contact( #Mgr_Prog.Cmd_ResetTmrSeq )
+            wire#w1
+            { S7_Templates := "time_type := Time" }
+            #Mgr_Prog.TmrSeq.TON(
+                pt := #Mgr_Prog.TmrSeq.PT, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Mgr_Prog.TmrSeq.ET, 
+                out1 => #Mgr_Prog.Sts_SeqT
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_xn"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Prog.Cmd_ResetTmrSeq )
+            
+            Move(
+                in := 0, 
+                out1 => #Mgr_Prog.Sts_SeqT
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            R_Coil( #Mgr_Prog.Cmd_ResetTmrSeq )
+            
+            Move(
+                in := #Mgr_Prog.Cfg_BtnNoInterlock, 
+                out1 => #Mgr_Prog.Sts_BtnNoInterlock
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_46V"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Mgr_Prog.Sts_SeqOns )
+            I_Contact( #Cmd_FirstScan )
+            wire#w1
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqP9, 
+                out1 => #Mgr_Prog.Sts_SeqP10
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqP8, 
+                out1 => #Mgr_Prog.Sts_SeqP9
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqP7, 
+                out1 => #Mgr_Prog.Sts_SeqP8
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqP6, 
+                out1 => #Mgr_Prog.Sts_SeqP7
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqP5, 
+                out1 => #Mgr_Prog.Sts_SeqP6
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqP4, 
+                out1 => #Mgr_Prog.Sts_SeqP5
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqP3, 
+                out1 => #Mgr_Prog.Sts_SeqP4
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqP2, 
+                out1 => #Mgr_Prog.Sts_SeqP3
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqP, 
+                out1 => #Mgr_Prog.Sts_SeqP2
+            )
+            
+            Move(
+                in := #Mgr_Prog.Mem_SeqP, 
+                out1 => #Mgr_Prog.Sts_SeqP
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqTp9, 
+                out1 => #Mgr_Prog.Sts_SeqTp10
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqTp8, 
+                out1 => #Mgr_Prog.Sts_SeqTp9
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqTp7, 
+                out1 => #Mgr_Prog.Sts_SeqTp8
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqTp6, 
+                out1 => #Mgr_Prog.Sts_SeqTp7
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqTp5, 
+                out1 => #Mgr_Prog.Sts_SeqTp6
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqTp4, 
+                out1 => #Mgr_Prog.Sts_SeqTp5
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqTp3, 
+                out1 => #Mgr_Prog.Sts_SeqTp4
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqTp2, 
+                out1 => #Mgr_Prog.Sts_SeqTp3
+            )
+            
+            Move(
+                in := #Mgr_Prog.Sts_SeqTp, 
+                out1 => #Mgr_Prog.Sts_SeqTp2
+            )
+            
+            Move(
+                in := #Mgr_Prog.Mem_SeqPT, 
+                out1 => #Mgr_Prog.Sts_SeqTp
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION

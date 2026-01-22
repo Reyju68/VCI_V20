@@ -1,0 +1,50 @@
+﻿FUNCTION "FC_SwapReal" : Real
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      InReal : Real;
+   END_VAR
+
+   VAR_TEMP 
+      RealAsDword : DWord;
+      B0 : Byte;
+      B1 : Byte;
+      B2 : Byte;
+      B3 : Byte;
+      SwappedDword : DWord;
+   END_VAR
+
+
+BEGIN
+	// 1. Convertir le REAL en DWORD (même structure binaire)
+	#RealAsDword := REAL_TO_DWORD(#InReal);
+	
+	// 2. Extraire les octets individuellement
+	#B0 := DWORD_TO_BYTE(#RealAsDword AND 16#000000FF);
+	
+	#RealAsDword := REAL_TO_DWORD(#InReal);
+	#RealAsDword := #RealAsDword AND 16#0000FF00;
+	#RealAsDword := SHR(IN := #RealAsDword, N := 8);
+	#B1 := DWORD_TO_BYTE(#RealAsDword);
+	
+	#RealAsDword := REAL_TO_DWORD(#InReal);
+	#RealAsDword := #RealAsDword AND 16#00FF0000;;
+	#RealAsDword := SHR(IN := #RealAsDword, N := 16);
+	#B2 := DWORD_TO_BYTE(#RealAsDword);
+	
+	#RealAsDword := REAL_TO_DWORD(#InReal);
+	#RealAsDword := #RealAsDword AND 16#FF000000;
+	#RealAsDword := SHR(IN := #RealAsDword, N := 24);
+	#B3 := DWORD_TO_BYTE(#RealAsDword);
+	
+	
+	// 3. Recomposer le DWORD avec octets inversés (swap complet)
+	#SwappedDword := SHL(IN := BYTE_TO_DWORD(#B0), N := 24)
+	OR SHL(IN := BYTE_TO_DWORD(#B1), N := 16)
+	OR SHL(IN := BYTE_TO_DWORD(#B2), N := 8)
+	OR BYTE_TO_DWORD(#B3);
+	
+	// 4. Reconvertir en REAL
+	#FC_SwapReal := DWORD_TO_REAL(#SwappedDword);
+END_FUNCTION
+

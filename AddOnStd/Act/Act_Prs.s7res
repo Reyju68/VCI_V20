@@ -1,0 +1,179 @@
+﻿MultiLingualTexts:
+  - id: MLC_4y3
+    en-US: Active Presence Sensor Module
+  - id: MLC_fa
+    en-US: |-
+      02 Sep. 2022
+       - New Revision Roles (StdAddonsTIA_SCN_V004.docx)
+
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+
+      19 Jun 2025
+      - Add Predictive maintenance
+      - Ajout du controle du First Scan avant les temporisations
+  - id: MLC_4Wa
+    en-US: Parameter to define the ideal execution time
+  - id: MLC_4yC
+    en-US: Parameter to define the timer ON preset
+  - id: MLC_jq
+    en-US: Parameter to define the timer OFF preset
+  - id: MLC_37x
+    en-US: Parameter to define the ideal execution time
+  - id: MLC_4wG
+    en-US: Configuration to deactivate the statistic management
+  - id: MLC_3uB
+    en-US: Config to enable the statistics updates
+  - id: MLC_3Nr
+    en-US: Configuration instruction to request emulated mode
+  - id: MLC_3Vq
+    en-US: Configurable instruction to disable any alarm
+  - id: MLC_4FD
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_3ch
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_SU
+    en-US: Command to reset the statistic informations
+  - id: MLC_eG
+    en-US: Command send by the station sequence to check if input is ON
+  - id: MLC_48H
+    en-US: Command send by the station sequence to check if input is OFF
+  - id: MLC_4ht
+    en-US: Continious Check State Off
+  - id: MLC_vH
+    en-US: Continious Check State On
+  - id: MLC_3Lh
+    en-US: Command to update versus physical input
+  - id: MLC_4w2
+    en-US: Numeric value of sensor
+  - id: MLC_gi
+    en-US: Command send by the station sequence to enable or disable the actuator
+  - id: MLC_4nG
+    en-US: Status to inform about or to emulate physical input
+  - id: MLC_3EY
+    en-US: Status to control physical output
+  - id: MLC_3zY
+    en-US: Status to inform that end of timer has been reached
+  - id: MLC_3Vb
+    en-US: Status to inform that the input is not ON
+  - id: MLC_VM
+    en-US: Status to inform that the input is not OFF
+  - id: MLC_3Wj
+    en-US: Status to inform while no alarm pending
+  - id: MLC_am
+    en-US: Status to inform alarm coming edge
+  - id: MLC_4Q5
+    en-US: Status to inform command edge
+  - id: MLC_48g
+    en-US: Result of the ContiniousCheck State ON
+  - id: MLC_339
+    en-US: Result of the ContiniousCheck State OFF
+  - id: MLC_48y
+    en-US: Average Value record during Check Off
+  - id: MLC_38R
+    en-US: Average Value record during Check On
+  - id: MLC_3qQ
+    en-US: Report configuration (xxx.0=With Stat / xxx.1=With Numerical sensor)
+  - id: MLC_49d
+    en-US: Maximum Value record during Check Off
+  - id: MLC_3w9
+    en-US: Maximum Value record during Check On
+  - id: MLC_Rz
+    en-US: Minimun Value record during Check Off
+  - id: MLC_3Ge
+    en-US: Minimun Value record during Check On
+  - id: MLC_3N2
+    en-US: Reporting value to give current execution elapsed time
+  - id: MLC_T3
+    en-US: Numerical Value during check off
+  - id: MLC_4UA
+    en-US: Numerical Value during check on
+  - id: MLC_3ae
+    en-US: Local variable
+  - id: MLC_3uJ
+    en-US: Local variable
+  - id: MLC_57K
+    en-US: Local variable
+  - id: MLC_3aV
+    en-US: Local variable
+  - id: MLC_sU
+    en-US: Local variable
+  - id: MLC_4Bj
+    en-US: Local variable
+  - id: MLC_3kJ
+    en-US: Local variable
+  - id: MLC_3BX
+    en-US: Local variable
+  - id: MLC_3tV
+    en-US: Local variable
+  - id: MLC_i8
+    en-US: Local variable
+  - id: MLC_3DN
+    en-US: Local variable
+  - id: MLC_3pr
+    en-US: Local instance
+  - id: MLC_4Av
+    en-US: Average counter for check off value
+  - id: MLC_3Y5
+    en-US: Average counter for check on value
+  - id: MLC_4jM
+    en-US: Temporary tag for value off average calculation
+  - id: MLC_3ft
+    en-US: Temporary tag for value on average calculation
+  - id: MLC_4gR
+    en-US: Temporary tag for value off record
+  - id: MLC_3Lr
+    en-US: Temporary tag for value on record
+  - id: MLC_4nh
+    en-US: Temporary tag for max Level Off
+  - id: MLC_4Re
+    en-US: Temporary tag for max Level On
+  - id: MLC_r4
+    en-US: Temporary tag for min Level Off
+  - id: MLC_s5
+    en-US: Temporary tag for min Level On
+  - id: MLC_4ZR
+    en-US: First PLC scan
+  - id: MLC_3Sd
+    en-US: Alarm acknowledgement
+  - id: MLC_4ys
+    en-US: Emulate mode management
+  - id: MLC_3ug
+    en-US: WORKMODE 1 (Control check during a programmed time)
+  - id: MLC_3VP
+    en-US: Check sensor State during the programmed time and set the alarm
+  - id: MLC_3m7
+    en-US: WORKMODE 2 (Check after TimeOut)
+  - id: MLC_429
+    en-US: Avoid the way to have both continious check On and Off at the same time, start the command edge and reset the timeout finished
+  - id: MLC_3DX
+    en-US: WORKMODE 2 (Check after TimeOut)
+  - id: MLC_4jp
+    en-US: Alarms management
+  - id: MLC_4Jd
+    en-US: WORKMODE 2 (Check after TimeOut)
+  - id: MLC_mi
+    en-US: TimeOut management
+  - id: MLC_3Dq
+    en-US: Update of the status input with the state of the physical input
+  - id: MLC_3Kn
+    en-US: update of the result of the continious check state ON
+  - id: MLC_iu
+    en-US: update of the result of the continious check state OFF
+  - id: MLC_wy
+    en-US: Update of the output
+  - id: MLC_3WA
+    en-US: Clear Statistics after dashboard acquisition
+  - id: MLC_4wz
+    en-US: Inform the dashboard that the actuator uses the predictive maintenance statistics
+  - id: MLC_4bn
+    en-US: Check if sensor with numeric value input
+  - id: MLC_qR
+    en-US: Level On - Numerical value record during check part presence
+  - id: MLC_3iS
+    en-US: Level On - Record lowest value and average calculation
+  - id: MLC_52K
+    en-US: Level Off - Numerical value record during check part presence
+  - id: MLC_cz
+    en-US: Level Off - Record lowest value and average calculation

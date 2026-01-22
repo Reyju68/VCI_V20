@@ -1,0 +1,1247 @@
+﻿{
+    S7_BlockComment := "MLC_3mJ";
+    S7_BlockTitle := "MLC_4hx";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "2.0"
+}
+FUNCTION_BLOCK "Act_RobFanucR30iB"
+    VAR_INPUT 
+        { S7_MLC := "MLC_3wb" }
+        Cfg_FirstScan : Bool;
+        { S7_MLC := "MLC_UZ" }
+        Cfg_NoAlm : Bool;
+        { S7_MLC := "MLC_xF" }
+        Cfg_NoInterlock : Bool;
+        { S7_MLC := "MLC_vW" }
+        Cfg_ProgRunExec : Bool;
+        { S7_MLC := "MLC_3iF" }
+        Cfg_ProgRunRst : Bool;
+        { S7_MLC := "MLC_nR" }
+        Cfg_Slow : Bool;
+        { S7_MLC := "MLC_3b6" }
+        Cmd_Ack : Bool;
+        { S7_MLC := "MLC_xN" }
+        Cmd_ClrStat : Bool;
+        { S7_MLC := "MLC_4nS" }
+        Cmd_Hold : Bool;
+        { S7_MLC := "MLC_4i8" }
+        Cmd_CodeSeq : DInt;
+        Cmd_Slow : Bool;
+        { S7_MLC := "MLC_3ML" }
+        Cmd_Out : DInt;
+        { S7_MLC := "MLC_47f" }
+        Par_TimeOut : DInt;
+        { S7_MLC := "MLC_4d9" }
+        Hw_Inputs : HW_ANY;
+        { S7_MLC := "MLC_4Lf" }
+        Hw_Outputs : HW_ANY;
+    END_VAR
+    VAR_OUTPUT 
+        { S7_MLC := "MLC_569" }
+        Sts_AlmBat : Bool;
+        { S7_MLC := "MLC_sw" }
+        Sts_AlmOns : Bool;
+        { S7_MLC := "MLC_3Jz" }
+        Sts_CmdDone : Bool;
+        { S7_MLC := "MLC_5Bt" }
+        Sts_Idle : Bool;
+        { S7_MLC := "MLC_4pX" }
+        Sts_NoAlm : Bool;
+        { S7_MLC := "MLC_4n5" }
+        Sts_NoInterlock : Bool;
+        { S7_MLC := "MLC_3rx" }
+        Sts_NoMove : Bool;
+        { S7_MLC := "MLC_fV" }
+        Rep_CtrAlm : DInt;
+        { S7_MLC := "MLC_48m" }
+        Rep_dT : DInt;
+        { S7_MLC := "MLC_37t" }
+        Sts_Alms : DInt;
+        { S7_MLC := "MLC_5AF" }
+        Sts_Out : DInt;
+        Sts_UserAlms : DInt;
+    END_VAR
+    VAR 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4aj";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Inp_Robot : _.Typ_FanucR30iB_Get;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3hL";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Out_Robot : _.Typ_FanucR30iB_Set;
+        { S7_MLC := "MLC_59Y" }
+        Memo_Ack : Bool;
+        { S7_MLC := "MLC_34d" }
+        Sts_SeqOns : Bool;
+        { S7_MLC := "MLC_3mA" }
+        Cmd_Seq : DInt;
+        { S7_MLC := "MLC_y7" }
+        Memo_Seqp : DInt;
+        ProgSend_ToRobot : DInt;
+        { S7_MLC := "MLC_T3" }
+        Sts_Ons : DInt;
+        { S7_MLC := "MLC_3Tt" }
+        Sts_ProgGet_FromRobot : DInt;
+        { S7_MLC := "MLC_Pp" }
+        Sts_Seq : DInt;
+        { S7_MLC := "MLC_sc" }
+        Sts_Seqp : DInt;
+        { S7_MLC := "MLC_4Sd" }
+        Sts_SeqT : DInt;
+        {
+            S7_MLC := "MLC_4xU";
+            S7_Setpoint := "False"
+        }
+        Clock : IEC_TIMER;
+        { S7_MLC := "MLC_4vk" }
+        Rst_Tmr : IEC_TIMER;
+        { S7_MLC := "MLC_43v" }
+        Tmr_Seq : IEC_TIMER;
+        { S7_MLC := "MLC_493" }
+        Tmr_TO : IEC_TIMER;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        RETVAL_SFC14 : Int;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        RETVAL_SFC15 : Int;
+    END_VAR
+    VAR_TEMP 
+        "NOP" : Bool;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_49Q"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            DPRD_DAT(
+                LADDR := #Hw_Inputs, 
+                RET_VAL => #RETVAL_SFC14, 
+                RECORD => #Inp_Robot
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_57p"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cfg_FirstScan )
+            wire#w1
+            S_Coil( #Cmd_Ack )
+            S_Coil( #Sts_Idle )
+            S_Coil( #Cfg_NoInterlock )
+            R_Coil( #Cfg_NoAlm )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq, 
+                out2 => #Sts_Seq, 
+                out3 => #Cmd_Out
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := T#2S, 
+                out1 => #Clock.PT
+            )
+            
+            Move(
+                in := T#100MS, 
+                out1 => #Rst_Tmr.PT
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4yv"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Inp_Robot.SNO_0 )
+            Coil( #Sts_ProgGet_FromRobot.%X0 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Inp_Robot.SNO_1 )
+            Coil( #Sts_ProgGet_FromRobot.%X1 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Inp_Robot.SNO_2 )
+            Coil( #Sts_ProgGet_FromRobot.%X2 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Inp_Robot.SNO_3 )
+            Coil( #Sts_ProgGet_FromRobot.%X3 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Inp_Robot.SNO_4 )
+            Coil( #Sts_ProgGet_FromRobot.%X4 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Inp_Robot.SNO_5 )
+            Coil( #Sts_ProgGet_FromRobot.%X5 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Inp_Robot.SNO_6 )
+            Coil( #Sts_ProgGet_FromRobot.%X6 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Inp_Robot.SNO_7 )
+            Coil( #Sts_ProgGet_FromRobot.%X7 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4wx"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Ack )
+            RT_Coil( #Tmr_TO )
+            
+            Move(
+                in := 0, 
+                out1 => #Sts_Alms
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Sts_UserAlms
+            )
+            S_Coil( #Memo_Ack )
+            R_Coil( #Cmd_Ack )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Memo_Ack )
+            S_Coil( #Out_Robot.FAULT_RESET )
+            I_Contact( #Cfg_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Rst_Tmr.TON(
+                pt := #Rst_Tmr.PT, 
+                et =>  
+            )
+            R_Coil( #Memo_Ack )
+            R_Coil( #Out_Robot.FAULT_RESET )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4ef"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Out, 
+                in2 := 0
+            )
+            wire#w1
+            
+            Move(
+                in := #Cmd_Out, 
+                out1 => #Sts_Out
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Sts_Idle )
+            wire#w2
+            Contact( #Cmd_Out.%X2 )
+            
+            Move(
+                in := 100, 
+                out1 => #Cmd_Seq
+            )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cmd_Out.%X1 )
+            
+            Move(
+                in := 10, 
+                out1 => #Cmd_Seq
+            )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cmd_Out.%X0 )
+            wire#w3
+            Contact( #Sts_Idle )
+            wire#w4
+            
+            Move(
+                in := 1, 
+                out1 => #Cmd_Seq
+            )
+            
+            Move(
+                in := 1, 
+                out1 => #Cmd_Out
+            )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 9
+            )
+        END_RUNG wire#w4
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4L3"
+    }
+    NETWORK
+        Label(Loop)
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Seq, 
+                in2 := 0
+            )
+            wire#w1
+            Contact( #Sts_NoAlm )
+            wire#w2
+            Coil( #Sts_SeqOns )
+            
+            Move(
+                in := #Sts_Seq, 
+                out1 => #Sts_Seqp
+            )
+            
+            Move(
+                in := #Cmd_Seq, 
+                out1 => #Sts_Seq
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq
+            )
+            RT_Coil( #Tmr_Seq )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cmd_Out.%X0 )
+        END_RUNG wire#w2
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_586"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_Idle )
+            wire#w1
+            Contact( #Cmd_Hold )
+            RT_Coil( #Tmr_TO )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Par_TimeOut, 
+                out1 => #Tmr_TO.PT
+            )
+            Contact( #Cfg_Slow )
+            
+            Mul(
+                in1 := #Par_TimeOut, 
+                in2 := 10, 
+                out => #Tmr_TO.PT
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Cfg_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr_TO.TON(
+                pt := #Tmr_TO.PT, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Tmr_TO.ET, 
+                out1 => #Rep_dT
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4n9"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Sts_Idle )
+            I_Contact( #Sts_SeqOns )
+            wire#w1
+            I_Contact( #Cfg_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr_Seq.TON(
+                pt := T#16M_39S_999MS, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Tmr_Seq.ET, 
+                out1 => #Sts_SeqT
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3ds"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 1
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #Out_Robot.CSTOPI )
+            R_Coil( #Sts_CmdDone )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_SeqT, 
+                in2 := 50
+            )
+            wire#w2
+            Contact( #Out_Robot.START )
+            wire#w3
+            R_Coil( #Out_Robot.ENBL )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Inp_Robot.BUSY )
+        END_RUNG wire#w3
+        RUNG wire#w2
+            S_Coil( #Sts_CmdDone )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4x4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 10
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            wire#w2
+            R_Coil( #Cmd_Hold )
+            S_Coil( #Out_Robot.FAULT_RESET )
+            S_Coil( #Out_Robot.CSTOPI )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Out_Robot.Cfg_Slow )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Out_Robot.START )
+            R_Coil( #Out_Robot.ENBL )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            R_Coil( #Out_Robot.START )
+            wire#w3
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_SeqT, 
+                in2 := 500
+            )
+            wire#w4
+            R_Coil( #Out_Robot.FAULT_RESET )
+            S_Coil( #Out_Robot.ENBL )
+            wire#w5
+            Contact( #Cfg_ProgRunRst )
+            I_Contact( #Inp_Robot.PROGRUN )
+            I_Contact( #Inp_Robot.BUSY )
+            wire#w6
+            R_Coil( #Out_Robot.CSTOPI )
+            
+            Move(
+                in := 11, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w3
+            I_Contact( #Inp_Robot.FAULT )
+        END_RUNG wire#w4
+        RUNG wire#w5
+            I_Contact( #Cfg_ProgRunRst )
+        END_RUNG wire#w6
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4BH"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 11
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            Coil( #"NOP" )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            I_Contact( #Inp_Robot.FAULT )
+            I_Contact( #Inp_Robot.PROGRUN )
+            I_Contact( #Inp_Robot.BUSY )
+            I_Contact( #Inp_Robot.SNACK )
+            Contact( #Inp_Robot.SYSRDY )
+            
+            Move(
+                in := 12, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Ev"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 12
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            
+            Move(
+                in := #Cmd_CodeSeq, 
+                out1 => #ProgSend_ToRobot
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            
+            Move(
+                in := 13, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3fU"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 13
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            
+            Move(
+                in := #Cmd_CodeSeq, 
+                out1 => #ProgSend_ToRobot
+            )
+            S_Coil( #Out_Robot.PNSTROBE )
+            S_Coil( #Out_Robot.START )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            Contact( #Inp_Robot.SNACK )
+            
+            Move(
+                in := 14, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3ax"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 14
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            R_Coil( #Out_Robot.PNSTROBE )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #ProgSend_ToRobot, 
+                in2 := #Sts_ProgGet_FromRobot
+            )
+            R_Coil( #Out_Robot.START )
+            
+            Move(
+                in := 15, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3YM"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 15
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            Coil( #"NOP" )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            Contact( #Inp_Robot.PROGRUN )
+            wire#w3
+            Contact( #Cfg_ProgRunRst )
+            I_Contact( #Inp_Robot.ResetDone )
+            S_Coil( #Out_Robot.Cfg_Slow )
+            
+            Move(
+                in := 16, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Inp_Robot.RobotInHomePos )
+        END_RUNG wire#w3
+        RUNG wire#w3
+            I_Contact( #Cfg_ProgRunRst )
+            
+            Move(
+                in := 16, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_SeqT, 
+                in2 := 500
+            )
+            S_Coil( #Sts_Alms.%X4 )
+            
+            Move(
+                in := 16, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_53u"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 16
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            R_Coil( #Out_Robot.START )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            I_Contact( #Inp_Robot.FAULT )
+            I_Contact( #Inp_Robot.PAUSED )
+            I_Contact( #Inp_Robot.SNACK )
+            wire#w3
+            I_Contact( #Inp_Robot.PROGRUN )
+            wire#w4
+            S_Coil( #Sts_CmdDone )
+        END_RUNG
+        RUNG wire#w4
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Cfg_ProgRunRst )
+            Contact( #Inp_Robot.ResetDone )
+            R_Coil( #Out_Robot.Cfg_Slow )
+            wire#w5
+            S_Coil( #Sts_CmdDone )
+        END_RUNG
+        RUNG wire#w5
+            S_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w2
+            Contact( #Cfg_Slow )
+            I_Contact( #Cmd_Slow )
+            
+            Move(
+                in := 200, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_xp"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 100
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            
+            Move(
+                in := #Cmd_CodeSeq, 
+                out1 => #ProgSend_ToRobot
+            )
+            R_Coil( #Sts_CmdDone )
+            R_Coil( #Out_Robot.Auto_Ack )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            I_Contact( #Inp_Robot.FAULT )
+            I_Contact( #Inp_Robot.SNACK )
+            wire#w3
+            I_Contact( #Inp_Robot.PROGRUN )
+            wire#w4
+            
+            Move(
+                in := 101, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Cfg_ProgRunExec )
+        END_RUNG wire#w4
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Seq, 
+                in2 := 101
+            )
+            S_Coil( #Sts_Alms.%X2 )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4L4"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 101
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #Out_Robot.PNSTROBE )
+            S_Coil( #Out_Robot.START )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            Contact( #Inp_Robot.SNACK )
+            
+            Move(
+                in := 102, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4He"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 102
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            R_Coil( #Out_Robot.PNSTROBE )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #ProgSend_ToRobot, 
+                in2 := #Sts_ProgGet_FromRobot
+            )
+            R_Coil( #Out_Robot.START )
+            
+            Move(
+                in := 103, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3e6"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 103
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            Coil( #"NOP" )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            Contact( #Inp_Robot.PROGRUN )
+            wire#w3
+            Contact( #Cfg_ProgRunExec )
+            I_Contact( #Inp_Robot.ExecuteDone )
+            S_Coil( #Out_Robot.Auto_Ack )
+            
+            Move(
+                in := 104, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w3
+            I_Contact( #Cfg_ProgRunExec )
+            
+            Move(
+                in := 104, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_SeqT, 
+                in2 := 500
+            )
+            S_Coil( #Sts_Alms.%X1 )
+            
+            Move(
+                in := 104, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_57H"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 104
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            R_Coil( #Out_Robot.START )
+            Contact( #Cfg_ProgRunExec )
+            S_Coil( #Sts_CmdDone )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            Contact( #Cfg_ProgRunExec )
+            wire#w3
+            I_Contact( #Out_Robot.ResetRqst )
+            I_Contact( #Inp_Robot.FAULT )
+            RT_Coil( #Tmr_TO )
+        END_RUNG
+        RUNG wire#w3
+            Contact( #Inp_Robot.ExecuteDone )
+            R_Coil( #Out_Robot.Auto_Ack )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_SeqT, 
+                in2 := 500
+            )
+            wire#w4
+            I_Contact( #Inp_Robot.FAULT )
+            I_Contact( #Inp_Robot.PAUSED )
+            I_Contact( #Inp_Robot.PROGRUN )
+            S_Coil( #Sts_Idle )
+            S_Coil( #Sts_CmdDone )
+        END_RUNG
+        RUNG wire#w4
+            Contact( #Cfg_Slow )
+            I_Contact( #Cmd_Slow )
+            
+            Move(
+                in := 200, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3MA"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 200
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #Cmd_Hold )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            Contact( #Cmd_Slow )
+            R_Coil( #Cmd_Hold )
+            
+            Move(
+                in := #Sts_Seqp, 
+                out1 => #Memo_Seqp
+            )
+            
+            Move(
+                in := 201, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_45s"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 201
+            )
+            wire#w1
+            Contact( #Sts_SeqOns )
+            S_Coil( #Out_Robot.FAULT_RESET )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_SeqOns )
+            wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            GT_Contact(
+                in1 := #Sts_SeqT, 
+                in2 := 50
+            )
+            R_Coil( #Out_Robot.FAULT_RESET )
+            S_Coil( #Out_Robot.START )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_SeqT, 
+                in2 := 200
+            )
+            
+            Move(
+                in := #Memo_Seqp, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3EA"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Inp_Robot.PROGRUN )
+            I_Contact( #Inp_Robot.PAUSED )
+            I_Contact( #Inp_Robot.BUSY )
+            Coil( #Sts_NoMove )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cfg_Slow )
+            Coil( #Out_Robot.Cfg_Slow )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_xd"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Cfg_NoAlm )
+            I_Contact( #Cfg_FirstScan )
+            wire#w1
+            { S7_Templates := "SrcType := Int" }
+            NE_Contact(
+                in1 := #RETVAL_SFC14, 
+                in2 := 0
+            )
+            wire#w2
+            S_Coil( #Sts_Alms.%X0 )
+        END_RUNG
+        RUNG wire#w1
+            { S7_Templates := "SrcType := Int" }
+            NE_Contact(
+                in1 := #RETVAL_SFC15, 
+                in2 := 0
+            )
+        END_RUNG wire#w2
+        RUNG wire#w1
+            Contact( #Tmr_TO.Q )
+            S_Coil( #Sts_Alms.%X1 )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Inp_Robot.UserAlms, 
+                out1 => #Sts_UserAlms
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Inp_Robot.BATALM )
+            Coil( #Sts_AlmBat )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4ZB"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Alms.%X1 )
+            wire#w1
+            R_Coil( #Out_Robot.PNSTROBE )
+            S_Coil( #Out_Robot.CSTOPI )
+        END_RUNG
+        RUNG wire#w1
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3mu"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Sts_Alms, 
+                in2 := 0
+            )
+            Contact( #Sts_NoAlm )
+            Coil( #Sts_AlmOns )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Alms, 
+                in2 := 0
+            )
+            Coil( #Sts_NoAlm )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_xM"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cfg_NoInterlock )
+            Coil( #Sts_NoInterlock )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_382"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Idle )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq, 
+                out2 => #Sts_Seq, 
+                out3 => #Cmd_Out
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Zm"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_ClrStat )
+            
+            Move(
+                in := 0, 
+                out1 => #Rep_CtrAlm
+            )
+            R_Coil( #Cmd_ClrStat )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Sts_AlmOns )
+            
+            Add(
+                in1 := 1, 
+                in2 := #Rep_CtrAlm, 
+                out => #Rep_CtrAlm
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Tp"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( false )
+            I_Contact( #Clock.Q )
+            S_Coil( #Out_Robot.SynchRobotPLC )
+            I_Contact( #Cfg_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Clock.TON(
+                pt := #Clock.PT, 
+                et =>  
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( false )
+            { S7_Templates := "SrcType := Time" }
+            GE_Contact(
+                in1 := #Clock.ET, 
+                in2 := T#1S
+            )
+            R_Coil( #Out_Robot.SynchRobotPLC )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_32M"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #ProgSend_ToRobot.%X0 )
+            Coil( #Out_Robot.PNS_Bit0 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #ProgSend_ToRobot.%X1 )
+            Coil( #Out_Robot.PNS_Bit1 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #ProgSend_ToRobot.%X2 )
+            Coil( #Out_Robot.PNS_Bit2 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #ProgSend_ToRobot.%X3 )
+            Coil( #Out_Robot.PNS_Bit3 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #ProgSend_ToRobot.%X4 )
+            Coil( #Out_Robot.PNS_Bit4 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #ProgSend_ToRobot.%X5 )
+            Coil( #Out_Robot.PNS_Bit5 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #ProgSend_ToRobot.%X6 )
+            Coil( #Out_Robot.PNS_Bit6 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #ProgSend_ToRobot.%X7 )
+            Coil( #Out_Robot.PNS_Bit7 )
+        END_RUNG
+        RUNG wire#powerrail
+            Coil( #Out_Robot.IMSTP )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #Cmd_Hold )
+            Coil( #Out_Robot.HOLD )
+        END_RUNG
+        RUNG wire#powerrail
+            Coil( #Out_Robot.SFSPD )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_Px"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            DPWR_DAT(
+                LADDR := #Hw_Outputs, 
+                RECORD := #Out_Robot, 
+                RET_VAL => #RETVAL_SFC15
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_QX"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Seq, 
+                in2 := 0
+            )
+            Contact( #Sts_NoAlm )
+            JumpCoil( Loop )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

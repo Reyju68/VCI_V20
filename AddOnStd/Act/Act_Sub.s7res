@@ -1,0 +1,158 @@
+﻿MultiLingualTexts:
+  - id: MLC_4Dc
+    en-US: Actuator Subroutine module
+  - id: MLC_59u
+    en-US: |-
+      02 Sep. 2022
+       - New Revision Roles (StdAddonsTIA_SCN_V004.docx)
+
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+  - id: MLC_34S
+    en-US: Configuration of the function allowed to be activated
+  - id: MLC_48p
+    en-US: Configuration instruction to force step by step mode using during modular testing
+  - id: MLC_4ja
+    en-US: Configurable instruction to disable any alarm
+  - id: MLC_4Dd
+    en-US: Configuration instruction to enable safe sequence execution
+  - id: MLC_4cQ
+    en-US: Configuration instruction to request step-by-step mode
+  - id: MLC_4PS
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_ak
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_4TQ
+    en-US: Command to define the end of sequence
+  - id: MLC_55u
+    en-US: Command to reset the statistic informations
+  - id: MLC_49a
+    en-US: Command to execute an immediate abort
+  - id: MLC_3e8
+    en-US: Command to reset the TimeOut
+  - id: MLC_wB
+    en-US: Command to reset the Seq Timer
+  - id: MLC_3h4
+    en-US: Command to define next sequence value
+  - id: MLC_4Rz
+    en-US: Command to request a single step while being in step-by-step mode
+  - id: MLC_3rP
+    en-US: Bitwise state command (.0 requests Abort, .1 requests Reset and .2 requests Exec)
+  - id: MLC_fw
+    en-US: Parameter to define the ideal execution time
+  - id: MLC_4HN
+    en-US: Reporting value to give current execution elapsed time
+  - id: MLC_hj
+    en-US: Status to inform that Rep_dT has reached the timeout while resetting
+  - id: MLC_3cQ
+    en-US: Status to inform that Rep_dT has reached the timeout while executing
+  - id: MLC_4fD
+    en-US: Status to inform alarm coming edge
+  - id: MLC_3Rn
+    en-US: Status No Interlock by function
+  - id: MLC_MV
+    en-US: Status to inform end of process
+  - id: MLC_3ZT
+    en-US: Status to control negative threshold for alarm acknowledgement
+  - id: MLC_rq
+    en-US: Status to control negative threshold for alarm acknowledgement - (Not used in the bloc, but used externaly)
+  - id: MLC_4GJ
+    en-US: Status to inform that the station is secured - (Not used in the bloc, but used externaly)
+  - id: MLC_4V9
+    en-US: Status to give current sequence value
+  - id: MLC_4gY
+    en-US: Status to free (or not) current sequence (link to step-by-step mode)
+  - id: MLC_477
+    en-US: Status to inform once a sequence change
+  - id: MLC_3eS
+    en-US: Status to give previous sequence value
+  - id: MLC_3Pr
+    en-US: Status to give previous -2 sequence value
+  - id: MLC_3rJ
+    en-US: Status to give previous -3 sequence value
+  - id: MLC_3Kn
+    en-US: Status to give previous -4 sequence value
+  - id: MLC_5CA
+    en-US: Status to give previous -5 sequence value
+  - id: MLC_43K
+    en-US: Status to give previous -6 sequence value
+  - id: MLC_3a4
+    en-US: Status to give previous -7 sequence value
+  - id: MLC_4HZ
+    en-US: Status to give previous -8 sequence value
+  - id: MLC_3km
+    en-US: Status to give previous -9 sequence value
+  - id: MLC_3hq
+    en-US: Status to give previous -10 sequence value
+  - id: MLC_3X9
+    en-US: Reporting value to give current execution elapsed time of the sequence
+  - id: MLC_4KH
+    en-US: Reporting value to give previous execution elapsed time of the sequence
+  - id: MLC_4g7
+    en-US: Reporting value to give previous -2 execution elapsed time of the sequence
+  - id: MLC_UG
+    en-US: Reporting value to give previous -3 execution elapsed time of the sequence
+  - id: MLC_x5
+    en-US: Reporting value to give previous -4 execution elapsed time of the sequence
+  - id: MLC_4mQ
+    en-US: Reporting value to give previous -5 execution elapsed time of the sequence
+  - id: MLC_3g4
+    en-US: Reporting value to give previous -6 execution elapsed time of the sequence
+  - id: MLC_4tN
+    en-US: Reporting value to give previous -7 execution elapsed time of the sequence
+  - id: MLC_ks
+    en-US: Reporting value to give previous -8 execution elapsed time of the sequence
+  - id: MLC_3Nj
+    en-US: Reporting value to give previous -9 execution elapsed time of the sequence
+  - id: MLC_35L
+    en-US: Reporting value to give previous -10 execution elapsed time of the sequence
+  - id: MLC_56i
+    en-US: Bitwise state status (.0 requests Abort, .1 requests Reset and .2 requests Exec)
+  - id: MLC_3rL
+    en-US: Status to inform once a state change
+  - id: MLC_4iU
+    en-US: Status to inform that timeout has been reached
+  - id: MLC_TK
+    en-US: Memo Idle
+  - id: MLC_3jH
+    en-US: Memo Previous Step
+  - id: MLC_r2
+    en-US: Memo Previous Step Time
+  - id: MLC_32p
+    en-US: Timer TimeOut
+  - id: MLC_tE
+    en-US: Timer
+  - id: MLC_T9
+    en-US: First PLC Scan
+  - id: MLC_4tS
+    en-US: TimeOut management
+  - id: MLC_3gD
+    en-US: Rest of the alarms management
+  - id: MLC_3zv
+    en-US: WORK ON THE SEQUENCER
+  - id: MLC_38q
+    en-US: |-
+      WORK ON THE SEQUENCER
+      If a changing state on the command of the sequencer (Cmd_Seq) is detected and if all working conditions are good, update the Status of the sequencer (Sts_Seq) to allow the execution of the next step of the sequencer
+      Note: Step by step management is also manage here
+  - id: MLC_c9
+    en-US: Rest of the commands of the sequencer and state (Cmd_Seq & Cmd_State) at the end of the execution (Sts_Idle==1)
+  - id: MLC_wZ
+    en-US: WORK ON THE STATE
+  - id: MLC_eB
+    en-US: |-
+      If a changing state on the command of the state (Cmd_State) is detected and if the bloc is in Idle, update the Status of the state (Sts_State)
+      Note: An immediate stop command (Cmd_ImAbort) will be priority
+  - id: MLC_4sJ
+    en-US: Alarms management
+  - id: MLC_3Bp
+    en-US: End of TimeOut management
+  - id: MLC_4kN
+    en-US: Update Memo_Idle
+  - id: MLC_47i
+    en-US: Update of the execution elapsed time of the sequence
+  - id: MLC_tP
+    en-US: Sts_NoInterlock is used to enable command from HMI
+  - id: MLC_4PB
+    en-US: Update Steps history

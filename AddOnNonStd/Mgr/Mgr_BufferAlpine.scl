@@ -1,0 +1,209 @@
+﻿FUNCTION_BLOCK "Mgr_BufferAlpine"
+TITLE = Manager for the Alpine Buffer
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+AUTHOR : FSC
+VERSION : 0.1
+//This FB is made to manage the Buffer Alpine
+   VAR_INPUT 
+      Inp_BuffferOutLlv : Bool;   // Outcoming Low Level sensor is full (After the Buffer)
+      Inp_BufferOutHlv : Bool;   // Outcoming High Level sensor is full (After the Buffer)
+      Inp_BufferInHlv : Bool;   // Incoming High Level sensor is full (~Buffer Full)
+      Inp_AreaFreeIn : Bool;   // Incoming Area  is Free
+      Inp_AreaFreeOut : Bool;   // Outcoming Area is Free
+      Inp_RlsrIncommingOn : Bool;   // Incoming releaser is in position
+      Inp_PuckPresIncomming : Bool;   // Puck is present on the incoming releaser
+      Inp_RlsrOutcommingOn : Bool;   // Outcoming releaser is in position
+      Inp_PuckPresOutcommingOn : Bool;   // Puck is present on the outcoming releaser
+      Inp_ConvRun : Bool;   // Conveyor is running
+      Inp_DiverterOn : Bool;   // Diverter is in position (ON)
+      Inp_DiverterOff : Bool;   // Diverter is in position (OFF)
+      Cmd_FirstScan : Bool;   // FirstScan
+      Cmd_ResetStat : Bool;   // Command for resetting internal statistics
+      Cmd_Filling : Bool;   // Conditions for starting the filling
+      Cmd_Bypassing : Bool;   // Conditions for starting the bypass
+      Cmd_Emptying : Bool;   // Conditions for starting the emptying
+      Cmd_InProgress : Bool;   // Check if there is a command in progress
+   END_VAR
+
+   VAR_OUTPUT 
+      Out_DiverterOn : Bool;   // Diverter
+      Out_RlsrIncommingOn : Bool;   // Incoming releaser
+      Out_RlsrOutcommingOn : Bool;   // Outcoming releaser
+      Out_ConvRun : Bool;   // Conveyor Run
+   END_VAR
+
+   VAR 
+      Sts_Seq : Int;   // State of the sequence
+      Cnt_Filling : DInt;   // Number of time the filling is activated
+      Cnt_Emptying : DInt;   // Number of time the emptying is activated
+      Cnt_Bypass : DInt;   // Number of time the bypass is activated
+      Sts_State : Int := #STS_BUF_BYPASSING;   // State (100 = ByPass; 200 = Filling; 300 = Emptiyng)
+      Tmr_InFilling {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer in filling
+      Tmr_InBypass {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer in bypass
+      Tmr_InEmtpying {InstructionName := 'TON_TIME'; LibVersion := '1.0'} : TON_TIME;   // Timer in emptying
+      TimeInFilling : Time;   // Time ellapsed in filling
+      TimeInBypassing : Time;   // Time ellapsed in Bypass
+      TimeInEmptying : Time;   // Time ellapsed in emptying
+      Tmr_StopConv {InstructionName := 'TOF_TIME'; LibVersion := '1.0'} : TOF_TIME;   // Timer before stopping the conveyor
+   END_VAR
+
+   VAR CONSTANT 
+      STS_BUF_BYPASSING : Int := 100;   // BYPASSING
+      STS_BUF_FILLING : Int := 200;   // FILLING
+      STS_BUF_EMPTYING : Int := 300;   // EMTPYING
+      STS_BUF_IDLE : Int := 999;   // IDLE
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	// KOMAX System LCF SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: _Library_Spec_Library
+	// Engineering: TIA Portal v13 SP1 upd9
+	// Restrictions: None
+	// Requirements: None
+	// Functionality: This block manages a Alpine Buffer for pucks.
+	// Reference Project: PPM01
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	//-----------------------------------------------------------------------------
+	// Version       Date              Expert in charge           
+	// v0.0.1          2017-05-04  SCHAFER Florian          
+	// Changes applied:
+	// First release.
+	//-----------------------------------------------------------------------------
+	// Version       Date              Expert in charge           
+	// v0.0.2          2017-08-08  REY Julien         
+	// Changes applied:
+	// Add Commands Filling, Emptying and Bypass in the InOut section
+	// Deleted managment of Filling, Emptying and Bypass commands
+	// Modify all steps
+	//-----------------------------------------------------------------------------
+	// Version       Date              Expert in charge           
+	// v0.0.3        2017-09-06        SAINTOT Mickael     
+	// Changes applied:
+	// Change name Data, add comments.
+	//-----------------------------------------------------------------------------
+	//============================================================================
+	//First Scan
+	IF #Cmd_FirstScan THEN
+	    IF (#Sts_State <> #STS_BUF_BYPASSING) OR (#Sts_State <> #STS_BUF_FILLING) OR (#Sts_State <> #STS_BUF_EMPTYING) THEN
+	        #Sts_State := #STS_BUF_BYPASSING;
+	        #Sts_Seq := #STS_BUF_BYPASSING;
+	    END_IF;
+	  END_IF;
+	//============================================================================
+	//Start new activity
+	IF #Sts_Seq = #STS_BUF_IDLE THEN
+	    IF #Cmd_Filling THEN
+	        #Sts_State := #STS_BUF_FILLING;
+	        #Sts_Seq := #STS_BUF_FILLING;
+	        #Cnt_Filling := #Cnt_Filling + 1;
+	    ELSIF #Cmd_Emptying THEN
+	        #Sts_State := #STS_BUF_EMPTYING;
+	        #Sts_Seq := #STS_BUF_EMPTYING;
+	        #Cnt_Emptying := #Cnt_Emptying + 1;
+	    ELSIF #Cmd_Bypassing THEN
+	        #Sts_State := #STS_BUF_BYPASSING;
+	        #Sts_Seq := #STS_BUF_BYPASSING;
+	        #Cnt_Bypass := #Cnt_Bypass + 1;
+	    END_IF;
+	END_IF;
+	//============================================================================
+	//Sequence of the buffer
+	CASE #Sts_Seq OF
+	    //BYPASSING STATEMENT
+	    #STS_BUF_BYPASSING: // Statement Moving the diverter
+	      IF (#Inp_AreaFreeIn OR #Inp_DiverterOn) (*AND #Inp_AreaFreeOut*) THEN
+	          #Out_DiverterOn := FALSE;
+	            IF #Inp_DiverterOff THEN
+	                #Sts_Seq := #Sts_Seq + 10;
+	              END_IF;
+	        ELSIF #Cmd_Bypassing = false THEN
+	           #Sts_Seq := #STS_BUF_IDLE;
+	        END_IF;
+	    110: // Statement release the incoming stopper for bypassing
+	        #Out_RlsrIncommingOn := TRUE;
+	        IF #Inp_RlsrIncommingOn THEN
+	            #Sts_Seq := #Sts_Seq + 10;
+	          END_IF;
+	    120: // Statement stop the incoming stopper for bypassing
+	      #Out_RlsrIncommingOn := FALSE;
+	        IF NOT #Inp_RlsrIncommingOn THEN
+	            #Sts_Seq := #STS_BUF_IDLE;
+	          END_IF;
+	        //FILLING STATEMENT
+	    #STS_BUF_FILLING: // Statement Moving the diverter
+	        IF (#Inp_AreaFreeIn OR #Inp_DiverterOn) THEN
+	            #Out_DiverterOn := TRUE;
+	            IF #Inp_DiverterOn THEN
+	                #Sts_Seq := #Sts_Seq + 10;
+	            END_IF;
+	        END_IF;
+	    210: //Statement release the incoming stopper
+	        #Out_RlsrIncommingOn := TRUE;
+	        IF #Inp_RlsrIncommingOn THEN
+	            #Sts_Seq := #Sts_Seq + 10;
+	        END_IF;
+	    220: //Statement Wait
+	        #Out_RlsrIncommingOn := FALSE;
+	        IF NOT #Inp_RlsrIncommingOn THEN
+	            #Sts_Seq := #STS_BUF_IDLE;
+	          END_IF;
+	    //EMPTYING STATEMENT
+	    #STS_BUF_EMPTYING: //Statement Release the outcoming stopper
+	        IF (#Inp_AreaFreeIn OR #Inp_DiverterOn) THEN
+	            #Out_DiverterOn := TRUE;
+	            #Out_RlsrOutcommingOn := TRUE;
+	        END_IF;
+	        
+	        IF #Inp_RlsrOutcommingOn THEN
+	            #Sts_Seq := #Sts_Seq + 10;
+	          END_IF;
+	    310: //Statement Wait
+	        #Out_RlsrOutcommingOn := FALSE;
+	        IF NOT #Inp_RlsrOutcommingOn THEN
+	            #Sts_Seq := #STS_BUF_IDLE;
+	          END_IF;
+	    ELSE  // Statement section IDLE (WAIT)
+	        #Sts_Seq := #STS_BUF_IDLE;
+	END_CASE;
+	//============================================================================
+	//Timers
+	#Tmr_InBypass(IN:= (#Sts_State = #STS_BUF_BYPASSING),
+	              PT := T#0ms);
+	#TimeInBypassing := #Tmr_InBypass.ET;
+	
+	#Tmr_InFilling(IN := (#Sts_State = #STS_BUF_FILLING),
+	               PT := T#0ms);
+	#TimeInFilling := #Tmr_InFilling.ET;
+	
+	#Tmr_InEmtpying(IN := (#Sts_State = #STS_BUF_EMPTYING),
+	                PT := T#0ms);
+	#TimeInEmptying := #Tmr_InEmtpying.ET;
+	//Stop
+	#Tmr_StopConv(IN :=#Cmd_Filling OR #Cmd_Emptying OR (#Cmd_InProgress AND #Inp_ConvRun),
+	              PT := T#2m);
+	//============================================================================
+	//Reset the internal statistics
+	IF #Cmd_ResetStat THEN
+	    #Cnt_Bypass := 0;
+	    #Cnt_Filling := 0;
+	    #Cnt_Emptying := 0;
+	    #TimeInBypassing := T#0ms;
+	    #TimeInFilling := T#0ms;
+	    #TimeInEmptying := T#0ms;
+	END_IF;
+	//============================================================================
+	//Conveyor Management
+	#Out_ConvRun := #Tmr_StopConv.Q;
+	
+	
+	
+	
+END_FUNCTION_BLOCK
+

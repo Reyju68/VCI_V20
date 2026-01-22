@@ -1,0 +1,668 @@
+﻿{
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Sub_Mode_Vision"
+    VAR_INPUT 
+        Cfg_Index_Trig : DInt;
+        Cfg_Index_entry : DInt;
+        Cfg_Index_Exit : DInt;
+        Cfg_NbrOfNest : DInt;
+        Cfg_VisionNbr : DInt;
+        Cmd_Out : DInt;
+        Cfg_Index_Calibration : DInt;
+    END_VAR
+    VAR_OUTPUT 
+        Sts_Out : DInt;
+        Sts_Seq : DInt;
+        Sts_MoverNumExec : DInt;
+        Sts_Idle : Bool;
+        Cmd_Exec_Mover : Bool;
+        { S7_Access := "ReadOnly := External" }
+        VisionAreaChk : Array[0..31] of Bool;
+    END_VAR
+    VAR_IN_OUT 
+        Mover : _.Typ_XTS_Act_Mover;
+        Mover_StdInp : _.Typ_XTS_In;
+        XTS_StdOut : _.Typ_XTS_Global_Out;
+    END_VAR
+    VAR 
+        Cmd_Seq : DInt;
+        Mover_Memo_Idx_Pos : DInt;
+        Mover_Memo_Pos : DInt;
+        MoverNum_Cal : DInt;
+        MoverNum_RnR : DInt;
+        { S7_Setpoint := "False" }
+        Fct_ChkZone_Vision : _.Fct_CheckZoneXTS_Vision;
+        { S7_Setpoint := "True" }
+        Sts_SeqOns : Bool;
+    END_VAR
+    VAR_TEMP 
+        Tmp_Scaling : Real;
+        Tmp_Zone2 : Real;
+        Tmp_Gap : Real;
+        Tmp_StatusPos : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_StatusPos;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_RD"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Out, 
+                in2 := 0
+            )
+            wire#w1
+            
+            Move(
+                in := #Cmd_Out, 
+                out1 => #Sts_Out
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cmd_Out.%X2 )
+            Contact( #Sts_Idle )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Fct_ChkZone_Vision.Sts_MoverID_Zone[2], 
+                in2 := 0
+            )
+            
+            Move(
+                in := 100, 
+                out1 => #Cmd_Seq
+            )
+            R_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cmd_Out.%X3 )
+            Contact( #Sts_Idle )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Fct_ChkZone_Vision.Sts_MoverID_Zone[3], 
+                in2 := 0
+            )
+            
+            Move(
+                in := 200, 
+                out1 => #Cmd_Seq
+            )
+            R_Coil( #Sts_Idle )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Cmd_Out, 
+                in2 := 0
+            )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4WN"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Cmd_Seq, 
+                in2 := 0
+            )
+            Coil( #Sts_SeqOns )
+            
+            Move(
+                in := #Cmd_Seq, 
+                out1 => #Sts_Seq
+            )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_452";
+        S7_NetworkTitle := "MLC_4g7"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Div(
+                in1 := #Mover.Cfg_Pos[#Cfg_Index_entry].Position, 
+                in2 := #Mover.Cfg_Scaling, 
+                out => #Tmp_Scaling
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Add(
+                in1 := 50.0, 
+                in2 := #Tmp_Scaling, 
+                out => #Fct_ChkZone_Vision.Cfg_Min_Zone1
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Div(
+                in1 := #Mover.Cfg_Pos[#Cfg_Index_Exit].Position, 
+                in2 := #Mover.Cfg_Scaling, 
+                out => #Tmp_Scaling
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Add(
+                in1 := 5.0, 
+                in2 := #Tmp_Scaling, 
+                out => #Fct_ChkZone_Vision.Cfg_Max_Zone1
+            )
+            wire#w1
+            #Fct_ChkZone_Vision(
+                Cfg_NbrOfZone := #Mover.Cfg_NbrOfMover, 
+                Cfg_CheckSecu1 :=  , 
+                Cfg_CheckSecu2 :=  , 
+                Cfg_CheckSecu3 :=  , 
+                Cfg_CheckSecu4 :=  , 
+                Cfg_CheckSecu5 :=  , 
+                Cfg_NbrOfMover :=  , 
+                Cfg_Min_Zone1 :=  , 
+                Cfg_Min_Zone2 :=  , 
+                Cfg_Min_Zone3 :=  , 
+                Cfg_Min_Zone4 :=  , 
+                Cfg_Min_Zone5 :=  , 
+                Cfg_Max_Zone1 :=  , 
+                Cfg_Max_Zone2 :=  , 
+                Cfg_Max_Zone3 :=  , 
+                Cfg_Max_Zone4 :=  , 
+                Cfg_Max_Zone5 :=  , 
+                IN_SecuStationOk1 :=  , 
+                IN_SecuStationOk2 :=  , 
+                IN_SecuStationOk3 :=  , 
+                IN_SecuStationOk4 :=  , 
+                IN_SecuStationOk5 :=  , 
+                Cmd_Ack :=  , 
+                IN_Mover_StdInp := #Mover_StdInp, 
+                Mover_ID := #Mover."ID", 
+                Sts_NbrOfMover_InZone =>  , 
+                Sts_ZoneEmpty =>  , 
+                Sts_AllMoverPosOk =>  , 
+                Sts_NoAlm =>  , 
+                Sts_MoverID_Zone =>  
+            )
+            wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Fct_ChkZone_Vision.Sts_NbrOfMover_InZone[1], 
+                in2 := 0
+            )
+            Coil( #VisionAreaChk[1] )
+        END_RUNG
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Div(
+                in1 := #Mover.Cfg_Pos[#Cfg_Index_Calibration].Position, 
+                in2 := #Mover.Cfg_Scaling, 
+                out => #Tmp_Scaling
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Mul(
+                in1 := 1.5, 
+                in2 := #Mover.Cfg_Gap1, 
+                out => #Tmp_Zone2
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Sub(
+                in1 := #Tmp_Scaling, 
+                in2 := #Tmp_Zone2, 
+                out => #Fct_ChkZone_Vision.Cfg_Min_Zone2
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Add(
+                in1 := #Tmp_Scaling, 
+                in2 := #Tmp_Zone2, 
+                out => #Fct_ChkZone_Vision.Cfg_Max_Zone2
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Div(
+                in1 := #Mover.Cfg_Pos[#Cfg_Index_entry].Position, 
+                in2 := #Mover.Cfg_Scaling, 
+                out => #Tmp_Scaling
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Sub(
+                in1 := #Tmp_Scaling, 
+                in2 := #Mover.Cfg_Gap1, 
+                out => #Fct_ChkZone_Vision.Cfg_Min_Zone3
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Add(
+                in1 := #Tmp_Scaling, 
+                in2 := #Mover.Cfg_Gap1, 
+                out => #Fct_ChkZone_Vision.Cfg_Max_Zone3
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Fct_ChkZone_Vision.Cfg_Min_Zone1, 
+                out1 => #Fct_ChkZone_Vision.Cfg_Min_Zone4
+            )
+            
+            Move(
+                in := #Mover.Cfg_Pos[37].Position, 
+                out1 => #XTS_StdOut.Vision[1].rFirstTrig
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Mul(
+                in1 := #XTS_StdOut.Vision[#Cfg_VisionNbr].rNestGap, 
+                in2 := #Cfg_NbrOfNest, 
+                out => #Tmp_Gap
+            )
+            {
+                S7_Templates := "SrcType := Real"
+            }
+            Add(
+                in1 := #XTS_StdOut.Vision[#Cfg_VisionNbr].rFirstTrig, 
+                in2 := #Tmp_Gap, 
+                in3 := #XTS_StdOut.Vision[#Cfg_VisionNbr].rStOffset, 
+                out => #Fct_ChkZone_Vision.Cfg_Max_Zone4
+            )
+        END_RUNG wire#w1
+        RUNG wire#powerrail
+            S_Coil( #Fct_ChkZone_Vision.Cmd_Ack )
+        END_RUNG wire#w1
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Fct_ChkZone_Vision.Sts_NbrOfMover_InZone[2], 
+                in2 := 0
+            )
+            Coil( #VisionAreaChk[2] )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Fct_ChkZone_Vision.Sts_NbrOfMover_InZone[3], 
+                in2 := 0
+            )
+            Coil( #VisionAreaChk[3] )
+        END_RUNG
+        RUNG wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Fct_ChkZone_Vision.Sts_NbrOfMover_InZone[4], 
+                in2 := 0
+            )
+            Coil( #VisionAreaChk[4] )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Aw"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := 1, 
+                out1 => #MoverNum_Cal, 
+                out2 => #MoverNum_RnR, 
+                out3 => #Sts_MoverNumExec
+            )
+            
+            Move(
+                in := #Fct_ChkZone_Vision.Sts_MoverID_Zone[2], 
+                out1 => #MoverNum_Cal
+            )
+            
+            Move(
+                in := #Fct_ChkZone_Vision.Sts_MoverID_Zone[3], 
+                out1 => #MoverNum_RnR
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3pt"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 100
+            )
+            wire#w1
+            S_Coil( #Mover.ID[#MoverNum_Cal].Cfg_DisableNoHaltMotion )
+            {
+                S7_Templates := "[SrcType := Real, DestType := DInt]"
+            }
+            Convert(
+                in := #Mover.ID[#MoverNum_Cal].MemoryPos, 
+                out => #Mover_Memo_Pos
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Mover.ID[#MoverNum_Cal].Index_pos, 
+                out1 => #Mover_Memo_Idx_Pos
+            )
+            
+            Move(
+                in := #Cfg_Index_Trig, 
+                out1 => #Mover.Index_Pos_Mover[#MoverNum_Cal]
+            )
+        END_RUNG
+        RUNG wire#w1
+            R_Coil( #Mover.Sync_PosFromXTS[#Cfg_Index_Trig].Cmd_Cycle )
+            
+            Move(
+                in := #Tmp_StatusPos, 
+                out1 => #Mover.Sts_Mover[#Cfg_Index_Trig].Sts_Pos
+            )
+            
+            FillBlockI(
+                IN := 0, 
+                COUNT := 1, 
+                OUT => #Mover.Sts_MoverNb_Pos[#Cfg_Index_Trig]
+            )
+            
+            Move(
+                in := 101, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_rp"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 101
+            )
+            wire#w1
+            
+            Move(
+                in := #MoverNum_Cal, 
+                out1 => #Sts_MoverNumExec
+            )
+            S_Coil( #Cmd_Exec_Mover )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Cmd_Out.%X2 )
+            
+            Move(
+                in := 1, 
+                out1 => #Sts_MoverNumExec
+            )
+            R_Coil( #Cmd_Exec_Mover )
+            
+            Move(
+                in := 102, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3gw"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 102
+            )
+            wire#w1
+            R_Coil( #Mover.Sync_PosFromXTS[#Cfg_Index_Trig].Cmd_Cycle )
+            
+            Move(
+                in := #Tmp_StatusPos, 
+                out1 => #Mover.Sts_Mover[#Cfg_Index_Trig].Sts_Pos
+            )
+            
+            FillBlockI(
+                IN := 0, 
+                COUNT := 1, 
+                OUT => #Mover.Sts_MoverNb_Pos[#Cfg_Index_Trig]
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Mover.Index_Pos_Mover[#MoverNum_Cal], 
+                out1 => #Mover_Memo_Idx_Pos
+            )
+            {
+                S7_Templates := "[SrcType := Real, DestType := DInt]"
+            }
+            Convert(
+                in := #Mover.ID[#MoverNum_Cal].MemoryPos, 
+                out => #Mover_Memo_Pos
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Mover_Memo_Idx_Pos, 
+                out2 => #Mover_Memo_Pos
+            )
+            R_Coil( #Mover.ID[#MoverNum_Cal].Cfg_DisableNoHaltMotion )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_qX"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 200
+            )
+            wire#w1
+            S_Coil( #Mover.ID[#MoverNum_RnR].Cfg_DisableNoHaltMotion )
+        END_RUNG
+        RUNG wire#w1
+            R_Coil( #Mover.Sync_PosFromXTS[#Cfg_Index_entry].Cmd_Cycle )
+            
+            Move(
+                in := #Tmp_StatusPos, 
+                out1 => #Mover.Sts_Mover[#Cfg_Index_entry].Sts_Pos
+            )
+            
+            FillBlockI(
+                IN := 0, 
+                COUNT := 1, 
+                OUT => #Mover.Sts_MoverNb_Pos[#Cfg_Index_entry]
+            )
+        END_RUNG
+        RUNG wire#w1
+            R_Coil( #Mover.Sync_PosFromXTS[#Cfg_Index_Exit].Cmd_Cycle )
+            
+            Move(
+                in := #Tmp_StatusPos, 
+                out1 => #Mover.Sts_Mover[#Cfg_Index_Exit].Sts_Pos
+            )
+            
+            FillBlockI(
+                IN := 0, 
+                COUNT := 1, 
+                OUT => #Mover.Sts_MoverNb_Pos[#Cfg_Index_Exit]
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := #Mover.ID[#MoverNum_RnR].Index_pos, 
+                out1 => #Mover_Memo_Idx_Pos
+            )
+            {
+                S7_Templates := "[SrcType := Real, DestType := DInt]"
+            }
+            Convert(
+                in := #Mover.ID[#MoverNum_RnR].MemoryPos, 
+                out => #Mover_Memo_Pos
+            )
+            
+            Move(
+                in := #Cfg_Index_entry, 
+                out1 => #Mover.Index_Pos_Mover[#MoverNum_RnR]
+            )
+            
+            Move(
+                in := 201, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_34w"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 201
+            )
+            wire#w1
+            
+            Move(
+                in := #MoverNum_RnR, 
+                out1 => #Sts_MoverNumExec
+            )
+            S_Coil( #Cmd_Exec_Mover )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Cmd_Out.%X3 )
+            
+            Move(
+                in := 1, 
+                out1 => #Sts_MoverNumExec
+            )
+            R_Coil( #Cmd_Exec_Mover )
+            
+            Move(
+                in := 202, 
+                out1 => #Cmd_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_VZ"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 202
+            )
+            wire#w1
+            R_Coil( #Mover.ID[#MoverNum_RnR].Cfg_DisableNoHaltMotion )
+            {
+                S7_Templates := "[SrcType := DInt, DestType := Real]"
+            }
+            Convert(
+                in := #Mover_Memo_Pos, 
+                out => #Mover.ID[#MoverNum_RnR].MemoryPos
+            )
+            
+            Move(
+                in := #Mover_Memo_Idx_Pos, 
+                out1 => #Mover.Index_Pos_Mover[#MoverNum_RnR]
+            )
+        END_RUNG
+        RUNG wire#w1
+            
+            Move(
+                in := 0, 
+                out1 => #Mover_Memo_Pos, 
+                out2 => #Mover_Memo_Idx_Pos
+            )
+            R_Coil( #Mover.Sync_PosFromXTS[#Cfg_Index_entry].Cmd_Cycle )
+            
+            Move(
+                in := #Tmp_StatusPos, 
+                out1 => #Mover.Sts_Mover[#Cfg_Index_entry].Sts_Pos
+            )
+            
+            FillBlockI(
+                IN := 0, 
+                COUNT := 1, 
+                OUT => #Mover.Sts_MoverNb_Pos[#Cfg_Index_entry]
+            )
+        END_RUNG
+        RUNG wire#w1
+            R_Coil( #Mover.Sync_PosFromXTS[#Cfg_Index_Exit].Cmd_Cycle )
+            
+            Move(
+                in := #Tmp_StatusPos, 
+                out1 => #Mover.Sts_Mover[#Cfg_Index_Exit].Sts_Pos
+            )
+            
+            FillBlockI(
+                IN := 0, 
+                COUNT := 1, 
+                OUT => #Mover.Sts_MoverNb_Pos[#Cfg_Index_Exit]
+            )
+            S_Coil( #Sts_Idle )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3WN"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Sts_Idle )
+            
+            Move(
+                in := 0, 
+                out1 => #Cmd_Seq, 
+                out2 => #Sts_Seq, 
+                out3 => #Cmd_Out
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

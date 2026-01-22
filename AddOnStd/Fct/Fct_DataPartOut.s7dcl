@@ -1,0 +1,176 @@
+﻿{
+    S7_BlockComment := "MLC_4R3";
+    S7_BlockTitle := "MLC_4ed";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Fct_DataPartOut"
+    VAR_INPUT 
+        Cfg_Buffer_Size : DInt;
+        Cfg_Time_Stamp : LInt;
+        Cmd_PartOut : Bool;
+    END_VAR
+    VAR_IN_OUT 
+        Cfg_Nest : _.Typ_Nest;
+        Cfg_PartOut : _.Typ_PartOut;
+    END_VAR
+    VAR_IN_OUT RETAIN
+        Cfg_Pointer : DInt;
+    END_VAR
+    VAR_IN_OUT 
+        Cmd_DataWrite_Out : DInt;
+    END_VAR
+    VAR_TEMP 
+        "NOP" : Bool;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_55P"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Cmd_PartOut )
+            JumpCoil( End )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3kk"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Cfg_Time_Stamp, 
+                out1 => #Cfg_PartOut.TimeStamp
+            )
+            {
+                S7_Templates := "[src_type := DInt, dest_type := String]"
+            }
+            S_CONV(
+                in := #Cfg_Nest.Sts_PartID, 
+                out => #Cfg_PartOut.UID
+            )
+            
+            Move(
+                in := #Cfg_Nest.Sts_StationFailID, 
+                out1 => #Cfg_PartOut.FailStationID
+            )
+            
+            Move(
+                in := #Cfg_Nest.Cfg_SubAssembly, 
+                out1 => #Cfg_PartOut.SubAssembly
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            
+            Move(
+                in := #Cfg_Nest.Sts_FailTrackID, 
+                out1 => #Cfg_PartOut.FailTrackID
+            )
+            
+            Move(
+                in := #Cfg_Nest.Sts_SpecFailCode, 
+                out1 => #Cfg_PartOut.FailCodeID
+            )
+            
+            Move(
+                in := #Cfg_Nest.Sts_FailWPHID, 
+                out1 => #Cfg_PartOut.FailWPHID
+            )
+            
+            Move(
+                in := #Cfg_Nest.Sts_FailNestID, 
+                out1 => #Cfg_PartOut.FailNestID
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Xi"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cfg_Nest.Sts_Good )
+            
+            Move(
+                in := 1, 
+                out1 => #Cfg_PartOut.PartStatus
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cfg_Nest.Sts_Bad )
+            
+            Move(
+                in := 2, 
+                out1 => #Cfg_PartOut.PartStatus
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cfg_Nest.Sts_AuditRqst )
+            
+            Move(
+                in := 3, 
+                out1 => #Cfg_PartOut.PartStatus
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cfg_Nest.Sts_Unused )
+            wire#w1
+            
+            Move(
+                in := 4, 
+                out1 => #Cfg_PartOut.PartStatus
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            I_Contact( #Cfg_Nest.Sts_Full )
+        END_RUNG wire#w1
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_yF"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            R_Coil( #Cmd_PartOut )
+            
+            Add(
+                in1 := #Cmd_DataWrite_Out, 
+                in2 := 1, 
+                out => #Cmd_DataWrite_Out
+            )
+            
+            Mod(
+                in1 := #Cmd_DataWrite_Out, 
+                in2 := #Cfg_Buffer_Size, 
+                out => #Cfg_Pointer
+            )
+            
+            Add(
+                in1 := #Cfg_Pointer, 
+                in2 := #Cfg_Buffer_Size, 
+                out => #Cfg_Pointer
+            )
+            
+            Mod(
+                in1 := #Cfg_Pointer, 
+                in2 := #Cfg_Buffer_Size, 
+                out => #Cfg_Pointer
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Qv"
+    }
+    NETWORK
+        Label(End)
+        RUNG wire#powerrail
+            Coil( #"NOP" )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

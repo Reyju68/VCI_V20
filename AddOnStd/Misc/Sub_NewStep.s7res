@@ -1,0 +1,26 @@
+﻿MultiLingualTexts:
+  - id: MLC_mB
+    en-US: Sub Imediat New Step
+  - id: MLC_35f
+    en-US: |-
+      08 Jan 2020
+      - New revision roles
+      (StdAddonsTIA_SCN_V002.docx)
+
+      23 Jun 2025
+      - Last steps history correction if next stetp is less than the current step
+      (Refer to GitLab - Issues 32)
+  - id: MLC_xw
+    en-US: Memo Previous Step
+  - id: MLC_3pR
+    en-US: Memo Previous Step Time
+  - id: MLC_4MP
+    en-US: Command Idle - End of sequence
+  - id: MLC_sy
+    en-US: WORK ON THE SEQUENCER
+  - id: MLC_5C3
+    en-US: |-
+      If a changing state on the command of the sequencer (Cmd_Seq) is detected and if all working conditions are good, update the Status of the sequencer (Sts_Seq) to allow the execution of the next step of the sequencer
+      Note: Step by step management is also manage here
+  - id: MLC_3sx
+    en-US: Update Steps history

@@ -1,0 +1,35 @@
+﻿MultiLingualTexts:
+  - id: MLC_3KH
+    en-US: Fct_LghtMBRGBW
+  - id: MLC_3PW
+    en-US: |-
+      Machine lighting
+      MB-RGBW-480-K-B5
+  - id: MLC_3xQ
+    en-US: Command to reset the block during the first scan PLC
+  - id: MLC_37J
+    en-US: Command Light Yellow
+  - id: MLC_3tL
+    en-US: Command Light White
+  - id: MLC_ij
+    en-US: Command Light Red
+  - id: MLC_4gu
+    en-US: Command Light Green
+  - id: MLC_3P4
+    en-US: Output Color - Trig3
+  - id: MLC_MY
+    en-US: Output Color - Trig2
+  - id: MLC_3yb
+    en-US: Output Color - Trig1
+  - id: MLC_fP
+    en-US: 'PLC First Scan : Reset All Command'
+  - id: MLC_4UY
+    en-US: Trigger management
+  - id: MLC_54D
+    en-US: |-
+      Out3,Out2,Out1
+      000 = OFF
+      001 = White
+      010 = Green
+      011 = Yellow
+      100 = Red

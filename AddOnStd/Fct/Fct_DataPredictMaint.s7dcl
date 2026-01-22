@@ -1,0 +1,227 @@
+﻿{
+    S7_BlockComment := "MLC_4C3";
+    S7_BlockTitle := "MLC_3SK";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Fct_DataPredictMaint"
+    VAR_INPUT 
+        { S7_MLC := "MLC_3s3" }
+        Cfg_NoAlm : Bool;
+        { S7_MLC := "MLC_55L" }
+        Cmd_FirstScan : Bool;
+        { S7_MLC := "MLC_4bC" }
+        Cmd_Ack : Bool;
+        { S7_MLC := "MLC_4pe" }
+        Inp_MachineState : DInt;
+        { S7_MLC := "MLC_3dd" }
+        Inp_ProductionMode : Bool;
+        { S7_MLC := "MLC_d8" }
+        Par_FreqTime : DInt;
+    END_VAR
+    VAR_OUTPUT 
+        { S7_MLC := "MLC_3Fe" }
+        InOut_TriggerDashboard : Bool;
+        { S7_MLC := "MLC_4zR" }
+        Sts_AlmTriggerError : Bool;
+        { S7_MLC := "MLC_3EN" }
+        Sts_EnableStat : Bool;
+        { S7_MLC := "MLC_iR" }
+        Sts_UpdateStat : Bool;
+        { S7_MLC := "MLC_Ww" }
+        Sts_WaitTriggerAck : Bool;
+    END_VAR
+    VAR 
+        { S7_MLC := "MLC_5Aj" }
+        Sts_Ons : DInt;
+        { S7_MLC := "MLC_39i" }
+        Sts_Seq : DInt;
+        {
+            S7_MLC := "MLC_4Se";
+            S7_Setpoint := "False"
+        }
+        Tmr_Production : IEC_TIMER;
+        { S7_MLC := "MLC_4pp" }
+        Tmr_Production_PT : DInt;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3wm"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+            
+            Mul(
+                in1 := #Par_FreqTime, 
+                in2 := 60000, 
+                out => #Tmr_Production_PT
+            )
+            R_Coil( #Cfg_NoAlm )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_45u"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Ack )
+            R_Coil( #Cmd_Ack )
+            wire#w1
+            R_Coil( #Sts_AlmTriggerError )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Cfg_NoAlm )
+            R_Coil( #Sts_WaitTriggerAck )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3kL"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #InOut_TriggerDashboard )
+            R_Coil( #Sts_WaitTriggerAck )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Cc"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Inp_ProductionMode )
+            wire#w1
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Inp_MachineState, 
+                in2 := 8
+            )
+            wire#w2
+            Coil( #Sts_EnableStat )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Sts_EnableStat )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Inp_MachineState, 
+                in2 := 2
+            )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Inp_MachineState, 
+                in2 := 4
+            )
+            { S7_Templates := "SrcType := DInt" }
+            NE_Contact(
+                in1 := #Inp_MachineState, 
+                in2 := 6
+            )
+        END_RUNG wire#w2
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_4Zi"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Inp_ProductionMode )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Inp_MachineState, 
+                in2 := 8
+            )
+            I_Contact( #Cmd_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr_Production.TONR(
+                r :=  , 
+                pt := #Tmr_Production_PT, 
+                et =>  
+            )
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 0
+            )
+            
+            Move(
+                in := 1, 
+                out1 => #Sts_Seq
+            )
+            RT_Coil( #Tmr_Production )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3Rm"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 1
+            )
+            wire#w1
+            Contact( #InOut_TriggerDashboard )
+            wire#w2
+            I_Contact( #Cfg_NoAlm )
+            S_Coil( #Sts_AlmTriggerError )
+            S_Coil( #Sts_WaitTriggerAck )
+        END_RUNG
+        RUNG wire#w2
+            
+            Move(
+                in := 0, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #InOut_TriggerDashboard )
+            
+            Move(
+                in := 2, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3pk"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            EQ_Contact(
+                in1 := #Sts_Seq, 
+                in2 := 2
+            )
+            wire#w1
+            P_Trig( #Sts_Ons.%X0 )
+            Coil( #Sts_UpdateStat )
+        END_RUNG
+        RUNG wire#w1
+            I_Contact( #Sts_UpdateStat )
+            wire#w2
+            
+            Mul(
+                in1 := #Par_FreqTime, 
+                in2 := 60000, 
+                out => #Tmr_Production_PT
+            )
+            S_Coil( #InOut_TriggerDashboard )
+        END_RUNG
+        RUNG wire#w2
+            
+            Move(
+                in := 0, 
+                out1 => #Sts_Seq
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

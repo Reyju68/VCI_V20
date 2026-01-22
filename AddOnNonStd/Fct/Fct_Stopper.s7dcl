@@ -1,0 +1,93 @@
+﻿{
+    S7_Author := "JRE";
+    S7_BlockComment := "MLC_3aB";
+    S7_BlockTitle := "MLC_3PX";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Fct_Stopper"
+    VAR_INPUT 
+        { S7_MLC := "MLC_3Ai" }
+        Inp_Cnt : Bool;
+        { S7_MLC := "MLC_3YE" }
+        Inp_Hlv : Bool;
+        { S7_MLC := "MLC_3ei" }
+        Cfg_FirstScan : Bool;
+        { S7_MLC := "MLC_4yf" }
+        Cfg_MaxCount : DInt;
+        { S7_MLC := "MLC_3kP" }
+        Cfg_TimeOff : DInt;
+    END_VAR
+    VAR_OUTPUT 
+        { S7_MLC := "MLC_M9" }
+        Sts_Out : Bool;
+    END_VAR
+    VAR 
+        { S7_MLC := "MLC_3G2" }
+        Ons : Bool;
+        { S7_MLC := "MLC_3yk" }
+        Ons_HlvOff : Bool;
+        { S7_MLC := "MLC_4J3" }
+        "Counter" : DInt;
+        {
+            S7_MLC := "MLC_32a";
+            S7_Setpoint := "False"
+        }
+        Tmr_Hlv : IEC_TIMER;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_4Mv";
+        S7_NetworkTitle := "MLC_528"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Inp_Hlv )
+            I_Contact( #Cfg_FirstScan )
+            { S7_Templates := "time_type := Time" }
+            #Tmr_Hlv.TOF(
+                pt := #Cfg_TimeOff, 
+                et =>  
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_pJ";
+        S7_NetworkTitle := "MLC_4Ju"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            N_Contact(
+                operand := #Tmr_Hlv.Q, 
+                bit := #Ons_HlvOff
+            )
+            
+            Move(
+                in := 1, 
+                out1 => #"Counter"
+            )
+        END_RUNG
+        RUNG wire#powerrail
+            P_Contact(
+                operand := #Inp_Cnt, 
+                bit := #Ons
+            )
+            {
+                S7_Templates := "DestType := DInt"
+            }
+            Inc( #"Counter" )
+        END_RUNG
+        RUNG wire#powerrail
+            { S7_Templates := "SrcType := DInt" }
+            GE_Contact(
+                in1 := #"Counter", 
+                in2 := #Cfg_MaxCount
+            )
+            Coil( #Sts_Out )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

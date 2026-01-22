@@ -1,0 +1,82 @@
+﻿FUNCTION_BLOCK "Fct_IOLinkStatusMurr"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cfg_MasterHw : HW_DEVICE;   // Hardware address for Master PNIO
+      Cfg_EnablePort1 : Bool;   // Configuration Port 0 Enable
+      Cfg_EnablePort2 : Bool;   // Configuration Port 1 Enable
+      Cfg_EnablePort3 : Bool;   // Configuration Port 2 Enable
+      Cfg_EnablePort4 : Bool;   // Configuration Port 3 Enable
+      Cfg_EnablePort5 : Bool;   // Configuration Port 4 Enable
+      Cfg_EnablePort6 : Bool;   // Configuration Port 5 Enable
+      Cfg_EnablePort7 : Bool;   // Configuration Port 6 Enable
+      Cfg_EnablePort8 : Bool;   // Configuration Port 7 Enable
+   END_VAR
+
+   VAR_OUTPUT 
+      OUT_Pins2 : Byte;   // Outputs for pins 2
+      Sts_NoAlm : Bool;   // Status No Alarm
+      Sts_Ports_InError : Bool;   // Status Ports In Error
+   END_VAR
+
+   VAR_IN_OUT 
+      Cmd_Ack : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      tmpStatus : Array[0..128] of Bool;
+      RetValStates : Int;
+   END_VAR
+
+
+BEGIN
+	REGION BLOCK INFO HEADER
+	    //===============================================================================
+	    // IMA Automation Switzerland / (c)Copyright 2022
+	    //-------------------------------------------------------------------------------
+	    // Title:            Fct_IOLinkStatus
+	    // Function:         Io_Link slave status management for MurrElektronik masters
+	    // Library:          Mechatronic TIA
+	    // Author:           RJA
+	    // Tested with:      CPU 1517TF-3 PN/DP
+	    // Engineering:      TIA Portal V17
+	    // Restrictions:     S7-1200/1500
+	    // Requirements:     --
+	    //-------------------------------------------------------------------------------
+	    // Change log table:
+	    // Version  | Date       | Expert in charge       | Changes applied
+	    //----------|------------|------------------------|------------------------------
+	    // 00.00.01 | 24.05.2024 | RJA                    | First release for TIA Portal V17
+	    //          |            |                        | 
+	    //===============================================================================
+	END_REGION
+	REGION Reset Master Status
+	    IF #Cmd_Ack THEN
+	        #Cmd_Ack := FALSE;
+	        #Sts_Ports_InError := FALSE;
+	    END_IF;
+	END_REGION
+	
+	REGION Status Master
+	    #RetValStates := ModuleStates(LADDR := #Cfg_MasterHw, MODE := 5, STATE := #tmpStatus);
+	    IF #tmpStatus[2] THEN
+	        #Sts_Ports_InError := TRUE;
+	    END_IF;
+	END_REGION
+	
+	REGION Handle outputs for pin2
+	    #OUT_Pins2.%X0 := #Cfg_EnablePort1;
+	    #OUT_Pins2.%X1 := #Cfg_EnablePort2;
+	    #OUT_Pins2.%X2 := #Cfg_EnablePort3;
+	    #OUT_Pins2.%X3 := #Cfg_EnablePort4;
+	    #OUT_Pins2.%X4 := #Cfg_EnablePort5;
+	    #OUT_Pins2.%X5 := #Cfg_EnablePort6;
+	    #OUT_Pins2.%X6 := #Cfg_EnablePort7;
+	    #OUT_Pins2.%X7 := #Cfg_EnablePort8;
+	END_REGION
+	
+	REGION Main alarm
+	    #Sts_NoAlm := NOT #Sts_Ports_InError;
+	END_REGION
+END_FUNCTION_BLOCK
+

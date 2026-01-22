@@ -1,0 +1,221 @@
+﻿FUNCTION_BLOCK "Fct_XTS_ManFct"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cmd_FirstScan : Bool;   // First Scan
+   END_VAR
+   VAR_INPUT DB_SPECIFIC
+      Cmd_Out : DInt;   // Status to inform the type of alarm pending
+   END_VAR
+   VAR_INPUT 
+      eStateXtsModel : DInt;   // State of Xts Model sequencer
+      Cfg_NbrMover : DInt;   // Configuration Number of Mover Required
+      Cfg_InterfaceHMI : DInt;
+      Cfg_FirstPosSt : DInt;
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts_Idle : Bool;   // Status to inform end of command
+      Sts_Out : DInt;   // Status to inform the command ongoing
+      Exec_St : Bool;
+      Rep_dT : DInt;   // Reporting value to give current execution elapsed time
+      Cfg_BtnNoInterlock : DInt;   // Configuration of the function allowed to be activated
+   END_VAR
+
+   VAR_IN_OUT 
+      ChkZone_St : "Fct_CheckZoneXTS_ID";
+      HMI_Md : Array[0..10] of "Typ_XTS_AxSiHMi";   // XTS System Interface HMi
+      ID : Array[1.."Cfg_XTS_NbrMaxMover"] of "Typ_Act_XTS";
+   END_VAR
+
+   VAR 
+      Cmd_Seq : DInt;   // Command to define next sequence value
+      Sts_Seq : DInt;   // Status to give current sequence value
+      Sts_SeqOns : Bool;   // Status to inform once a sequence change
+      Sts_Seqp : DInt;   // Status to give previous sequence value
+      Sts_SeqT : DInt;   // Reporting value to give current execution elapsed time of the sequence
+      Tmr {InstructionName := 'TON_TIME'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : TON_TIME;
+      TmrSeq {InstructionName := 'TON_TIME'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'; S7_SetPoint := 'False'} : TON_TIME;
+      Mem_Idle { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      Loop : DInt;
+      Temp_MoverID : DInt;
+      Cfg_FirstPosSt_temp : DInt;
+   END_VAR
+
+
+BEGIN
+	//First Scan Initialisation
+	IF #Cmd_FirstScan THEN
+	    #Sts_Idle := TRUE;
+	    #Cmd_Seq := #Sts_Seq := #Cmd_Out := 0;
+	END_IF;
+	
+	// HMI - Interlock Button
+	#Cfg_BtnNoInterlock.%X0 := TRUE;
+	#Cfg_BtnNoInterlock.%X1 := TRUE;
+	
+	IF #eStateXtsModel = 100 AND #ChkZone_St.Cfg_NbrOfToDetect = #Cfg_NbrMover THEN
+	    #Cfg_BtnNoInterlock.%X2 := TRUE;
+	ELSE
+	    #Cfg_BtnNoInterlock.%X2 := FALSE;
+	END_IF;
+	
+	//Waiting for Command
+	IF #Cmd_Out <> 0 THEN
+	    #Sts_Out := #Cmd_Out;
+	    IF #Sts_Idle THEN
+	        IF #Cmd_Out.%X2 THEN // Execute
+	            #Sts_Idle := FALSE;
+	            #Cmd_Seq := 100;
+	        ELSIF #Cmd_Out.%X1 THEN // Reset
+	            #Sts_Idle := FALSE;
+	            #Cmd_Seq := 10;
+	        END_IF;
+	    END_IF;
+	    IF #Cmd_Out.%X0 THEN  // Abort                                               
+	        IF #Sts_Idle OR #Sts_Seq > 9 THEN
+	            #Sts_Idle := FALSE;
+	            #Cmd_Seq := 1;
+	            #Cmd_Out := 1;
+	        END_IF;
+	    END_IF;
+	END_IF;
+	
+	//Sequencer managenment
+	IF #Cmd_Seq <> 0 THEN
+	    #Sts_SeqOns := TRUE;
+	    #Sts_Seqp := #Sts_Seq;
+	    #Sts_Seq := #Cmd_Seq;
+	    #Cmd_Seq := 0;
+	ELSE
+	    #Sts_SeqOns := FALSE;
+	END_IF;
+	
+	//Timers Management : Sequence TimeOut / Command duration
+	IF #Sts_Idle AND (NOT #Mem_Idle) THEN
+	    #Rep_dT := #Tmr.ET;
+	END_IF;
+	
+	// Update Memo_Idle
+	#Mem_Idle := #Sts_Idle;
+	
+	// Update of the execution elapsed time of the sequence
+	#TmrSeq (IN:= (NOT #Sts_Idle) AND (NOT #Sts_SeqOns) , PT := T#999999s);
+	IF #TmrSeq.IN THEN
+	    #Sts_SeqT := #TmrSeq.ET;
+	END_IF;
+	
+	
+	//----------------------------------------------------------------- Abort ---------------------------------------------------------         
+	IF #Sts_Seq = 1 THEN // Abort
+	    IF #Sts_SeqOns THEN
+	        #Loop := 1;
+	        #Exec_St := FALSE;
+	    ELSE
+	        #Cmd_Seq := 2;
+	    END_IF;
+	END_IF;
+	
+	IF #Sts_Seq = 2 THEN // Cmd Abort
+	    IF #Sts_SeqOns THEN
+	        #Temp_MoverID := #ChkZone_St.Array_IdInZone[#Loop];
+	        #HMI_Md[#Cfg_InterfaceHMI].Cmd_Abort := TRUE;
+	        #HMI_Md[#Cfg_InterfaceHMI].Cmd_SelectMover := #Temp_MoverID;
+	    ELSIF NOT #HMI_Md[#Cfg_InterfaceHMI].Cmd_Abort THEN
+	        #Cmd_Seq := 2;
+	    END_IF;
+	END_IF;
+	
+	IF #Sts_Seq = 3 THEN // Inc loop Index
+	    IF #Sts_SeqOns THEN
+	        ;
+	    ELSIF #Loop <= #Cfg_NbrMover THEN
+	        #Loop := #Loop + 1;
+	        #Cmd_Seq := 2;
+	    ELSIF #Cfg_NbrMover > #Loop THEN
+	        #Loop := 1;
+	        #Sts_Idle := TRUE;
+	    END_IF;
+	END_IF;
+	
+	//----------------------------------------------------------------- Reset ---------------------------------------------------------         
+	IF #Sts_Seq = 10 THEN  // Reset
+	    IF #Sts_SeqOns THEN
+	       #Loop := 1;
+	    ELSE
+	        #Cmd_Seq := 11;
+	    END_IF;
+	END_IF;
+	
+	IF #Sts_Seq = 11 THEN  // Cmd Reset
+	    IF #Sts_SeqOns THEN
+	        #Temp_MoverID := #ChkZone_St.Array_IdInZone[#Loop];
+	        #HMI_Md[#Cfg_InterfaceHMI].Cmd_Reset := TRUE;
+	        #HMI_Md[#Cfg_InterfaceHMI].Cmd_SelectMover := #Temp_MoverID;
+	    ELSIF #ID[#Temp_MoverID].Sts_Idle AND NOT #HMI_Md[#Cfg_InterfaceHMI].Cmd_Reset THEN
+	        #Cmd_Seq := 12;
+	    ELSIF NOT #ID[#Temp_MoverID].Sts_NoAlm THEN 
+	        #Sts_Idle := TRUE
+	        ;
+	    END_IF;
+	END_IF;
+	
+	IF #Sts_Seq = 12 THEN // Inc loop Index
+	    IF #Sts_SeqOns THEN
+	        ;
+	    ELSIF #Loop <= #Cfg_NbrMover THEN
+	        #Loop := #Loop + 1;
+	        #Cmd_Seq := 11;
+	    ELSIF #Cfg_NbrMover > #Loop THEN
+	        #Loop := 1;
+	        #Sts_Idle := TRUE;
+	    END_IF;
+	END_IF;
+	
+	//----------------------------------------------------------------- Exec ---------------------------------------------------------         
+	IF #Sts_Seq = 100 THEN  // Execute
+	    IF #Sts_SeqOns THEN
+	        #Loop := 1;
+	        #Cfg_FirstPosSt_temp := #Cfg_FirstPosSt;
+	    ELSE
+	        #Cmd_Seq := 11;
+	    END_IF;
+	END_IF;
+	
+	IF #Sts_Seq = 101 THEN  // Cmd Execute
+	    IF #Sts_SeqOns THEN
+	        #Temp_MoverID := #ChkZone_St.Array_IdInZone[#Loop];
+	        #HMI_Md[#Cfg_InterfaceHMI].Cmd_ExecManual := TRUE;
+	        #HMI_Md[#Cfg_InterfaceHMI].Cmd_SelectMover := #Temp_MoverID;
+	        #HMI_Md[#Cfg_InterfaceHMI].Cmd_SelectPosition := #Cfg_FirstPosSt_temp;
+	        #Exec_St := TRUE;
+	    ELSIF #ID[#Temp_MoverID].Sts_Idle AND NOT #HMI_Md[#Cfg_InterfaceHMI].Cmd_ExecManual THEN
+	        #Cmd_Seq := 102;
+	    ELSIF NOT #ID[#Temp_MoverID].Sts_NoAlm THEN
+	        #Sts_Idle := TRUE
+	        ;
+	    END_IF;
+	END_IF;
+	
+	IF #Sts_Seq = 102 THEN // Inc loop Index
+	    IF #Sts_SeqOns THEN
+	        ;
+	    ELSIF #Loop <= #Cfg_NbrMover THEN
+	        #Cfg_FirstPosSt_temp :=  #Cfg_FirstPosSt - #Loop;
+	        #Loop := #Loop + 1;
+	        #Cmd_Seq := 11;
+	    ELSIF #Cfg_NbrMover > #Loop THEN
+	        #Loop := 1;
+	        #Sts_Idle := TRUE;
+	    END_IF;
+	END_IF;
+	
+	//Clear Status and Command in Idle 
+	IF #Sts_Idle THEN
+	    #Sts_Seqp := #Sts_Seq;
+	    #Sts_Seq := 0;
+	    #Cmd_Out := 0;
+	    #Cmd_Seq := 0;
+	END_IF;
+END_FUNCTION_BLOCK
+

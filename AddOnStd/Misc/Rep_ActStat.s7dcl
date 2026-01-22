@@ -1,0 +1,138 @@
+﻿{
+    S7_Author := "MIS";
+    S7_BlockComment := "MLC_4Qu";
+    S7_BlockTitle := "MLC_4gf";
+    S7_Family := "Standard";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "11.0"
+}
+FUNCTION_BLOCK "Rep_ActStat"
+    VAR_INPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_yN";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_Clr : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4xw";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_CmdOns : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3Fm";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_AlmOns : Bool;
+    END_VAR
+    VAR_OUTPUT RETAIN
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4j3";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_CtrTotal : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4wG";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_CtrAlm : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_Qc";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_Quality : Real;
+    END_VAR
+    VAR 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4KV";
+            S7_Visibility := "Hidden := External"
+        }
+        Mem : Array[0..10] of Bool;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_33h"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_Clr )
+            
+            Move(
+                in := 0, 
+                out1 => #Rep_CtrTotal, 
+                out2 => #Rep_CtrAlm
+            )
+            
+            Move(
+                in := 0.0, 
+                out1 => #Rep_Quality
+            )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_3dR"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            I_Contact( #Cmd_Clr )
+            wire#w1
+            Contact( #Sts_CmdOns )
+            
+            Add(
+                in1 := #Rep_CtrTotal, 
+                in2 := 1, 
+                out => #Rep_CtrTotal
+            )
+            Coil( #Mem[0] )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Sts_AlmOns )
+            
+            Add(
+                in1 := #Rep_CtrAlm, 
+                in2 := 1, 
+                out => #Rep_CtrAlm
+            )
+            Coil( #Mem[1] )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Mem[0] )
+            wire#w2
+            { S7_Templates := "SrcType := DInt" }
+            LE_Contact(
+                in1 := #Rep_CtrTotal, 
+                in2 := 0
+            )
+            
+            Move(
+                in := 1, 
+                out1 => #Rep_CtrTotal
+            )
+        END_RUNG
+        RUNG wire#w1
+            Contact( #Mem[1] )
+        END_RUNG wire#w2
+        RUNG wire#w2
+            {
+                S7_Templates := "SrcType := Real"; 
+                S7_Expression := "IN1 - (IN1 * IN2 / IN3)"
+            }
+            Calculate(
+                in1 := 100.0, 
+                in2 := #Rep_CtrAlm, 
+                in3 := #Rep_CtrTotal, 
+                out => #Rep_Quality
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

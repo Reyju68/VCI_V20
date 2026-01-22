@@ -1,0 +1,40 @@
+﻿MultiLingualTexts:
+  - id: MLC_3eg
+    en-US: Fonction Product Knowledge
+  - id: MLC_4Cn
+    en-US: |+
+      A code is used to provide the product knowledge of a part.
+  - id: MLC_3GC
+    en-US: Local date time of the CPU
+  - id: MLC_3Ek
+    en-US: Unique ID of the part
+  - id: MLC_38m
+    en-US: The station where the information occurs
+  - id: MLC_55B
+    en-US: Description of the value
+  - id: MLC_4xi
+    en-US: Product value as DNT
+  - id: MLC_4SL
+    en-US: Product value as REAT
+  - id: MLC_4bh
+    en-US: Product value as STRING
+  - id: MLC_4Kz
+    en-US: 'Product type value : 1=DINT / 2=REAL / 3=STRING'
+  - id: MLC_4pE
+    en-US: Command Product knowledge transfer
+  - id: MLC_3J6
+    en-US: Data base pointer
+  - id: MLC_5Ae
+    en-US: Product knowledge data
+  - id: MLC_53p
+    en-US: command data write out
+  - id: MLC_4c6
+    en-US: Jump at the End if Not Cmd_ProductKnowledge
+  - id: MLC_3pW
+    en-US: Update buffer
+  - id: MLC_4LM
+    en-US: Conversion to string
+  - id: MLC_pE
+    en-US: Increase data pointer for next data transmition
+  - id: MLC_45m
+    en-US: Jump End

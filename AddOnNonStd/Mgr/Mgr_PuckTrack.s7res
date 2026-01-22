@@ -1,0 +1,97 @@
+﻿MultiLingualTexts:
+  - id: MLC_PV
+    en-US: Mgr_PuckTrack
+  - id: MLC_55u
+    en-US: Puck Track management
+  - id: MLC_4Rx
+    en-US: Command First Scan
+  - id: MLC_rz
+    en-US: Puck Empty Consecutive Parameter (If Loading station)
+  - id: MLC_Ua
+    en-US: Delay before to reload new puck after part missing
+  - id: MLC_4pi
+    en-US: Reporting value to give current execution elapsed time
+  - id: MLC_wW
+    en-US: Reporting value of Puck empty
+  - id: MLC_3SW
+    en-US: Status to inform that consecutive pucks are detected empty
+  - id: MLC_3zd
+    en-US: Status to inform end of command
+  - id: MLC_4Gq
+    en-US: Status to inform while no alarm pending
+  - id: MLC_3qn
+    en-US: Status to inform the command ongoing
+  - id: MLC_3Tr
+    en-US: Actuator - Puck Part Presence
+  - id: MLC_4My
+    en-US: Actuator - Puck Pusher
+  - id: MLC_3Gf
+    en-US: Actuator - Puck Desindexer
+  - id: MLC_bx
+    en-US: Puck Request
+  - id: MLC_3zT
+    en-US: Dry Cycle (disable check empty pucks)
+  - id: MLC_3cC
+    en-US: Loading Station Configuration (0=Unloading Station)
+  - id: MLC_4Pb
+    en-US: Command for alarm acknowledgement
+  - id: MLC_3yi
+    en-US: Pucks Empty Detection Command
+  - id: MLC_Xp
+    en-US: Command send by the station sequence
+  - id: MLC_eY
+    en-US: Command to define next sequence value
+  - id: MLC_4M9
+    en-US: Status to give current sequence value
+  - id: MLC_3WL
+    en-US: Status to inform once a sequence change
+  - id: MLC_4cv
+    en-US: Status to give previous sequence value
+  - id: MLC_54B
+    en-US: Reporting value to give current execution elapsed time of the sequence
+  - id: MLC_5BU
+    en-US: Timeout value reached
+  - id: MLC_3BE
+    en-US: Command duration timer
+  - id: MLC_4Kc
+    en-US: Timer Rework
+  - id: MLC_45M
+    en-US: Timer of time out
+  - id: MLC_52L
+    en-US: Reset Command duration timer
+  - id: MLC_3sZ
+    en-US: Reset Timer of time out
+  - id: MLC_3up
+    en-US: ONS
+  - id: MLC_3De
+    en-US: First Scan
+  - id: MLC_4rL
+    en-US: Emulte part presence if dry cycle
+  - id: MLC_3iq
+    en-US: Alarms Reset
+  - id: MLC_3sn
+    en-US: Waiting For Command
+  - id: MLC_LQ
+    en-US: Sequencer managenment
+  - id: MLC_3Gs
+    en-US: 'Timers Management : Sequence TimeOut / Command duration'
+  - id: MLC_s2
+    en-US: Abort
+  - id: MLC_XZ
+    en-US: Reset Begin - Pusher Off
+  - id: MLC_3F9
+    en-US: Reset End - Desindexer Off
+  - id: MLC_3Lh
+    en-US: Exec Begin - Desindexer On
+  - id: MLC_53f
+    en-US: Exec - Pusher On
+  - id: MLC_st
+    en-US: Exec - Pusher Off and Desindexer Off
+  - id: MLC_39J
+    en-US: Exec - Check Puck empty if Unloading Station or Check Puck Full if Loading Station
+  - id: MLC_gU
+    en-US: Exec End - Check Pusher Off
+  - id: MLC_57T
+    en-US: Update No Alarm status
+  - id: MLC_4B3
+    en-US: Clear Status and Command in Idle

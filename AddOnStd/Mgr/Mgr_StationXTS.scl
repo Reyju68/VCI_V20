@@ -1,0 +1,287 @@
+﻿FUNCTION_BLOCK "Mgr_StationXTS"
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      Cmd_ClrPos : Bool;
+      Cmd_SignPos : Bool;
+      IN_Sts_AreaPosOk : Bool;
+      Cfg_NbrPosUsed : Int;
+      Cmd_Allow_Pos : LInt;
+      Sts_MoverAllow : LInt;
+   END_VAR
+
+   VAR_OUTPUT 
+      EnableOut : Bool;
+      Sts_AllMover_PosOk : Bool;
+      Sts_Mover_ZoneOk : DInt;
+      Sts_Mover_ZoneOk_Bool : Array[0..31] of Bool;
+   END_VAR
+
+   VAR_IN_OUT 
+      Sts_StartFeeding : Bool;
+      Cfg_MaxPos_Zone : Array[0..4] of Int;
+      Cfg_MinPos_Zone : Array[0..4] of Int;
+      Cfg_Nbr_NextPos : Array[0..40] of Int;
+      IN_Sts_MoverNb_Pos : Array[0..40] of Int;
+      IN_Sts_PrevWPHID : Array[0..40] of Int;
+      Sts_PrevWPHID : Array[0..40] of Int;
+      Sts_WPHID : Array[0..40] of Int;
+      Sts_Mover_ManExe : LInt;
+      Sts_Mover_Moved : LInt;
+      Sts_Mover_PosOk : LInt;
+      Sts_StationStartCycle : LInt;
+      IN_Sts_Mover : Array[0..40] of "Typ_XTS_StatusPos";
+      IN_Sync_Pos : Array[0..40] of "Typ_XTS_SyncPosFromXTS";
+      OUT_Sync_Pos : Array[*] of "Typ_XTS_SyncPosToXTS";
+   END_VAR
+
+   VAR 
+      Cmd_Allow_Pos_Bool : Array[0..63] of Bool;
+      Sts_MoverAllow_Bool : Array[0..63] of Bool;
+      Stat_Mover_ManExe : LInt;
+      Sts_Mover_ManExe_Bool : Array[0..63] of Bool;
+      Stat_Mover_Moved : LInt;
+      Sts_Mover_Moved_Bool : Array[0..63] of Bool;
+      Stat_Mover_PosOk : LInt;
+      Sts_Mover_PosOk_Bool : Array[0..63] of Bool;
+      Stat_StationStartCycle : LInt;
+      Sts_StationStartCycle_Bool : Array[0..63] of Bool;
+      Cfg_MaxPos : DInt;
+      Cfg_MinPos : DInt;
+      Loop : DInt;
+      LoopLimp : DInt;
+      LoopZone : DInt;
+      MaxLoop : DInt;
+      Memo_Mover_PosNotOk : DInt;
+      Memo_Mover_PosNotOk_Bool : Array[0..31] of Bool;
+      Sts_SeqSignPos : DInt;
+      Tmp : DInt;
+      Tmp_StationStartCycle : Bool;
+      Tmp_CmdCycle : DInt;
+      Tmp_CmdCycle_Bool : Array[0..31] of Bool;
+      Empty_Array { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Array[0..40] of Int;
+      Tmp_MoverAllow : LInt;
+      Tmp_MoverAllow_Bool : Array[0..63] of Bool;
+      Tmp_MoverPosOk : LInt;
+      Tmp_MoverPosOk_Bool : Array[0..63] of Bool;
+   END_VAR
+
+   VAR_TEMP 
+      Result : DInt;
+      Index : DInt;
+      LWORD1 : LWord;
+      DWORD1 : DWord;
+      _adebugkal : DWord;
+   END_VAR
+
+
+BEGIN
+	// ------------------------------- Check Min / Max configuration ------------------------------- 
+	#Result := UPPER_BOUND(ARR := #OUT_Sync_Pos, DIM := #MaxLoop);
+	#MaxLoop := _."Cfg_XTS_MaxSyncLoop";
+	#LoopLimp := 0;
+	
+	//#Stat_Mover_ManExe := ;
+	//#Stat_Mover_Moved := #;
+	//#Stat_Mover_PosOk := #;
+	//#Stat_StationStartCycle := #;
+	
+	#LWORD1 := LINT_TO_LWORD(#Sts_Mover_ManExe);
+	SCATTER(IN:=#LWORD1,OUT=>#Sts_Mover_ManExe_Bool);
+	
+	#LWORD1 := LINT_TO_LWORD(#Sts_Mover_Moved);
+	SCATTER(IN := #LWORD1,OUT => #Sts_Mover_Moved_Bool);
+	
+	#LWORD1 := LINT_TO_LWORD(#Sts_Mover_PosOk);
+	SCATTER(IN := #LWORD1,OUT => #Sts_Mover_PosOk_Bool);
+	
+	#LWORD1 := LINT_TO_LWORD(#Sts_StationStartCycle);
+	SCATTER(IN := #LWORD1,OUT => #Sts_StationStartCycle_Bool);
+	
+	#LWORD1 := LINT_TO_LWORD(#Tmp_MoverAllow);
+	SCATTER(IN := #LWORD1,
+	        OUT => #Tmp_MoverAllow_Bool);
+	
+	#DWORD1 := DINT_TO_DWORD(#Memo_Mover_PosNotOk);
+	SCATTER(IN := #DWORD1,OUT => #Memo_Mover_PosNotOk_Bool);
+	
+	#DWORD1 := DINT_TO_DWORD(#Tmp_CmdCycle);
+	SCATTER(IN := #DWORD1,OUT => #Tmp_CmdCycle_Bool);
+	
+	#LWORD1 := LINT_TO_LWORD(#Tmp_MoverPosOk);
+	SCATTER(IN := #LWORD1,OUT => #Tmp_MoverPosOk_Bool);
+	
+	#LWORD1 := LINT_TO_LWORD(#Cmd_Allow_Pos);
+	SCATTER(IN := #LWORD1,OUT => #Cmd_Allow_Pos_Bool);
+	
+	#LWORD1 := LINT_TO_LWORD(#Sts_MoverAllow);
+	SCATTER(IN := #LWORD1,OUT => #Sts_MoverAllow_Bool);
+	
+	
+	FILL_BLK(IN:=#Empty_Array[0],
+	         COUNT:=41,
+	         OUT=>#Sts_PrevWPHID[0]);
+	
+	IF #Cfg_NbrPosUsed > 1 THEN
+	    #Cfg_MinPos := 0;
+	    #Cfg_MaxPos := #Cfg_NbrPosUsed - 1;
+	ELSE
+	    #Cfg_MaxPos := 1;
+	END_IF;
+	
+	// ------------------------------- Calculate "mover allowed" including Previous/Previous 2nd Mover -------------------------------
+	#Tmp_MoverAllow := #Sts_MoverAllow + #Sts_MoverAllow * 2 ** (#Cfg_NbrPosUsed - 1);
+	
+	IF #Cfg_MinPos > #Cfg_MaxPos OR #Cfg_MaxPos < 0 OR #Cfg_MaxPos > #MaxLoop THEN
+	    #Cmd_ClrPos := 0;
+	    #Cmd_SignPos := 0;
+	    #Sts_SeqSignPos := 0;
+	END_IF;
+	
+	// ------------------------------- Sort Sts_WPHID / Update Status Station Start Cycle / Update Status Mover Moved ------------------------------- 
+	#Tmp := #Cfg_MaxPos;
+	#Tmp_StationStartCycle := 0;
+	#Tmp_CmdCycle := 0;
+	#Sts_StationStartCycle := 0;
+	#Sts_Mover_Moved := 0;
+	#Sts_Mover_PosOk := 0;
+	#Tmp_MoverPosOk := 0;
+	//Position 0
+	#Sts_WPHID[0] := #IN_Sts_MoverNb_Pos[0];
+	#Sts_StartFeeding := #IN_Sync_Pos[0].Cmd_Cycle AND #IN_Sts_MoverNb_Pos[0] <> 0;
+	#Sts_Mover_PosOk_Bool[#Tmp] := #IN_Sync_Pos[0].Cmd_Cycle AND #IN_Sts_MoverNb_Pos[0] <> 0 AND #IN_Sts_Mover[0].Mover_PosOk;
+	#OUT_Sync_Pos[0].Cmd_Allow := #Cmd_Allow_Pos.%X0; // Command Allow position
+	
+	FOR #Loop := 1 TO #Cfg_MaxPos DO
+	    #Sts_WPHID[#Tmp] := #IN_Sts_MoverNb_Pos[#Loop];
+	    #Sts_StationStartCycle_Bool[#Tmp] := #IN_Sync_Pos[#Loop].Cmd_Cycle AND #IN_Sts_MoverNb_Pos[#Loop] <> 0;
+	    #Tmp_StationStartCycle := #Sts_StationStartCycle_Bool[#Tmp]; // At least one start cycle
+	    #Sts_Mover_Moved_Bool[#Tmp] := #IN_Sts_Mover[#Loop].Mover_Moved;
+	    #Sts_Mover_ManExe_Bool[#Tmp] := #IN_Sts_Mover[#Loop].Mover_ManExe;
+	    #Sts_Mover_PosOk_Bool[#Tmp] := #IN_Sync_Pos[#Loop].Cmd_Cycle AND #IN_Sts_MoverNb_Pos[#Loop] <> 0 AND #IN_Sts_Mover[#Loop].Mover_PosOk ;
+	    #Tmp_MoverPosOk_Bool[#Tmp] := (#IN_Sync_Pos[#Loop].Cmd_Cycle AND #IN_Sts_MoverNb_Pos[#Loop] <> 0 AND #IN_Sts_Mover[#Loop].Mover_PosOk) OR NOT #IN_Sync_Pos[#Loop].Cmd_Cycle;
+	    #Tmp_CmdCycle_Bool[#Tmp] := #IN_Sync_Pos[#Loop].Cmd_Cycle;
+	    #OUT_Sync_Pos[#Loop].Cmd_Allow := #Cmd_Allow_Pos_Bool[#Tmp];
+	    #Tmp := #Tmp - 1;
+	END_FOR;
+	
+	// ------------------------------- Clear Position ------------------------------- 
+	IF #Cmd_ClrPos THEN
+	    FOR #Loop := #Cfg_MinPos TO #Cfg_MaxPos DO
+	        #OUT_Sync_Pos[#Loop].Sts_Cycle := 0;
+	        #OUT_Sync_Pos[#Loop].Cmd_Force_Index := 0;
+	    END_FOR;
+	    #Cmd_ClrPos := 0;
+	END_IF;
+	
+	// ------------------------------- Sign Position ------------------------------- 
+	CASE #Sts_SeqSignPos OF
+	    0:
+	        IF #Cmd_SignPos THEN
+	            #Tmp := #Cfg_MaxPos;
+	            FOR #Loop := 1 TO #Cfg_MaxPos DO
+	                IF #Sts_StationStartCycle_Bool[#Tmp] THEN
+	                    #OUT_Sync_Pos[#Loop].Cmd_Force_Index := #Cfg_Nbr_NextPos[#Tmp];
+	                    #OUT_Sync_Pos[#Loop].Sts_Cycle := TRUE;
+	                END_IF;
+	                #Tmp := #Tmp - 1;
+	            END_FOR;
+	            #Sts_SeqSignPos := 1;
+	        END_IF;
+	        
+	    1:
+	        #Tmp := #Cfg_MaxPos;
+	        #Sts_SeqSignPos := 0;
+	        FOR #Loop := 1 TO #Cfg_MaxPos DO
+	            IF NOT #Sts_StationStartCycle_Bool[#Tmp] THEN
+	                #OUT_Sync_Pos[#Loop].Sts_Cycle := 0;
+	                #OUT_Sync_Pos[#Loop].Cmd_Force_Index := 0;
+	            ELSE
+	                IF #OUT_Sync_Pos[#Loop].Sts_Cycle THEN
+	                    #Sts_SeqSignPos := 1;
+	                END_IF;
+	            END_IF;
+	            #Tmp := #Tmp - 1;
+	        END_FOR;
+	        
+	        IF #Sts_SeqSignPos = 0 THEN
+	            #Cmd_SignPos := 0;
+	        END_IF;
+	END_CASE;
+	
+	// ------------------------------- Status All Mover Position Ok ------------------------------- 
+	#Memo_Mover_PosNotOk := 0;
+	
+	FOR #Loop := 1 TO #Cfg_MaxPos DO
+	    IF #IN_Sync_Pos[#Loop].Cmd_Cycle AND NOT #IN_Sts_Mover[#Loop].Mover_PosOk THEN
+	        #Memo_Mover_PosNotOk_Bool[0] := 1;
+	        EXIT;
+	    END_IF;
+	END_FOR;
+	
+	#Sts_AllMover_PosOk := NOT #Memo_Mover_PosNotOk_Bool[0] AND #Tmp_StationStartCycle;
+	
+	// ------------------------------- Status Mover In Zone.x Ok ------------------------------- 
+	FOR #LoopZone := 1 TO 4 DO
+	    IF #Cfg_MinPos_Zone[#LoopZone] <= #Cfg_MaxPos_Zone[#LoopZone] AND #Cfg_MinPos_Zone[#LoopZone] > 0 AND #Cfg_MaxPos_Zone[#LoopZone] > 0 AND #Cfg_MaxPos_Zone[#LoopZone] <= #MaxLoop THEN
+	        FOR #Loop := #Cfg_MinPos_Zone[#LoopZone] TO #Cfg_MaxPos_Zone[#LoopZone] DO
+	            IF #Tmp_CmdCycle_Bool[#Loop] AND NOT #Tmp_MoverPosOk_Bool[#Loop] THEN
+	                #Memo_Mover_PosNotOk_Bool[#LoopZone] := true;
+	            END_IF;
+	        END_FOR;
+	    ELSE
+	        #Memo_Mover_PosNotOk_Bool[#LoopZone] := true;
+	    END_IF;
+	    IF NOT #Memo_Mover_PosNotOk_Bool[#LoopZone] AND #Tmp_StationStartCycle AND #IN_Sts_AreaPosOk THEN
+	        #Sts_Mover_ZoneOk_Bool[#LoopZone] := true;
+	    END_IF;
+	END_FOR;
+	
+	#Sts_Mover_ZoneOk_Bool[0] := #Sts_AllMover_PosOk AND #IN_Sts_AreaPosOk;
+	
+	// ------------------------------- Previous WPHID Sorting ------------------------------- 
+	FOR #Loop := 1 TO 40 DO
+	    IF #IN_Sts_PrevWPHID[#Loop] <> 0 AND #LoopLimp < 40 THEN
+	        REPEAT
+	            #LoopLimp := #LoopLimp + 1;
+	        UNTIL #Tmp_MoverAllow_Bool[#LoopLimp] OR (#LoopLimp >= 40)
+	        END_REPEAT;
+	        #Sts_PrevWPHID[#LoopLimp] := #IN_Sts_PrevWPHID[#Loop];
+	    ELSE
+	        EXIT;
+	    END_IF;
+	END_FOR;
+	
+	GATHER(IN:=#Sts_Mover_ManExe_Bool,OUT=>#LWORD1);
+	#Sts_Mover_ManExe := LWORD_TO_LINT(#LWORD1);
+	
+	GATHER(IN := #Sts_Mover_Moved_Bool,OUT => #LWORD1);
+	#Sts_Mover_Moved := LWORD_TO_LINT(#LWORD1);
+	
+	GATHER(IN := #Sts_Mover_PosOk_Bool,OUT => #LWORD1);
+	#Sts_Mover_PosOk := LWORD_TO_LINT(#LWORD1);
+	
+	GATHER(IN := #Sts_StationStartCycle_Bool,OUT => #LWORD1);
+	#Sts_StationStartCycle := LWORD_TO_LINT(#LWORD1);
+	
+	GATHER(IN := #Memo_Mover_PosNotOk_Bool,OUT => #DWORD1);
+	#Memo_Mover_PosNotOk := DWORD_TO_DINT(#DWORD1);
+	
+	GATHER(IN := #Tmp_CmdCycle_Bool,OUT => #DWORD1);
+	#Tmp_CmdCycle := DWORD_TO_DINT(#DWORD1);
+	
+	GATHER(IN := #Tmp_MoverAllow_Bool,OUT => #LWORD1);
+	#Tmp_MoverAllow := LWORD_TO_LINT(#LWORD1);
+	
+	GATHER(IN := #Tmp_MoverPosOk_Bool,OUT => #LWORD1);
+	#Tmp_MoverPosOk := LWORD_TO_LINT(#LWORD1);
+	
+	GATHER(IN := #Sts_Mover_ZoneOk_Bool,OUT => #DWORD1);
+	#Sts_Mover_ZoneOk := DWORD_TO_DINT(#DWORD1);
+	
+	//# := #Stat_Mover_ManExe;
+	//# := #Stat_Mover_Moved;
+	//# := #Stat_Mover_PosOk ;
+	//# := #Stat_StationStartCycle;
+END_FUNCTION_BLOCK
+

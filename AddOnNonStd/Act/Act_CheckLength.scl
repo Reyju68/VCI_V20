@@ -1,0 +1,607 @@
+﻿FUNCTION_BLOCK "Act_CheckLength"
+TITLE = Check Measurement Track
+{ S7_Optimized_Access := 'TRUE' ; Published := 'TRUE' }
+VERSION : 0.2
+//Check Measurement length of the sub assembly and intial position before and after reading. This block is plqnned to by used with Keyence sensor and Profinet communicqtion Unit DL-PN1
+   VAR_INPUT 
+      HW_ID_Input_SlaveMN : HW_SUBMODULE;   // Hardware ID slave Main Unit (With Cfg_WiringInp = 0)
+      HW_ID_Input_SlaveTR : HW_SUBMODULE;   // Hardware ID slave Track Unit (With Cfg_WiringInp = 0)
+      Client_Offset : DInt;   // Client Offset value
+      Cfg_StatOff : Bool;   // Configuration to deactivate the statistic management
+      Cfg_PartMissingUsed : Bool;   // Configuration to use the part missing alarm (0 = Unused, 1 = Used)
+      Cfg_LimitsUsed : Bool;   // Configuration to use limit or tolerance (0 = Tolerance, 1 = Limits)
+      Cfg_CalibFixedValue : Bool;   // Configuration to calibrate outside the measuring range (0 = Inside Rang, 1 = Outside Range) (Cfg_LimitsUsed fored to 1)
+      Cfg_Emulate : Bool;   // Configuration instruction to request emulated mode
+      Cfg_OffsetPartMissing : DInt;   // Configuration Part Missing
+      Cfg_WiringInp : Bool;   // Configuration Ethernet or wiring (0 = Profinet Inputs, 1 = Wiring Input)
+      Cmd_Inp : Real;   // Command to update the physical input (With Cfg_WiringInp = 1)
+      Cmd_Reset_Fonction : Bool;   // Reset Fonction
+      Cmd_Reset_DLPN1 : Bool;   // Reset DLPN1 communication unit
+      Cmd_Reset_Slot : Bool;   // Reset Slot
+      Cmd_ChkInitPos : Bool;   // Command Check Initial position
+      Cmd_Measure : Bool;   // Command Measurement
+      Cmd_ClrStat : Bool;   // Command to reset the statistic informations
+      Cmd_Ack : Bool;   // Command to control negative threshold for alarm acknowledgement
+      Cmd_TeachLimitHighPos : Bool;   // Command to teach the high limit position
+      Cmd_TeachLimitLowPos : Bool;   // Command to teach the low limit position
+      Cmd_TeachPartMissingPos : Bool;   // Command to teach the part missing position
+      Cmd_TeachNominalValue : Bool;   // Command to teach the monimal value to calculate limits with tolerance
+      Cmd_ZeroAdjust : Bool;   // Command to Adjust Zero
+      Cmd_UpdateLimit : Bool;   // Command to Update Limits on Material
+      Cmd_UpdateLL : Bool;   // Command to Update Low Limits on Material
+   END_VAR
+
+   VAR_OUTPUT 
+      Sts_Block : Struct   // Status
+         Sts_NoAlm : Bool;   // No alarm state in block
+         Sts_BlockErrorCode : Int;   // Specific block error code
+         Sts_Alm_InitialPosition : Bool;   // Error detected initial position read R1 or R3
+         Sts_Alm_MeasureControlHigh : Bool;   // Error detected Measurement control over high limit
+         Sts_Alm_MeasureControlLow : Bool;   // Error detected Measurement control under low limit
+         Sts_Alm_PartMissing : Bool;   // Error detected Part Missing
+         Sts_Alm_SystemUnit : Bool;   // Error System Measurement Unit
+         Sts_InitPos : DInt;   // Result measurement Initial Position
+         Sts_Measure : DInt;   // Result measurement Position Control lenght
+         Sts_ChkInitPosDone : Bool;   // Action read position initial completed
+         Sts_MeasureDone : Bool;   // Action read position Measurement completed
+         Sts_ReadingScaled : DInt;   // Current reading scaled value
+         Sts_SiemensDPRD_MN : Int;   // Block siemens DPRD_Dat error code
+         Sts_SiemensDPWR_MN : Int;   // Block siemens DPWR_Dat error code
+         Sts_SiemensDPRD_TR : Int;   // Block siemens DPRD_Dat error code
+         Sts_SiemensDPWR_TR : Int;   // Block siemens DPWR_Dat error code
+         Rep_CtrAlm : DInt;   // Reporting counter for failed actions since last clear
+         Rep_CtrTotal : DInt;   // Reporting counter for total executed actions since last clear
+         Rep_Quality : Real;   // Reporting statistic information
+         Sts_Measures : Array[0..99] of DInt;   // 100 Last Result Measurement Position Control lenght
+      END_STRUCT;
+   END_VAR
+
+   VAR_IN_OUT 
+      Par_Limit_MeasueControlHigh : DInt;   // High limit zone measurement control
+      Par_Limit_MeasueControlLow : DInt;   // Low limit zone measurement control
+      Par_Limit_MeasueControlPartMissing : DInt;   // Part Missing limit zone measurement control
+      Par_Limit_InitialReading : DInt;   // Acceptable Initial position value, used during reading R1 and R3
+      Par_ToleranceHigh : DInt;   // High tolerance zone measurement control (%)
+      Par_ToleranceLow : DInt;   // Low tolerance zone measurement control (%)
+   END_VAR
+
+   VAR 
+      Module_Buffer_ReadMN : Struct   // Input buffer from Io-link module Main unit (With Cfg_WiringInp = 0)
+         Adr0 : Struct
+            Reserved_0 : Bool;
+            Reserved_1 : Bool;
+            DLPN1_ComparatorProperty : Bool;   // Comparator value status : 0=Normal, 1=Disabled Status
+            Reserved_3 : Bool;
+            Reserved_4 : Bool;
+            Reserved_5 : Bool;
+            Reserved_6 : Bool;
+            DLPN1_ErrorStatus : Bool;   // Error Status Sensor amplifiers: 0=No Error, 1=Error
+         END_STRUCT;
+         Adr1 : Struct
+            External_input_Resp1 : Bool;
+            External_input_Resp2 : Bool;
+            External_input_Resp3 : Bool;
+            Reserved_3 : Bool;
+            Reserved_4 : Bool;
+            Reserved_5 : Bool;
+            Reserved_6 : Bool;
+            Reserved_7 : Bool;
+         END_STRUCT;
+         Adr2 : Byte;
+         Adr3 : Byte;
+         Adr4 : Byte;
+         Adr5 : Byte;
+         Adr6 : Byte;
+         Adr7 : Byte;
+         Adr8 : Byte;
+         Adr9 : Byte;
+         Adr10 : Byte;
+         Adr11 : Byte;
+         Adr12 : Byte;
+         Adr13 : Byte;
+         Adr14 : Byte;
+         Adr15 : Byte;
+      END_STRUCT;
+      Module_Buffer_WriteMN : Struct   // Output buffer to Io-link module Main unit (With Cfg_WiringInp = 0)
+         Adr0 : Struct
+            DLPN1_Preset : Bool;   // External input request Preset
+            DLPN1_Timing : Bool;   // External input request Timing
+            DLPN1_Reset : Bool;   // External input request Reset
+            Reserved_3 : Bool;
+            Reserved_4 : Bool;
+            Reserved_5 : Bool;
+            Reserved_6 : Bool;
+            Reserved_7 : Bool;
+         END_STRUCT;
+      END_STRUCT;
+      Module_Buffer_ReadTR : Struct   // Input buffer from Io-link module Track unit (With Cfg_WiringInp = 0)
+         Read_Sensor_Byte0_1 : Struct
+            High : Bool;
+            Low : Bool;
+            Go : Bool;
+            Reserved0_3 : Bool;
+            Reserved0_4 : Bool;
+            Reserved0_5 : Bool;
+            Reserved0_6 : Bool;
+            Reserved0_7 : Bool;
+            Reserved1_0 : Bool;
+            Slot_CompValueInvalid : Bool;   // Comparator value invalid 0=Normal 1=Invalid
+            Slot_CompValueUnder : Bool;   // Comparator value under range 0=Normal 1=Under
+            Slot_CompValueOver : Bool;   // Comparator value over range 0=Normal 1=Over
+            Reserved1_4 : Bool;
+            Reserved1_5 : Bool;
+            Reserved1_6 : Bool;
+            Slot_ErrorStatus : Bool;   // Error Status Sensor amplifiers: 0=No Error, 1=Error
+         END_STRUCT;
+         Adr2 : Byte;   // not used
+         Comparat_ValuePart1 : Byte;   // Start byte Comparator value Dint
+         Comparat_ValuePart2 : Byte;   // byte Comparator value Dint
+         Comparat_ValuePart3 : Byte;   // byte Comparator value Dint
+         Comparat_ValuePart4 : Byte;   // byte Comparator value Dint
+      END_STRUCT;
+      Module_Buffer_WriteTR : Struct   // Output buffer to Io-link module Track unit (With Cfg_WiringInp = 0)
+         Adr0 : Struct
+            Slot_Preset : Bool;   // External input request Preset
+            Slot_Timing : Bool;   // External input request Timing
+            Slot_Reset : Bool;   // External input request Reset
+            Reserved_3 : Bool;
+            Reserved_4 : Bool;
+            Reserved_5 : Bool;
+            Reserved_6 : Bool;
+            Reserved_7 : Bool;
+         END_STRUCT;
+      END_STRUCT;
+      Return_ResultReadMN : Int;   // Error code instruction siemens io-link Main unit (With Cfg_WiringInp = 0)
+      Return_ResultWriteMN : Int;   // Error code instruction siemens io-link Main unit (With Cfg_WiringInp = 0)
+      Return_ResultReadTR : Int;   // Error code instruction siemens io-link Track unit (With Cfg_WiringInp = 0)
+      Return_ResultWriteTR : Int;   // Error code instruction siemens io-link Track Unit (With Cfg_WiringInp = 0)
+      Slot_PresentValue : DInt;   // Present reading value comparator
+      Mgr_ActStat : "Rep_ActStat";   // Actuator Statistics
+      NominalValue : DInt;
+      Limit_MeasueControlHigh : DInt;   // High limit zone measurement control
+      Limit_MeasueControlLow : DInt;   // Low limit zone measurement control
+      Limit_MeasueControlPartMissing : DInt;   // Part Missing limit zone measurement control
+      Copy_Result : Int;
+      WRREC_ZeroAdjust {InstructionName := 'WRREC'; LibVersion := '1.1'} : WRREC;
+      WRREC_HighLevel {InstructionName := 'WRREC'; LibVersion := '1.1'} : WRREC;
+      WRREC_LowLevel {InstructionName := 'WRREC'; LibVersion := '1.1'} : WRREC;
+      Par_LimitMeasueControlHigh : DInt;   // High limit zone measurement control
+      Par_LimitMeasueControlLow : DInt;   // Low limit zone measurement control
+      Par_LimitMeasueControlPartMissing : DInt;   // Part Missing limit zone measurement control
+      Par_LimitInitialReading : DInt;   // Acceptable Initial position value, used during reading R1 and R3
+      Par_Tolerance_High : DInt;   // High tolerance zone measurement control (%)
+      Par_Tolerance_Low : DInt;   // Low tolerance zone measurement control (%)
+   END_VAR
+
+   VAR_TEMP 
+      MeasureUnitReady : Bool;   //  Measurement unit ready no errors detected:
+      ReadingScaled : DInt;   // input Reading scaled
+      Tmp_DINT : DInt;
+   END_VAR
+
+
+BEGIN
+	//============================================================================
+	// KOMAX System LCF SA
+	// Allée du Quartz 12
+	// CH-2301 La Chaux-de-fonds
+	// All Rights Reserved
+	//-----------------------------------------------------------------------------
+	// Library: _Library_Spec_Library
+	// Engineering: TIA Portal v14 SP1
+	// Restrictions: None
+	// Requirements: None
+	// Functionality:  Mesurement Control Block (using Keyence units)
+	// Reference Project: MDI01
+	//-----------------------------------------------------------------------------
+	// Change log table:
+	//-----------------------------------------------------------------------------
+	// Version          Date               Expert in charge           
+	// v0.1             2017-05-04         SCHAFER Florian          
+	// Changes applied:
+	// First release.
+	//-----------------------------------------------------------------------------
+	// Version          Date               Expert in charge           
+	// v0.2             2017-08-31         REY Julien         
+	// Changes applied:
+	// Split Measurement Alarm (High and low)
+	// Add Part Missing Alarm
+	// Add Sts_NoAlm Managment
+	// Add Actuator Quality
+	// Add Teach Fonctions
+	// Add Emulate Mode
+	// //-----------------------------------------------------------------------------
+	// Version          Date               Name         
+	// v0.7             2018-09-20         ABA         
+	// Changes applied:
+	// Add configuration "Cfg_OffsetPartMissing"
+	//--------------------------------------------------------------------------------
+	// Version          Date               Developper in charge           
+	// v0.6             2020-02-18         YVO        
+	// Changes applied:
+	// Debug messages
+	// Add preset value management, modify cmd teach nominal value
+	// // //--------------------------------------------------------------------------------
+	// Version          Date               Developper in charge           
+	// v0.7             2021-12-14         JRE     
+	// Changes applied:
+	// Add a input "Cmd_Inp" to connect a wiring input
+	// Add a input "Cfg_WiringInp" to configure if the input is in profinet or wiring
+	//============================================================================
+	// *************************************************
+	// Procedure Block
+	// 1) Reset block before using
+	// 2) Request Read R1 ( R1 must be done just after a block reset)
+	// 3) Request Measurement Control R2
+	// 4) Request Read R3
+	// *************************************************
+	
+	
+	// ***********************************************************************************************
+	// ************************* Read Input Data and Convert values **********************************
+	// ***********************************************************************************************
+	
+	// If NOT config wiring then take Profinet Inputs
+	IF NOT #Cfg_WiringInp THEN
+	    // Read Input DL-PN1 (Main unit) via IO-Link
+	    #Return_ResultReadMN := (DPRD_DAT(LADDR := #HW_ID_Input_SlaveMN, RECORD => #Module_Buffer_ReadMN));
+	    // Read Input Sensor Amplifier (Track unit) via IO-Link
+	    #Return_ResultReadTR := (DPRD_DAT(LADDR := #HW_ID_Input_SlaveTR, RECORD => #Module_Buffer_ReadTR));
+	    // Convert Input information 
+	    #Slot_PresentValue := BYTE_TO_DINT(#Module_Buffer_ReadTR.Comparat_ValuePart1);
+	    #Slot_PresentValue := SHL(IN := #Slot_PresentValue, N := 8);
+	    #Slot_PresentValue := #Slot_PresentValue + BYTE_TO_DINT(#Module_Buffer_ReadTR.Comparat_ValuePart2);
+	    #Slot_PresentValue := SHL(IN := #Slot_PresentValue, N := 8);
+	    #Slot_PresentValue := #Slot_PresentValue + BYTE_TO_DINT(#Module_Buffer_ReadTR.Comparat_ValuePart3);
+	    #Slot_PresentValue := SHL(IN := #Slot_PresentValue, N := 8);
+	    #Slot_PresentValue := #Slot_PresentValue + BYTE_TO_DINT(#Module_Buffer_ReadTR.Comparat_ValuePart4);
+	END_IF;
+	
+	// If config wiring then take the Cmd_Inp
+	IF #Cfg_WiringInp THEN
+	    #Slot_PresentValue := #Cmd_Inp;
+	END_IF;
+	
+	//Copie parameter
+	#Par_LimitMeasueControlHigh := #Par_Limit_MeasueControlHigh;
+	#Par_LimitMeasueControlLow := #Par_Limit_MeasueControlLow;
+	#Par_LimitMeasueControlPartMissing := #Par_Limit_MeasueControlPartMissing;
+	#Par_LimitInitialReading := #Par_Limit_InitialReading;
+	#Par_Tolerance_High := #Par_ToleranceHigh;
+	#Par_Tolerance_Low := #Par_ToleranceLow;
+	
+	// Force Bits
+	IF #Cfg_CalibFixedValue THEN
+	    #Cfg_LimitsUsed := 1;
+	END_IF;
+	
+	// Scaling Measurement Values
+	//  Measure + OFFSET
+	//  Scale correction none implemented (inputs Scale_Correction 1 and 2)
+	#ReadingScaled := #Slot_PresentValue + #Client_Offset;
+	#Sts_Block.Sts_ReadingScaled := #ReadingScaled;
+	// End Scaling Measurement
+	
+	
+	// ***********************************************************************************************
+	// ********************************** Reset Values and Devices ***********************************
+	// ***********************************************************************************************
+	
+	// Reset block (Action to be carried out before using the block)
+	IF #Cmd_Reset_Fonction THEN
+	    // Reset datas block
+	    #Sts_Block.Sts_ChkInitPosDone := 0;
+	    #Sts_Block.Sts_MeasureDone := 0;
+	    #Sts_Block.Sts_InitPos := 0;
+	    #Sts_Block.Sts_Measure := 0;
+	    #Sts_Block.Sts_Alm_InitialPosition := 0;
+	    #Sts_Block.#Sts_Alm_MeasureControlHigh := 0;
+	    #Sts_Block.#Sts_Alm_MeasureControlLow := 0;
+	    #Sts_Block.#Sts_Alm_PartMissing := 0;
+	    #Sts_Block.Sts_Alm_SystemUnit := 0;
+	    // Reset completed
+	    #Cmd_Reset_Fonction := 0;
+	END_IF;
+	// End Reset Block
+	
+	// Acknowledgement Alarms
+	IF #Cmd_Ack THEN
+	    #Sts_Block.Sts_Alm_InitialPosition := 0;
+	    #Sts_Block.#Sts_Alm_MeasureControlHigh := 0;
+	    #Sts_Block.#Sts_Alm_MeasureControlLow := 0;
+	    #Sts_Block.#Sts_Alm_PartMissing := 0;
+	    #Sts_Block.Sts_Alm_SystemUnit := 0;
+	    #Cmd_Ack := 0;
+	    #WRREC_ZeroAdjust.ERROR := FALSE;
+	    #WRREC_LowLevel.ERROR := False;
+	    #WRREC_HighLevel.ERROR := False;
+	END_IF;
+	// End Acknowledgement Alarms
+	
+	IF NOT #Cfg_WiringInp THEN
+	    // System reset handling  
+	    #Module_Buffer_WriteMN.Adr0.DLPN1_Reset := #Cmd_Reset_DLPN1;
+	    #Module_Buffer_WriteTR.Adr0.Slot_Reset := #Cmd_Reset_Slot;
+	    // End System reset handling
+	    
+	    // Zero Adjust
+	    #Tmp_DINT := 1;
+	    #WRREC_ZeroAdjust(REQ := #Cmd_ZeroAdjust,
+	                      ID := #HW_ID_Input_SlaveTR,
+	                      INDEX := 1,
+	                      LEN := 0,
+	                      RECORD := #Tmp_DINT);
+	    
+	    IF #WRREC_ZeroAdjust.DONE THEN
+	        IF #Cmd_ZeroAdjust THEN
+	            #NominalValue := 0;
+	        END_IF;
+	        #Cmd_ZeroAdjust := False;
+	    END_IF;
+	    
+	    // Update High Limit (Only for light)
+	    #WRREC_HighLevel(REQ := #Cmd_UpdateLimit AND NOT #Cfg_CalibFixedValue,
+	                     ID := #HW_ID_Input_SlaveTR,
+	                     INDEX := 65,
+	                     LEN := 0,
+	                     RECORD := #Par_ToleranceHigh);
+	    
+	    #Tmp_DINT := #Par_ToleranceHigh - #Client_Offset;
+	    #WRREC_HighLevel(REQ := #Cmd_UpdateLimit AND #Cfg_CalibFixedValue,
+	                     ID := #HW_ID_Input_SlaveTR,
+	                     INDEX := 65,
+	                     LEN := 0,
+	                     RECORD := #Tmp_DINT);
+	    
+	    IF #WRREC_HighLevel.DONE THEN
+	        IF #Cmd_UpdateLimit THEN
+	            #Cmd_UpdateLL := True;
+	        END_IF;
+	        #Cmd_UpdateLimit := False;
+	    END_IF;
+	    
+	    // Update Low Limit (Only for light)
+	    #Tmp_DINT := - #Par_ToleranceLow;
+	    #WRREC_LowLevel(REQ := #Cmd_UpdateLL AND NOT #Cfg_CalibFixedValue,
+	                    ID := #HW_ID_Input_SlaveTR,
+	                    INDEX := 66,
+	                    LEN := 0,
+	                    RECORD := #Tmp_DINT);
+	    
+	    #Tmp_DINT := - (#Par_ToleranceLow - #Client_Offset);
+	    #WRREC_LowLevel(REQ := #Cmd_UpdateLL AND #Cfg_CalibFixedValue,
+	                    ID := #HW_ID_Input_SlaveTR,
+	                    INDEX := 66,
+	                    LEN := 0,
+	                    RECORD := #Tmp_DINT);
+	    
+	    IF #WRREC_LowLevel.DONE THEN
+	        #Cmd_UpdateLL := False;
+	    END_IF;
+	    
+	    //Update alarm
+	    IF #WRREC_ZeroAdjust.ERROR OR #WRREC_LowLevel.ERROR OR #WRREC_HighLevel.ERROR THEN
+	        #Sts_Block.Sts_Alm_SystemUnit := TRUE;
+	    END_IF;
+	END_IF;
+	    
+	// ***********************************************************************************************
+	// *************************************** Alarms Managment **************************************
+	// ***********************************************************************************************
+	
+	IF NOT #Cfg_WiringInp THEN
+	    // Measurement unit ready for use ( no errors)
+	    #MeasureUnitReady := NOT #Module_Buffer_ReadMN.Adr0.DLPN1_ErrorStatus AND NOT #Module_Buffer_ReadTR.Read_Sensor_Byte0_1.Slot_ErrorStatus;
+	    IF NOT #MeasureUnitReady THEN
+	        // Detection Error System
+	        #Sts_Block.Sts_Alm_SystemUnit := 1;
+	    END_IF;
+	END_IF;
+	// End Error system detection
+	
+	// Rising Edge of Alarms
+	IF (#Sts_Block.#Sts_Alm_MeasureControlHigh = 1 OR #Sts_Block.#Sts_Alm_MeasureControlLow = 1 OR #Sts_Block.#Sts_Alm_PartMissing = 1) AND #Sts_Block.Sts_NoAlm = 1 THEN
+	    #Mgr_ActStat.Sts_AlmOns := 1;
+	ELSE
+	    #Mgr_ActStat.Sts_AlmOns := 0;
+	END_IF;
+	// End of Rising Edge of Alarms
+	
+	//Grouping of Alarm (Sts_NoAlm Managment)
+	IF #Sts_Block.Sts_Alm_InitialPosition = 0 AND #Sts_Block.#Sts_Alm_MeasureControlHigh = 0 AND #Sts_Block.#Sts_Alm_MeasureControlLow = 0 AND #Sts_Block.#Sts_Alm_PartMissing = 0 AND #Sts_Block.Sts_Alm_SystemUnit = 0 THEN
+	    #Sts_Block.Sts_NoAlm := 1;
+	ELSE
+	    #Sts_Block.Sts_NoAlm := 0;
+	END_IF;
+	// End Sts_NoAlm Managment
+	
+	
+	// ***********************************************************************************************
+	// *************************************** Teach Managment  **************************************
+	// ***********************************************************************************************
+	
+	// Teach High Limit
+	IF #Cmd_TeachLimitHighPos = 1 AND #Cfg_LimitsUsed = 1 AND #Cfg_CalibFixedValue = 0 THEN
+	    #Par_Limit_MeasueControlHigh := #ReadingScaled;
+	    #Cmd_TeachLimitHighPos := 0;
+	END_IF;
+	
+	// Teach Low Limit
+	IF #Cmd_TeachLimitLowPos = 1 AND #Cfg_LimitsUsed = 1 AND #Cfg_CalibFixedValue = 0 THEN
+	    #Par_Limit_MeasueControlLow := #ReadingScaled;
+	    #Cmd_TeachLimitLowPos := 0;
+	END_IF;
+	
+	// Teach Part Missing Limit
+	IF #Cmd_TeachPartMissingPos = 1 THEN
+	    #Par_Limit_MeasueControlPartMissing := #ReadingScaled;
+	    #Cmd_TeachPartMissingPos := 0;
+	END_IF;
+	
+	//Move parameters to par_limit
+	IF  #Cfg_CalibFixedValue = 1 THEN
+	    #Par_Limit_MeasueControlHigh := #Par_ToleranceHigh;
+	    #Par_Limit_MeasueControlLow := #Par_ToleranceLow;
+	END_IF;
+	
+	// Move Parameters if limits used
+	IF #Cfg_LimitsUsed = 1 THEN
+	    #Limit_MeasueControlHigh := #Par_Limit_MeasueControlHigh;
+	    #Limit_MeasueControlLow := #Par_Limit_MeasueControlLow;
+	END_IF;
+	
+	// Move Parameters Part Missing
+	#Limit_MeasueControlPartMissing := #Par_Limit_MeasueControlPartMissing + #Cfg_OffsetPartMissing;
+	
+	// Teach Nominal Value without #Cfg_CalibFixedValue
+	IF #Cmd_TeachNominalValue = 1 AND (#Cfg_LimitsUsed = 0 AND #Cfg_CalibFixedValue = 0) THEN
+	    #NominalValue := #ReadingScaled;
+	    #Sts_Block.#Sts_Measure := #ReadingScaled;
+	    #Sts_Block.#Sts_MeasureDone := 1;
+	    #Mgr_ActStat.Sts_CmdOns := 1;
+	    #Cmd_TeachNominalValue := 0;
+	END_IF;
+	
+	// Teach Nominal Value with #Cfg_CalibFixedValue
+	IF #Cmd_TeachNominalValue = 1 AND #Cmd_ZeroAdjust = 0 AND NOT #WRREC_ZeroAdjust.DONE AND #Cfg_CalibFixedValue = 1 THEN
+	    #Cmd_ZeroAdjust := 1;
+	END_IF;
+	
+	IF #Cmd_TeachNominalValue = 1 AND #Cmd_ZeroAdjust = 0 AND #WRREC_ZeroAdjust.DONE AND #Cfg_CalibFixedValue = 1 THEN
+	        #NominalValue := #ReadingScaled;
+	        #Sts_Block.#Sts_Measure := #ReadingScaled;
+	        #Sts_Block.#Sts_MeasureDone := 1;
+	        #Mgr_ActStat.Sts_CmdOns := 1;
+	        #Cmd_TeachNominalValue := 0;
+	        #Cmd_UpdateLimit := 1;
+	        #WRREC_ZeroAdjust.DONE := 0;
+	END_IF;
+	
+	
+	// Calcul Tolerance Limits
+	IF #Cfg_LimitsUsed = 0 THEN
+	    #Limit_MeasueControlHigh := #NominalValue + #Par_ToleranceHigh;
+	    #Limit_MeasueControlLow := #NominalValue - #Par_ToleranceLow;
+	END_IF;
+	
+	// ***********************************************************************************************
+	// **************************************** FIFO Measure  ****************************************
+	// ***********************************************************************************************
+	IF #Mgr_ActStat.Sts_CmdOns = 1 THEN
+	    // Copy Measure 0 to 98 -> 1 to 99
+	    #Copy_Result := MOVE_BLK_VARIANT(SRC:=#Sts_Block.Sts_Measures,
+	                                     COUNT:=98,
+	                                     SRC_INDEX:=0,
+	                                     DEST_INDEX:=1,
+	                                     DEST=>#Sts_Block.Sts_Measures);
+	    // Write new measure on the first position
+	    #Sts_Block.Sts_Measures[0] := #Sts_Block.Sts_Measure;
+	END_IF;
+	
+	// ***********************************************************************************************
+	// ************************************* Measurement control  ************************************
+	// ***********************************************************************************************
+	
+	// Reading Initial Position
+	IF (#Cmd_ChkInitPos AND  #MeasureUnitReady AND NOT #Sts_Block.#Sts_ChkInitPosDone  )THEN
+	    //  Use reading to check position initial before measurement sub assembly
+	    IF ( #ReadingScaled <= #Par_Limit_InitialReading ) THEN
+	        #Sts_Block.#Sts_InitPos := #ReadingScaled;
+	        #Sts_Block.#Sts_ChkInitPosDone := 1;
+	        #Sts_Block.#Sts_Alm_InitialPosition := 0;
+	    ELSE
+	        #Sts_Block.#Sts_Alm_InitialPosition := 1;
+	        #Sts_Block.#Sts_ChkInitPosDone := 1;
+	        #Sts_Block.#Sts_InitPos := #ReadingScaled;
+	    END_IF;
+	    #Cmd_ChkInitPos := 0;
+	END_IF;
+	// End Reading Initial Position
+	
+	// Reading Position Measurement Control
+	IF (#Cmd_Measure AND #MeasureUnitReady AND NOT #Sts_Block.#Sts_MeasureDone AND NOT #Cfg_Emulate) THEN
+	    //  Use reading to check  measurement sub assembly
+	    IF (#ReadingScaled < #Limit_MeasueControlHigh AND #ReadingScaled > #Limit_MeasueControlLow) THEN
+	        #Sts_Block.#Sts_Measure := #ReadingScaled;
+	        #Sts_Block.#Sts_MeasureDone := 1;
+	        #Sts_Block.#Sts_Alm_MeasureControlHigh := 0;
+	        #Sts_Block.#Sts_Alm_MeasureControlLow := 0;
+	        #Sts_Block.#Sts_Alm_PartMissing := 0;
+	    ELSE
+	        IF (#ReadingScaled > #Limit_MeasueControlPartMissing) OR #Cfg_PartMissingUsed = 0 THEN
+	            IF #ReadingScaled >= #Limit_MeasueControlHigh THEN
+	                #Sts_Block.#Sts_Alm_MeasureControlHigh := 1;
+	                #Sts_Block.#Sts_Alm_MeasureControlLow := 0;
+	                #Sts_Block.#Sts_Alm_PartMissing := 0;
+	                #Sts_Block.#Sts_MeasureDone := 1;
+	                #Sts_Block.#Sts_Measure := #ReadingScaled;
+	            ELSE
+	                #Sts_Block.#Sts_Alm_MeasureControlHigh := 0;
+	                #Sts_Block.#Sts_Alm_MeasureControlLow := 1;
+	                #Sts_Block.#Sts_Alm_PartMissing := 0;
+	                #Sts_Block.#Sts_MeasureDone := 1;
+	                #Sts_Block.#Sts_Measure := #ReadingScaled;
+	            END_IF;
+	        ELSE
+	            #Sts_Block.#Sts_Alm_MeasureControlHigh := 0;
+	            #Sts_Block.#Sts_Alm_MeasureControlLow := 0;
+	            #Sts_Block.#Sts_Alm_PartMissing := 1;
+	            #Sts_Block.#Sts_MeasureDone := 1;
+	            #Sts_Block.#Sts_Measure := #ReadingScaled;
+	        END_IF;
+	    END_IF;
+	    #Mgr_ActStat.Sts_CmdOns := 1;
+	    #Cmd_Measure := 0;
+	ELSE
+	    #Mgr_ActStat.Sts_CmdOns := 0;
+	END_IF;
+	// End Reading Position
+	
+	// Reading Position  Measurement Control In Emulate Mode
+	IF (#Cmd_Measure AND #MeasureUnitReady AND NOT #Sts_Block.#Sts_MeasureDone AND #Cfg_Emulate) THEN
+	    #Sts_Block.#Sts_Alm_MeasureControlHigh := 0;
+	    #Sts_Block.#Sts_Alm_MeasureControlLow := 0;
+	    #Sts_Block.#Sts_Alm_PartMissing := 0;
+	    #Sts_Block.#Sts_MeasureDone := 1;
+	END_IF;
+	// End Reading Position  Measurement Control in Emulate
+	    
+	
+	// ***********************************************************************************************
+	// ************************************* Actuator Statistics  ************************************
+	// ***********************************************************************************************
+	
+	// Calculate Actuator Quality
+	IF #Cmd_ClrStat = 1 OR (#Cfg_StatOff = 1 AND #Sts_Block.Rep_CtrTotal <> 0) THEN
+	    #Mgr_ActStat.Cmd_Clr := 1;
+	    #Cmd_ClrStat := 0;
+	ELSE
+	    #Mgr_ActStat.Cmd_Clr := 0;
+	END_IF;
+	
+	#Mgr_ActStat(Rep_CtrTotal=>#Sts_Block.Rep_CtrTotal,
+	             Rep_CtrAlm=>#Sts_Block.Rep_CtrAlm,
+	             Rep_Quality=>#Sts_Block.Rep_Quality);
+	// End Calculate Actuator Quality
+	
+	
+	// ***********************************************************************************************
+	// *********************************** Write Output Data *****************************************
+	// ***********************************************************************************************
+	
+	IF NOT #Cfg_WiringInp THEN
+	    // Write output DL-PN1 (Main unit) via IO-Link
+	    #Return_ResultWriteMN := DPWR_DAT(LADDR := #HW_ID_Input_SlaveMN, RECORD := #Module_Buffer_WriteMN);
+	    // Write output DL-PN1 Sensor Amplifier (Track unit) via IO-Link
+	    #Return_ResultWriteTR := DPWR_DAT(LADDR := #HW_ID_Input_SlaveTR, RECORD := #Module_Buffer_WriteTR);
+	    
+	    
+	    // Siemens block error code DPRD et DPWR
+	    #Sts_Block.Sts_SiemensDPRD_MN := #Return_ResultReadMN;
+	    #Sts_Block.Sts_SiemensDPWR_MN := #Return_ResultWriteMN;
+	    #Sts_Block.Sts_SiemensDPRD_TR := #Return_ResultReadTR;
+	    #Sts_Block.Sts_SiemensDPWR_TR := #Return_ResultWriteTR;
+	END_IF;
+	
+END_FUNCTION_BLOCK
+

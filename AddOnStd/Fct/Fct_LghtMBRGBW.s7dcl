@@ -1,0 +1,107 @@
+﻿{
+    S7_BlockComment := "MLC_3PW";
+    S7_BlockTitle := "MLC_3KH";
+    S7_Optimized := "TRUE";
+    S7_PreferredLanguage := "LAD";
+    S7_UnitAccess := "Published";
+    S7_Version := "0.1"
+}
+FUNCTION_BLOCK "Fct_LghtMBRGBW"
+    VAR_INPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3xQ";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_FirstScan : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_37J";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_LightYellow : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3tL";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_LightWhite : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_ij";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_LightRed : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4gu";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_LightGreen : Bool;
+    END_VAR
+    VAR_OUTPUT 
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3P4";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Out_Trig3 : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_MY";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Out_Trig2 : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3yb";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Out_Trig1 : Bool;
+    END_VAR
+
+    {
+        S7_Language := "LAD";
+        S7_NetworkTitle := "MLC_fP"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Cmd_FirstScan )
+            R_Coil( #Cmd_LightYellow )
+            R_Coil( #Cmd_LightWhite )
+            R_Coil( #Cmd_LightRed )
+            R_Coil( #Cmd_LightGreen )
+        END_RUNG
+    END_NETWORK
+    {
+        S7_Language := "LAD";
+        S7_NetworkComment := "MLC_54D";
+        S7_NetworkTitle := "MLC_4UY"
+    }
+    NETWORK
+        RUNG wire#powerrail
+            R_Coil( #Sts_Out_Trig1 )
+            R_Coil( #Sts_Out_Trig2 )
+            R_Coil( #Sts_Out_Trig3 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_LightWhite )
+            S_Coil( #Sts_Out_Trig3 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_LightGreen )
+            R_Coil( #Sts_Out_Trig1 )
+            S_Coil( #Sts_Out_Trig2 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_LightYellow )
+            S_Coil( #Sts_Out_Trig1 )
+            S_Coil( #Sts_Out_Trig2 )
+        END_RUNG
+        RUNG wire#powerrail
+            Contact( #Cmd_LightRed )
+            S_Coil( #Sts_Out_Trig1 )
+            R_Coil( #Sts_Out_Trig2 )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

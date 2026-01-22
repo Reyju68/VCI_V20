@@ -1,0 +1,58 @@
+﻿MultiLingualTexts:
+  - id: MLC_bv
+    en-US: Overload Actuator
+  - id: MLC_3Hb
+    en-US: |-
+      10 Nov 2020
+      - Set Cmd_Enable when Cmd_ChkCons is On
+      (StdAddonsTIA_SCN_V007.docx)
+
+      ABA / V11.1 / 20 Oct 2020
+      - Set Cmd_Enable when Cmd_ChkCons is On
+      (StdAddonsTIA_SCN_V003.docx)
+  - id: MLC_3kr
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_4tR
+    en-US: Command to reset the statistic information
+  - id: MLC_44J
+    en-US: Command send by the station sequence to enable the control of the sensor
+  - id: MLC_4W5
+    en-US: Command send by the station sequence to trig the activation of the consecutive check
+  - id: MLC_3m7
+    en-US: Value of the number max of consecutive error allowed
+  - id: MLC_4gw
+    en-US: Command to update versus physical input
+  - id: MLC_Ym
+    en-US: Command to update versus physical input (sensor error)
+  - id: MLC_3J9
+    en-US: Status to inform of  Overload detected when Cmd_Enable is at 1 and Cmd_ChkCons is at 0
+  - id: MLC_3LA
+    en-US: Status to inform of  Overload detected when Cmd_Enable is at 1 and Cmd_ChkCons is at 1
+  - id: MLC_3bY
+    en-US: Status to inform of  Overload detected when Cmd_Enable is at 1, Cmd_ChkCons is at 1 and Consecutive error greater or equal to the max parameter
+  - id: MLC_ag
+    en-US: Status to inform of  DSC Sensor Error when Cmd_Enable is at 1
+  - id: MLC_39e
+    en-US: Status to inform while no alarm pending
+  - id: MLC_t2
+    en-US: Status to inform alarm coming edge
+  - id: MLC_PZ
+    en-US: Reporting counter for failed actions since last clear
+  - id: MLC_3LN
+    en-US: Reporting of the consecutive error number
+  - id: MLC_4kU
+    en-US: First PLC Scan
+  - id: MLC_4mq
+    en-US: Reset of the alarms management
+  - id: MLC_bt
+    en-US: Enable Control
+  - id: MLC_3su
+    en-US: Consecutive counter
+  - id: MLC_3Vw
+    en-US: Reset Overload status
+  - id: MLC_pE
+    en-US: 'RE Alarms '
+  - id: MLC_58A
+    en-US: Update Status_NoAlarm
+  - id: MLC_3nn
+    en-US: Statistic management
