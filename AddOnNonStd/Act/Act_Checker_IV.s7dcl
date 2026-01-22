@@ -144,8 +144,8 @@ FUNCTION_BLOCK "Act_Checker_IV"
     NETWORK
         RUNG wire#powerrail
             Contact( #Cfg_FirstScan )
-            R_Coil( #Cfg_Emulate )
             R_Coil( #Sts_AlmConsErr )
+            R_Coil( #Cfg_Emulate )
             R_Coil( #Sts_Alm )
             S_Coil( #Sts_Idle )
             
