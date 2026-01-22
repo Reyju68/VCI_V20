@@ -1,0 +1,79 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_Track : STRUCT
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4aa";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg_RejectCause : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3xd";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_ClearCycleStatus : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_kn";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_ClrStat : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4P7";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_SetBadCycle : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4fG";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_SetGoodCycle : Bool;
+        { S7_MLC := "MLC_4Zk" }
+        Rep_CtrBad : DInt;
+        { S7_MLC := "MLC_4Zq" }
+        Rep_CtrFailCode1 : DInt;
+        { S7_MLC := "MLC_3fR" }
+        Rep_CtrFailCode2 : DInt;
+        { S7_MLC := "MLC_55b" }
+        Rep_CtrFailCode3 : DInt;
+        { S7_MLC := "MLC_4hZ" }
+        Rep_CtrFailCode4 : DInt;
+        { S7_MLC := "MLC_4dz" }
+        Rep_CtrFailCode5 : DInt;
+        { S7_MLC := "MLC_4Nr" }
+        Rep_CtrFailCode6 : DInt;
+        { S7_MLC := "MLC_4Tj" }
+        Rep_CtrFailCode7 : DInt;
+        { S7_MLC := "MLC_nm" }
+        Rep_CtrFailCode8 : DInt;
+        { S7_MLC := "MLC_59y" }
+        Rep_CtrFailCode9 : DInt;
+        { S7_MLC := "MLC_4vT" }
+        Rep_CtrGood : DInt;
+        { S7_MLC := "MLC_4BA" }
+        Rep_CtrTotal : DInt;
+        { S7_MLC := "MLC_PB" }
+        Rep_Quality : Real;
+        { S7_MLC := "MLC_3nR" }
+        Sts_Bad : Bool;
+        { S7_MLC := "MLC_4i3" }
+        Sts_Enable : Bool;
+        { S7_MLC := "MLC_3Qp" }
+        Sts_Good : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4Ya";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_IgnoreResult : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_5A7";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_TrackUsed : Bool;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,11 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_TopGuard : STRUCT
+        { S7_MLC := "MLC_TZ" }
+        AllChannelsOK : Bool;
+        { S7_Setpoint := "False" }
+        Breaker : Array[0..32] of _.Typ_TopGuardBreaker;
+        { S7_MLC := "MLC_35Z" }
+        BreakerFaultNbr : SInt;
+    END_STRUCT;
+END_TYPE

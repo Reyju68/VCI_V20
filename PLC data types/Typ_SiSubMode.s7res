@@ -1,0 +1,19 @@
+﻿MultiLingualTexts:
+  - id: MLC_4WH
+    en-US: Mode Dry
+  - id: MLC_3zf
+    en-US: Mode Purge
+  - id: MLC_4qd
+    en-US: Mode Single
+  - id: MLC_37r
+    en-US: Mode Limp Nest
+  - id: MLC_4fw
+    en-US: Mode Limp Track
+  - id: MLC_Wq
+    en-US: Mode No Puck No Mover
+  - id: MLC_4zM
+    en-US: Mode Jog Production
+  - id: MLC_pd
+    en-US: Mode Line Purge
+  - id: MLC_PW
+    en-US: Mode R&R vision

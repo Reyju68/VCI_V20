@@ -1,0 +1,33 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_AxCoordinate_Point : STRUCT
+        { S7_MLC := "MLC_4Gf" }
+        Axis1_Pos : DInt;
+        { S7_MLC := "MLC_4xx" }
+        Axis2_Pos : DInt;
+        { S7_MLC := "MLC_3Qb" }
+        Axis3_Pos : DInt;
+        { S7_MLC := "MLC_4dx" }
+        Axis4_Pos : DInt;
+        { S7_MLC := "MLC_kE" }
+        Axis5_Pos : DInt;
+        { S7_MLC := "MLC_4iT" }
+        Axis6_Pos : DInt;
+        { S7_MLC := "MLC_3WK" }
+        Velocity : DInt;
+        { S7_MLC := "MLC_4nu" }
+        Accel : DInt;
+        { S7_MLC := "MLC_398" }
+        Decel : DInt;
+        { S7_MLC := "MLC_3Jy" }
+        Jerk : DInt;
+        { S7_MLC := "MLC_3YA" }
+        Blending : DInt;
+        { S7_MLC := "MLC_3kM" }
+        DirectionA : DInt;
+        { S7_MLC := "MLC_4hJ" }
+        CoordSystem : DInt;
+        { S7_MLC := "MLC_4VX" }
+        Cfg_WaitPoint : Bool;
+    END_STRUCT;
+END_TYPE

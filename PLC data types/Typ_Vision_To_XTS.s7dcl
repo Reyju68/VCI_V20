@@ -1,0 +1,12 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_Vision_To_XTS : STRUCT
+        ExecRNRVision : DInt;
+        ExecCalVision : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        HeartBeat : Int;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,15 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_Cams : STRUCT
+        { S7_MLC := "MLC_3mX" }
+        Lim_MIn : DInt;
+        { S7_MLC := "MLC_4Z3" }
+        Lim_Max : DInt;
+        { S7_MLC := "MLC_47X" }
+        Cfg_Ante : DInt;
+        { S7_MLC := "MLC_4CH" }
+        Cfg_Cam : DInt;
+        { S7_MLC := "MLC_3G4" }
+        Value : DInt;
+    END_STRUCT;
+END_TYPE

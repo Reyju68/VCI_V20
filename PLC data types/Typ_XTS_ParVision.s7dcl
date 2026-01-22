@@ -1,0 +1,10 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_ParVision : STRUCT
+        rFirstTrig : Real;
+        rStOffset : Real;
+        rNestGap : Real;
+        rNestTrigTime : Real;
+        bCfgEnable : Bool;
+    END_STRUCT;
+END_TYPE

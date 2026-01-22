@@ -1,0 +1,25 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_IoLinkCfgSmartDev : STRUCT
+        { S7_MLC := "MLC_595" }
+        IndexType : SInt;
+        { S7_MLC := "MLC_3gX" }
+        Index : UInt;
+        { S7_MLC := "MLC_4NX" }
+        SubIndex : SInt;
+        { S7_MLC := "MLC_4x4" }
+        "Len" : Int;
+        { S7_MLC := "MLC_4kw" }
+        Data : DInt;
+        { S7_MLC := "MLC_xg" }
+        "Min" : DInt;
+        { S7_MLC := "MLC_uh" }
+        "Max" : DInt;
+        { S7_MLC := "MLC_5AH" }
+        OnlineData : DInt;
+        { S7_MLC := "MLC_yz" }
+        ReadOnly : Bool;
+        { S7_MLC := "MLC_u4" }
+        PredictMaint : String[20];
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,31 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_StationCfgXTS : STRUCT
+        { S7_MLC := "MLC_TK" }
+        StationNbr : DInt;
+        { S7_MLC := "MLC_zb" }
+        OperationNbr : DInt;
+        { S7_MLC := "MLC_QL" }
+        TrackNumber : DInt;
+        { S7_MLC := "MLC_457" }
+        WphUsed : DInt;
+        { S7_MLC := "MLC_3Fk" }
+        TrackUsed : DInt;
+        { S7_MLC := "MLC_4AQ" }
+        TrackDsbl : DInt;
+        { S7_MLC := "MLC_4PY" }
+        IgnoreMode : DInt;
+        { S7_MLC := "MLC_s4" }
+        NbrPosUsed : Int;
+        { S7_MLC := "MLC_56p" }
+        Nbr_XtsPos : Array[0..40] of Int;
+        { S7_MLC := "MLC_59f" }
+        Nbr_NextPos : Array[0..40] of Int;
+        { S7_MLC := "MLC_4ew" }
+        MinPos_Zone : Array[0..4] of Int;
+        { S7_MLC := "MLC_34A" }
+        MaxPos_Zone : Array[0..4] of Int;
+        { S7_MLC := "MLC_54p" }
+        ProcessTime : DInt;
+    END_STRUCT;
+END_TYPE

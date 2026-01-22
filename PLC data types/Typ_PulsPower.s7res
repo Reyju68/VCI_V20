@@ -1,0 +1,7 @@
+﻿MultiLingualTexts:
+  - id: MLC_yR
+    en-US: State of all channels ready
+  - id: MLC_YH
+    en-US: Total converter current
+  - id: MLC_z9
+    en-US: Converter output Voltage

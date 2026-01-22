@@ -1,0 +1,29 @@
+﻿MultiLingualTexts:
+  - id: MLC_35S
+    en-US: Output voltage value in cV (1000 = 10.00V)
+  - id: MLC_4aw
+    en-US: Output voltage value in cV (1000 = 10.00V) on DC- Output after -ring MOSFET (on terminal)
+  - id: MLC_37n
+    en-US: Output current in cA (1000 = 10.00A) on DC- Output
+  - id: MLC_3mL
+    en-US: Get State of Relay Output 0 = deenergized 1 = energized
+  - id: MLC_4Fw
+    en-US: Get State of Relay Output 0 = deenergized 1 = energized
+  - id: MLC_4Gd
+    en-US: 0 = DCL event is not active on DC- Output1 = DCL event is active on DC- Output
+  - id: MLC_eb
+    en-US: 0 = load current on DC- Output is lower than 150% of Inom1 = load current on DC- Output is higher than 150% of Inom
+  - id: MLC_4xW
+    en-US: 0 = load current on DC- Output is lower than 110% of Inom1 = load current on DC- Output is higher than 110% of Inom
+  - id: MLC_48e
+    en-US: 0 = DC / DC conversion and O-ring MOSFET DC Output is active1 = DC / DC conversion and O-ring MOSFET DC Output is switched off, because of a short circuit
+  - id: MLC_4Xc
+    en-US: 0 = load current on DC- Output is lower than “PROtop Load Prewarning Value”, which is 90% of Inom.1 = load current on DC- Output is higher than “PROtop Load Prewarning Value”, which is 90% of Inom.
+  - id: MLC_zC
+    en-US: 0 = Short Circuit on DC Output1 = No Short Circuit on DC Output
+  - id: MLC_ja
+    en-US: Set Digital ouput 0 = false (Vin < 5V) 1 = true (Vin > 15V)
+  - id: MLC_4ur
+    en-US: Set State of Relay Output 0 = deenergized 1 = energized
+  - id: MLC_34C
+    en-US: Power supply is OK and running

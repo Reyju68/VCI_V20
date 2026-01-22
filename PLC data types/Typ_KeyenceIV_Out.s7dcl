@@ -1,0 +1,26 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_KeyenceIV_Out : STRUCT
+        Trigger_request : Bool;
+        Master_registration_request : Bool;
+        Program_switching_request : Bool;
+        Warning_clear_request : Bool;
+        Statistics_reset_request : Bool;
+        Buffer_clear_request : Bool;
+        SDCard_save_request : Bool;
+        Setting_value_change_request : Bool;
+        Reserved_0_8to0_15 : SInt;
+        Result_acquisition_complete_notification : Bool;
+        Reserved_0_17 : Bool;
+        Reserved_0_18 : Bool;
+        Reserved_0_19 : Bool;
+        Reserved_0_20 : Bool;
+        Reserved_0_21 : Bool;
+        Reserved_0_22 : Bool;
+        Reserved_0_23 : Bool;
+        Reserved_0_24to0_31 : SInt;
+        Program_Number : Int;
+        Setting_value_setting_No : Int;
+        Setting_value : DInt;
+    END_STRUCT;
+END_TYPE

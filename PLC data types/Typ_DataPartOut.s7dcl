@@ -1,0 +1,20 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_DataPartOut : STRUCT
+        { S7_MLC := "MLC_3AD" }
+        BufferSize : DInt;
+        { S7_MLC := "MLC_36v" }
+        DataRead_In : DInt;
+        { S7_MLC := "MLC_455" }
+        DataWrite_Out : DInt;
+        { S7_MLC := "MLC_Pr" }
+        "Pointer" : DInt;
+        { S7_MLC := "MLC_4Ub" }
+        FreeSpace : Real;
+        {
+            S7_MLC := "MLC_47W";
+            S7_Setpoint := "False"
+        }
+        Buffer : Array[0..1023] of _.Typ_PartOut;
+    END_STRUCT;
+END_TYPE

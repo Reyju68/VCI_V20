@@ -1,0 +1,11 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_StatusPos : STRUCT
+        { S7_MLC := "MLC_4bc" }
+        Mover_PosOk : Bool;
+        { S7_MLC := "MLC_pG" }
+        Mover_Moved : Bool;
+        { S7_MLC := "MLC_39Q" }
+        Mover_ManExe : Bool;
+    END_STRUCT;
+END_TYPE

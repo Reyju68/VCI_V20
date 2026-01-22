@@ -1,0 +1,87 @@
+﻿MultiLingualTexts:
+  - id: MLC_fu
+    en-US: Command to control negative threshold for alarm acknowledgement
+  - id: MLC_5AF
+    en-US: Command to reset the statistic informations
+  - id: MLC_ip
+    en-US: Command to set parts as bad and update informations
+  - id: MLC_g5
+    en-US: Command to reset the nest informations
+  - id: MLC_49R
+    en-US: Command to update good part counter
+  - id: MLC_4tH
+    en-US: Configurable instruction to define the current station ID (that is processing on current nest)
+  - id: MLC_ey
+    en-US: Configurable instruction to define the current SubAssembly (0 = Main Nest)
+  - id: MLC_3fx
+    en-US: Confuguration instuction to define the specific Fail Code of the station
+  - id: MLC_53z
+    en-US: Configurable instruction to define the maximun of part fail before update alarm status consecutif fail (0 means consecutif alarm is Off)
+  - id: MLC_3Ch
+    en-US: Status to inform about last station ID having a successful process on current nest
+  - id: MLC_4rz
+    en-US: Status to inform about current Nest ID
+  - id: MLC_3eZ
+    en-US: Status to inform about current Nest Number on the WPH
+  - id: MLC_3yJ
+    en-US: Status to inform track ID who fail the part
+  - id: MLC_u8
+    en-US: Status to inform about current Part ID
+  - id: MLC_3WM
+    en-US: Status to inform about last station ID having a failed process on current nest
+  - id: MLC_4MT
+    en-US: Status to inform what type of failure occured on current nest
+  - id: MLC_4sB
+    en-US: Status to inform the operation processed on the nest (bit 1 for operation 1)
+  - id: MLC_376
+    en-US: Status to inform if current nest has not been processed in PRODUCING mode
+  - id: MLC_34z
+    en-US: Status to inform if current nest is enable or disable
+  - id: MLC_3iE
+    en-US: Status to inform if current process is successful or not
+  - id: MLC_56K
+    en-US: Status to inform if current process has failed or not
+  - id: MLC_4BV
+    en-US: Status to inform if current nest is loaded or empty
+  - id: MLC_4Qe
+    en-US: Status to inform if process is available on current nest
+  - id: MLC_3LS
+    en-US: Status to inform which elements are loaded or empty on the current nest (in case of more that one element by nest)
+  - id: MLC_4kp
+    en-US: Status to inform which elements are bad on the current nest (in case of more that one element by nest)
+  - id: MLC_fw
+    en-US: Status to inform than a audit is requested on the current nest - (Not used in the bloc, but used externaly)
+  - id: MLC_xC
+    en-US: Status to inform if consecutive bad parts maximum is reached or not
+  - id: MLC_3at
+    en-US: Status to inform if the nest is unused (Fail before the machine)
+  - id: MLC_3ME
+    en-US: Status to inform NestID who fail the part
+  - id: MLC_QL
+    en-US: Status to inform about current Nest ID (0 = Main Nest)
+  - id: MLC_4Gb
+    en-US: Status to inform track ID who fail the part
+  - id: MLC_eE
+    en-US: Status to inform WPH ID who fail the part
+  - id: MLC_zE
+    en-US: Reporting Total parts counter since last clear
+  - id: MLC_3YZ
+    en-US: Reporting Good parts counter since last clear
+  - id: MLC_3Bq
+    en-US: Reporting Bad parts counter since last clear
+  - id: MLC_n2
+    en-US: Reporting statistic information
+  - id: MLC_4FT
+    en-US: Reporting of the consecutive error number
+  - id: MLC_3X5
+    en-US: Reporting for custom data related to the part
+  - id: MLC_wB
+    en-US: User Reporting for custom data related to the part
+  - id: MLC_3Fj
+    en-US: User Reporting for custom data related to the part
+  - id: MLC_Ru
+    en-US: User Reporting for custom data related to the part
+  - id: MLC_cW
+    en-US: User Reporting for custom data related to the part
+  - id: MLC_4UC
+    en-US: User Reporting for custom data related to the part

@@ -1,0 +1,17 @@
+﻿MultiLingualTexts:
+  - id: MLC_4k8
+    en-US: Allows not in prod parts between machines  (IMA personnel use only)
+  - id: MLC_4ue
+    en-US: PalMo Test CHU - Circulating Trays without PHU
+  - id: MLC_4eg
+    en-US: PalMo Test PHU1 - Force Offload bad
+  - id: MLC_wf
+    en-US: PalMo Test PHU2 - Force Offload bad
+  - id: MLC_3JQ
+    en-US: PalMo Purge all conveyors IN
+  - id: MLC_ZJ
+    en-US: PalMo Purge all conveyors OUT
+  - id: MLC_3Kd
+    en-US: Put all stations in standalone mode (IMA personnel use only)
+  - id: MLC_mL
+    en-US: Mode Machine Clear

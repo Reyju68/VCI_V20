@@ -1,0 +1,7 @@
+﻿MultiLingualTexts:
+  - id: MLC_48d
+    en-US: Status of the Block or error identification when error occurred
+  - id: MLC_aR
+    en-US: Status or return value of called FB's, FCs and system blocks
+  - id: MLC_35X
+    en-US: State in the state machine of the block where the error occurred

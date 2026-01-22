@@ -1,0 +1,15 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_AxCoordinate_Trajectory : STRUCT
+        { S7_MLC := "MLC_3KE" }
+        Cfg_NbrOfPoints : DInt;
+        {
+            S7_MLC := "MLC_3iV";
+            S7_Setpoint := "False"
+        }
+        Point : Array[0..20] of _.Typ_AxCoordinate_Point := [
+            { S7_MLC := "MLC_4uN" }
+            ()
+        ];
+    END_STRUCT;
+END_TYPE

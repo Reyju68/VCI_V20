@@ -1,0 +1,27 @@
+﻿MultiLingualTexts:
+  - id: MLC_TK
+    en-US: Number of the station
+  - id: MLC_zb
+    en-US: Number of Operation on machine
+  - id: MLC_QL
+    en-US: Decimal Value of Station track Number
+  - id: MLC_457
+    en-US: Bitwise of WPH Used on the Station
+  - id: MLC_3Fk
+    en-US: Bitwise of Track Used on the Station
+  - id: MLC_4AQ
+    en-US: Bitwise of Track Disable on the Station
+  - id: MLC_4PY
+    en-US: Bitwise of Track Ignore Mode
+  - id: MLC_s4
+    en-US: Configuration Number of Position Used on Station
+  - id: MLC_56p
+    en-US: Number Value of Station XTS Position
+  - id: MLC_59f
+    en-US: Number Value of Next XTS Position
+  - id: MLC_4ew
+    en-US: Configuration Min Position To Update Status Zone Mover in Pos
+  - id: MLC_34A
+    en-US: Configuration Max Position To Update Status Zone Mover in Pos
+  - id: MLC_54p
+    en-US: Process Time on Mover

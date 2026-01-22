@@ -1,0 +1,13 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_PulsPower : STRUCT
+        { S7_MLC := "MLC_yR" }
+        AllChannelsOK : Bool;
+        { S7_MLC := "MLC_YH" }
+        TotalCurrent : Real;
+        { S7_MLC := "MLC_z9" }
+        OutputVoltage : Real;
+        { S7_Setpoint := "False" }
+        Ch : Array[0..4] of _.Typ_PulsChannel;
+    END_STRUCT;
+END_TYPE

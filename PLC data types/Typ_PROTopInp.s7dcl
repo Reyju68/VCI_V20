@@ -1,0 +1,6 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_PROTopInp : STRUCT
+        Inp : Array[0..7] of Byte;
+    END_STRUCT;
+END_TYPE

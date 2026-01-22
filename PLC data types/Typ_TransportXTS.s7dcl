@@ -1,0 +1,13 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_TransportXTS : STRUCT
+        Cmd_Enable_XTS : Bool;
+        Sts_XTS_Enabled : Bool;
+        Sts_MoverIdle : Bool;
+        Sts_XTS_Running : Bool;
+        Cmd_RqstResetFctMover : SInt;
+        Mover_MD_Number : Array[1.._.Cfg_XTS_NbrMaxMover] of Int;
+        Cfg_MoverEnable : Array[1.._.Cfg_XTS_NbrMaxMover] of Bool;
+        Cfg_NbrMoverOnLoop : Int;
+    END_STRUCT;
+END_TYPE

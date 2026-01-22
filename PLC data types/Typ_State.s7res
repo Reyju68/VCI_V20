@@ -1,0 +1,7 @@
+﻿MultiLingualTexts:
+  - id: MLC_3Ff
+    en-US: Time stamp RTC (Real time Clock)
+  - id: MLC_3Kx
+    en-US: Negatif for machine number, possitif for station number
+  - id: MLC_39K
+    en-US: Aborting=1,Aborted = 2, Stopping = 3, Stopped = 4,Reseting=5,Idle = 6, Starting = 7, Execute= 8, Holding = 9, Held = 10, Suspending= 11, Suspended= 12

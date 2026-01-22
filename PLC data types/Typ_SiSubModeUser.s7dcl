@@ -1,0 +1,21 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_SiSubModeUser : STRUCT
+        { S7_MLC := "MLC_4k8" }
+        IMA : Bool;
+        { S7_MLC := "MLC_4ue" }
+        TestCHU : Bool;
+        { S7_MLC := "MLC_4eg" }
+        TestPHU1 : Bool;
+        { S7_MLC := "MLC_wf" }
+        TestPHU2 : Bool;
+        { S7_MLC := "MLC_3JQ" }
+        PurgeIN : Bool;
+        { S7_MLC := "MLC_ZJ" }
+        PurgeOUT : Bool;
+        { S7_MLC := "MLC_3Kd" }
+        Standalone : Bool;
+        { S7_MLC := "MLC_mL" }
+        Clear : Bool;
+    END_STRUCT;
+END_TYPE

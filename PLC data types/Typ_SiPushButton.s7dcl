@@ -1,0 +1,29 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_SiPushButton : STRUCT
+        { S7_MLC := "MLC_4hE" }
+        Start : Bool;
+        { S7_MLC := "MLC_4P4" }
+        Start_RE : Bool;
+        { S7_MLC := "MLC_WJ" }
+        Start_FE : Bool;
+        { S7_MLC := "MLC_nw" }
+        Stop : Bool;
+        { S7_MLC := "MLC_3sQ" }
+        Stop_RE : Bool;
+        { S7_MLC := "MLC_3yJ" }
+        Stop_FE : Bool;
+        { S7_MLC := "MLC_4JF" }
+        Reset : Bool;
+        { S7_MLC := "MLC_y8" }
+        Reset_RE : Bool;
+        { S7_MLC := "MLC_3iX" }
+        Reset_FE : Bool;
+        { S7_MLC := "MLC_4tf" }
+        Jog : Bool;
+        { S7_MLC := "MLC_y4" }
+        Jog_RE : Bool;
+        { S7_MLC := "MLC_4X7" }
+        Jog_FE : Bool;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,9 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_WPH : STRUCT
+        { S7_Setpoint := "False" }
+        Nest : Array[0..4] of _.Typ_Nest;
+        { S7_Setpoint := "True" }
+        Sts_MoverID : DInt;
+    END_STRUCT;
+END_TYPE

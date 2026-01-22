@@ -1,0 +1,11 @@
+﻿MultiLingualTexts:
+  - id: MLC_3mX
+    en-US: Low limit for the cam value
+  - id: MLC_4Z3
+    en-US: High limit for the cam value
+  - id: MLC_47X
+    en-US: Anticipation
+  - id: MLC_4CH
+    en-US: Cam Configuration
+  - id: MLC_3G4
+    en-US: Cam value

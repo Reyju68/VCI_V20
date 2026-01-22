@@ -1,0 +1,99 @@
+﻿MultiLingualTexts:
+  - id: MLC_3n2
+    en-US: Acquisition Status
+  - id: MLC_3pH
+    en-US: Trigger is Ready
+  - id: MLC_4TP
+    en-US: Trigger is Acknowledge
+  - id: MLC_54q
+    en-US: Acquiring
+  - id: MLC_43M
+    en-US: Missed Acquiring
+  - id: MLC_4Y7
+    en-US: Offline Reason bit0
+  - id: MLC_4MR
+    en-US: Offline Reason bit1
+  - id: MLC_4sZ
+    en-US: Offline Reason bit3
+  - id: MLC_WM
+    en-US: Module Online
+  - id: MLC_34x
+    en-US: Acquisition ID Byte 0
+  - id: MLC_428
+    en-US: Acquisition ID Byte 1
+  - id: MLC_4nC
+    en-US: Inspection Status
+  - id: MLC_4Fn
+    en-US: Inspecting
+  - id: MLC_Uh
+    en-US: Inspection Completed
+  - id: MLC_3Xe
+    en-US: Results Buffer Over run
+  - id: MLC_WV
+    en-US: Results Valid
+  - id: MLC_459
+    en-US: Job Loading
+  - id: MLC_3HU
+    en-US: Job Load Complete
+  - id: MLC_4sA
+    en-US: Job Load Failed
+  - id: MLC_44Z
+    en-US: Reserved
+  - id: MLC_57J
+    en-US: Reserved
+  - id: MLC_4kA
+    en-US: Reserved
+  - id: MLC_St
+    en-US: Reserved
+  - id: MLC_45P
+    en-US: Reserved
+  - id: MLC_4Ae
+    en-US: Reserved
+  - id: MLC_322
+    en-US: Reserved
+  - id: MLC_4SL
+    en-US: Reserved
+  - id: MLC_eU
+    en-US: Reserved
+  - id: MLC_4Aj
+    en-US: Job Control
+  - id: MLC_3m2
+    en-US: Job ID
+  - id: MLC_ij
+    en-US: Inspection Results
+  - id: MLC_mi
+    en-US: Inspection ID
+  - id: MLC_4Vz
+    en-US: Inspection Result Code
+  - id: MLC_QC
+    en-US: Inspection Results DWORD 0
+  - id: MLC_3pe
+    en-US: Inspection Results DWORD 1
+  - id: MLC_52W
+    en-US: Inspection Results DWORD 2
+  - id: MLC_3tC
+    en-US: Inspection Results DWORD 3
+  - id: MLC_3BG
+    en-US: Inspection Results DWORD 4
+  - id: MLC_4mU
+    en-US: Inspection Results DWORD 5
+  - id: MLC_4A5
+    en-US: Inspection Results DWORD 6
+  - id: MLC_a4
+    en-US: Inspection Results DWORD 7
+  - id: MLC_39G
+    en-US: Inspection Results DWORD 8
+  - id: MLC_wv
+    en-US: Inspection Results DWORD 9
+  - id: MLC_uK
+    en-US: Inspection Results DWORD 10
+  - id: MLC_3yW
+    en-US: Inspection Results DWORD 11
+  - id: MLC_4Nm
+    en-US: Inspection Results DWORD 12
+  - id: MLC_3HA
+    en-US: Inspection Results DWORD 13
+  - id: MLC_4ee
+    en-US: Inspection Results DWORD 14
+  - id: MLC_3rJ
+    en-US: Inspection Results DWORD 15

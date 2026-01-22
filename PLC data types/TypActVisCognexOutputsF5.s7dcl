@@ -1,0 +1,69 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    TypActVisCognexOutputsF5 : STRUCT
+        { S7_MLC := "MLC_3Sa" }
+        AcquisitionControl : STRUCT
+            { S7_MLC := "MLC_35L" }
+            TriggerEnable : Bool;
+            { S7_MLC := "MLC_48p" }
+            Trigger : Bool;
+            { S7_MLC := "MLC_5AW" }
+            NotUsed2 : Bool;
+            { S7_MLC := "MLC_5AC" }
+            NotUsed3 : Bool;
+            { S7_MLC := "MLC_4cZ" }
+            NotUsed4 : Bool;
+            { S7_MLC := "MLC_4EQ" }
+            NotUsed5 : Bool;
+            { S7_MLC := "MLC_3gG" }
+            NotUsed6 : Bool;
+            { S7_MLC := "MLC_hs" }
+            ForceOffline : Bool;
+        END_STRUCT;
+        { S7_MLC := "MLC_3E3" }
+        InspectionControl : STRUCT
+            { S7_MLC := "MLC_3MC" }
+            ResultsBufferEnable : Bool;
+            { S7_MLC := "MLC_Rd" }
+            InspectionResultsAck : Bool;
+            { S7_MLC := "MLC_42p" }
+            NotUsed2 : Bool;
+            { S7_MLC := "MLC_33f" }
+            ExecuteCommand : Bool;
+            { S7_MLC := "MLC_3vt" }
+            NotUsed4 : Bool;
+            { S7_MLC := "MLC_e6" }
+            NotUsed5 : Bool;
+            { S7_MLC := "MLC_3YF" }
+            NotUsed6 : Bool;
+            { S7_MLC := "MLC_c4" }
+            NotUsed7 : Bool;
+        END_STRUCT;
+        { S7_MLC := "MLC_4BU" }
+        JobControl : STRUCT
+            { S7_MLC := "MLC_3rc" }
+            JobID : UInt;
+        END_STRUCT;
+        { S7_MLC := "MLC_3hh" }
+        SoftEventControl : STRUCT
+            { S7_MLC := "MLC_3pr" }
+            SoftEvent0 : Bool;
+            { S7_MLC := "MLC_3Dj" }
+            SoftEvent1 : Bool;
+            { S7_MLC := "MLC_3gY" }
+            SoftEvent2 : Bool;
+            { S7_MLC := "MLC_33w" }
+            SoftEvent3 : Bool;
+            { S7_MLC := "MLC_3nN" }
+            SoftEvent4 : Bool;
+            { S7_MLC := "MLC_4Hu" }
+            SoftEvent5 : Bool;
+            { S7_MLC := "MLC_497" }
+            SoftEvent6 : Bool;
+            { S7_MLC := "MLC_4j8" }
+            SoftEvent7 : Bool;
+        END_STRUCT;
+        { S7_MLC := "MLC_Qi" }
+        UserData : Array[0..15] of DInt;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,10 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_Out : STRUCT
+        bEnable : Bool;
+        bErrorAck : Bool;
+        bTriggerReset : Bool;
+        { S7_Setpoint := "False" }
+        Mover : Array[1.._.Cfg_XTS_NbrMaxMover] of _.Typ_XTS_Out_Mover;
+    END_STRUCT;
+END_TYPE

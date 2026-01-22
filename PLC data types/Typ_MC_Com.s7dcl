@@ -1,0 +1,8 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_MC_Com : STRUCT
+        Mover_MD_Number : Array[1.._.Cfg_XTS_NbrMaxMover] of Int;
+        Cfg_NbrMoverOnLoop : Int;
+        HeartBeat : Int;
+    END_STRUCT;
+END_TYPE

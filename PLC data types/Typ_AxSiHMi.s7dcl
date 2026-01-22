@@ -1,0 +1,23 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_AxSiHMi : STRUCT
+        { S7_MLC := "MLC_3LN" }
+        Cfg_IncrementalPos : Real;
+        { S7_MLC := "MLC_3NC" }
+        Sts_HomingOffset : DInt;
+        { S7_MLC := "MLC_4PK" }
+        Cmd_SafeJogDirection : DInt;
+        { S7_MLC := "MLC_4AN" }
+        Cmd_SafeJogMove : Bool;
+        { S7_MLC := "MLC_Qs" }
+        Cmd_Home : Bool;
+        { S7_MLC := "MLC_3vA" }
+        Cmd_ReleaseBrake : Bool;
+        { S7_MLC := "MLC_rN" }
+        Cmd_EngageBrake : Bool;
+        { S7_MLC := "MLC_tm" }
+        Cmd_IncForward : Bool;
+        { S7_MLC := "MLC_4xq" }
+        Cmd_IncBackward : Bool;
+    END_STRUCT;
+END_TYPE

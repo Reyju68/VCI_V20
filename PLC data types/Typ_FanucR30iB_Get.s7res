@@ -1,0 +1,117 @@
+﻿MultiLingualTexts:
+  - id: MLC_4He
+    en-US: Command Enable
+  - id: MLC_3Xz
+    en-US: System ready
+  - id: MLC_3hE
+    en-US: Programe Run
+  - id: MLC_Mt
+    en-US: Program Paused
+  - id: MLC_3Jc
+    en-US: Hold SOP
+  - id: MLC_4Ka
+    en-US: Fault
+  - id: MLC_3Tn
+    en-US: Perch
+  - id: MLC_3v9
+    en-US: Teach Pendant Enable
+  - id: MLC_kF
+    en-US: Battery Alarm
+  - id: MLC_4eD
+    en-US: Busy
+  - id: MLC_vd
+    en-US: SNO.0
+  - id: MLC_p3
+    en-US: SNO.1
+  - id: MLC_4ZG
+    en-US: SNO.2
+  - id: MLC_4jU
+    en-US: SNO.3
+  - id: MLC_3VC
+    en-US: SNO.4
+  - id: MLC_cD
+    en-US: SNO.5
+  - id: MLC_3hx
+    en-US: SNO.6
+  - id: MLC_Tz
+    en-US: SNO.7
+  - id: MLC_jT
+    en-US: Check Echo
+  - id: MLC_4BK
+    en-US: Reserved UOP
+  - id: MLC_3Dx
+    en-US: Synchro Robot PLC
+  - id: MLC_4pY
+    en-US: Reset Done (Only  Used With Cfg_ProgRunRst)
+  - id: MLC_3Er
+    en-US: Execute Done (Only  Used With Cfg_ProgRunExec)
+  - id: MLC_49N
+    en-US: Robot in a secure Position
+  - id: MLC_4iF
+    en-US: Robot In Home
+  - id: MLC_3Dt
+    en-US: _113_ArmNotOvrl1
+  - id: MLC_4MQ
+    en-US: _213_ArmNotOvrl2
+  - id: MLC_33u
+    en-US: DO8 Robot
+  - id: MLC_3up
+    en-US: DO9 Robot
+  - id: MLC_k5
+    en-US: DO10 Robot
+  - id: MLC_3Kt
+    en-US: DO11 Robot
+  - id: MLC_3ti
+    en-US: DO12 Robot
+  - id: MLC_4xS
+    en-US: User Alarm
+  - id: MLC_wf
+    en-US: User Alarm 2
+  - id: MLC_4ka
+    en-US: Echo Program Request by Robot
+  - id: MLC_59C
+    en-US: Spare Byte 2
+  - id: MLC_3xD
+    en-US: Spare Byte 3
+  - id: MLC_3JL
+    en-US: Spare Byte 4
+  - id: MLC_PR
+    en-US: Spare Byte 5
+  - id: MLC_Pa
+    en-US: Spare Byte 6
+  - id: MLC_32S
+    en-US: Spare Byte 7
+  - id: MLC_3gJ
+    en-US: Spare Byte 8
+  - id: MLC_3Um
+    en-US: Spare Byte 9
+  - id: MLC_3Ph
+    en-US: Spare Byte 10
+  - id: MLC_5Ah
+    en-US: Spare Byte 11
+  - id: MLC_4Uf
+    en-US: Spare Byte 12
+  - id: MLC_4Qq
+    en-US: Spare Byte 13
+  - id: MLC_528
+    en-US: Spare Byte 14
+  - id: MLC_wC
+    en-US: Spare Byte 15
+  - id: MLC_3tv
+    en-US: Spare Byte 16
+  - id: MLC_4id
+    en-US: Spare Byte 17
+  - id: MLC_4rK
+    en-US: Spare Byte 18
+  - id: MLC_3Ly
+    en-US: Spare Byte 19
+  - id: MLC_53s
+    en-US: Spare Byte 20
+  - id: MLC_46L
+    en-US: Spare Byte 21
+  - id: MLC_4ee
+    en-US: Spare Byte 22
+  - id: MLC_d2
+    en-US: Spare Byte 23
+  - id: MLC_4kQ
+    en-US: Spare Byte 24

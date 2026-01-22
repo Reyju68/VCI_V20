@@ -1,0 +1,19 @@
+﻿MultiLingualTexts:
+  - id: MLC_564
+    en-US: Drive in Warning
+  - id: MLC_3Yy
+    en-US: Drive in Error
+  - id: MLC_4gm
+    en-US: Drive ready for Power
+  - id: MLC_4JT
+    en-US: Drive Enabled
+  - id: MLC_4N3
+    en-US: Drive in Position
+  - id: MLC_3nC
+    en-US: S0-0084 Torque feedback value
+  - id: MLC_XD
+    en-US: S-0-0040 Velocity feedback value
+  - id: MLC_3tf
+    en-US: Diagnostic number
+  - id: MLC_4fC
+    en-US: Data input

@@ -1,0 +1,23 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    LIOLink_typeDiagnostics : STRUCT
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_48d";
+            S7_Visibility := "Unlisted := External"
+        }
+        status : Word;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_aR";
+            S7_Visibility := "Unlisted := External"
+        }
+        subfunctionStatus : DWord;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_35X";
+            S7_Visibility := "Unlisted := External"
+        }
+        stateNumber : DInt;
+    END_STRUCT;
+END_TYPE

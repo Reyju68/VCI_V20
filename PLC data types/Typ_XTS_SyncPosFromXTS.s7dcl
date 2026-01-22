@@ -1,0 +1,7 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_SyncPosFromXTS : STRUCT
+        { S7_MLC := "MLC_3dR" }
+        Cmd_Cycle : Bool;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,17 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_Out_Mover : STRUCT
+        rTargetPosition : Real;
+        rTargetSpeed : SInt;
+        rAcc : SInt;
+        rDec : SInt;
+        bEnable : Bool;
+        bMotion : Bool;
+        bAck : Bool;
+        bGrpBothWay : Bool;
+        bStopMoving : Bool;
+        bPositive_Direction : Bool;
+        bGapBit0 : Bool;
+        bGapBit1 : Bool;
+    END_STRUCT;
+END_TYPE

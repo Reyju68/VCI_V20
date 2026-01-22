@@ -1,0 +1,115 @@
+﻿MultiLingualTexts:
+  - id: MLC_36F
+    en-US: Machine Configuration
+  - id: MLC_59K
+    en-US: Main Manager Prog
+  - id: MLC_PN
+    en-US: Current Time Stamp
+  - id: MLC_54g
+    en-US: Command State
+  - id: MLC_Rz
+    en-US: Current State
+  - id: MLC_3nB
+    en-US: Status State Aborting
+  - id: MLC_49G
+    en-US: Status State Aborted
+  - id: MLC_4Gz
+    en-US: Status State Stopping
+  - id: MLC_sN
+    en-US: Status State Stopped
+  - id: MLC_3Kf
+    en-US: Status State Reseting
+  - id: MLC_4jy
+    en-US: Status State Idle
+  - id: MLC_4BK
+    en-US: Status State Starting
+  - id: MLC_4Wh
+    en-US: Status State Execute
+  - id: MLC_54B
+    en-US: Status State Holding
+  - id: MLC_XT
+    en-US: Status State Held
+  - id: MLC_3p6
+    en-US: Status State Suspending
+  - id: MLC_4f7
+    en-US: Status State Suspended
+  - id: MLC_Nk
+    en-US: Current Mode
+  - id: MLC_PF
+    en-US: Current Mode
+  - id: MLC_3Xd
+    en-US: Current SubMode
+  - id: MLC_3Gw
+    en-US: Current SubMode
+  - id: MLC_34Z
+    en-US: Current SubMode User (specific project)
+  - id: MLC_ZG
+    en-US: Current SubMode User (specific project)
+  - id: MLC_36V
+    en-US: Falling Edge of Dry Cycle SubMode
+  - id: MLC_55y
+    en-US: Mode Slow Speed
+  - id: MLC_4VC
+    en-US: Status Slow Speed
+  - id: MLC_4hM
+    en-US: Stations Alarms
+  - id: MLC_526
+    en-US: Global Holded state by Stations
+  - id: MLC_4sV
+    en-US: Global Suspended state by Stations
+  - id: MLC_339
+    en-US: Reset Command
+  - id: MLC_4ym
+    en-US: Update Machine Good Parts Counter
+  - id: MLC_4zQ
+    en-US: Update Machine Bad Parts Counter
+  - id: MLC_4kx
+    en-US: Update Machine Audit Parts Counter
+  - id: MLC_3ZV
+    en-US: Enable All Tracks
+  - id: MLC_46y
+    en-US: Disable All Tracks
+  - id: MLC_33f
+    en-US: Alarms Statistics Clear Command
+  - id: MLC_Um
+    en-US: Alarms Statistics Down Time Enable
+  - id: MLC_38z
+    en-US: Alarms Statistics Wait Time Enable
+  - id: MLC_3ZB
+    en-US: Enable the Update of Predictive Maintenance Data
+  - id: MLC_55h
+    en-US: Actuator Statistics Clear Command
+  - id: MLC_5A3
+    en-US: Batch Statistics Clear Command
+  - id: MLC_3Hh
+    en-US: Cmd Stop State Reset
+  - id: MLC_TJ
+    en-US: Cmd Immediate Stop Alarm
+  - id: MLC_3fA
+    en-US: Status Machine Empty
+  - id: MLC_q9
+    en-US: Second Pulse Status
+  - id: MLC_4Ej
+    en-US: Safety HR1
+  - id: MLC_Za
+    en-US: Safety HR2
+  - id: MLC_33S
+    en-US: Safety HR3
+  - id: MLC_4TU
+    en-US: HR1 Pressure On
+  - id: MLC_wL
+    en-US: HR2 Pressure On
+  - id: MLC_du
+    en-US: HR3 Pressure On
+  - id: MLC_ix
+    en-US: Safety Guard Active
+  - id: MLC_3kt
+    en-US: Safety Guard Override
+  - id: MLC_sa
+    en-US: Safety Mode IMA selected
+  - id: MLC_3Bc
+    en-US: Safety Mode GO selected
+  - id: MLC_MY
+    en-US: Status Push Button
+  - id: MLC_4tv
+    en-US: User Tags

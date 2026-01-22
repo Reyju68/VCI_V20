@@ -1,0 +1,7 @@
+﻿MultiLingualTexts:
+  - id: MLC_3KE
+    en-US: Number of Points of the Trajectory
+  - id: MLC_3iV
+    en-US: Point [1 to 10] configuration
+  - id: MLC_4uN
+    en-US: Reserved. Leave the parameters of this point empty!

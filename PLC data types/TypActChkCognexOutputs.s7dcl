@@ -1,0 +1,39 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    TypActChkCognexOutputs : STRUCT
+        AcquisitionControl : STRUCT
+            TriggerEnable : Bool;
+            Trigger : Bool;
+            ClrExposureComplete : Bool;
+            NotUsed3 : Bool;
+            NotUsed4 : Bool;
+            NotUsed5 : Bool;
+            NotUsed6 : Bool;
+            SetOffline : Bool;
+        END_STRUCT;
+        InspectionControl : STRUCT
+            ResultsBufferEnable : Bool;
+            InspectionResultsAck : Bool;
+            SetUserData : Bool;
+            ExecuteCmd : Bool;
+            NotUsed4 : Bool;
+            NotUsed5 : Bool;
+            NotUsed6 : Bool;
+            ClrError : Bool;
+        END_STRUCT;
+        CmdControl : STRUCT
+            CurrentJobID : Word;
+        END_STRUCT;
+        SoftEventControl : STRUCT
+            SoftEvent0 : Bool;
+            SoftEvent1 : Bool;
+            SoftEvent2 : Bool;
+            SoftEvent3 : Bool;
+            SoftEvent4 : Bool;
+            SoftEvent5 : Bool;
+            SoftEvent6 : Bool;
+            SoftEvent7 : Bool;
+        END_STRUCT;
+        UserData : Array[0..15] of DInt;
+    END_STRUCT;
+END_TYPE

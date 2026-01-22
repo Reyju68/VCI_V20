@@ -1,0 +1,69 @@
+﻿MultiLingualTexts:
+  - id: MLC_tr
+    en-US: Command to Reset Station Fault
+  - id: MLC_3is
+    en-US: Configuration to Enable Dry
+  - id: MLC_3JU
+    en-US: Configuration to Enable Dry IMA
+  - id: MLC_We
+    en-US: Command to Execute Station Cycle
+  - id: MLC_nh
+    en-US: Configuration to Execute Station Cycle Continuously
+  - id: MLC_3tZ
+    en-US: Configuration to Execute Station Cycle In Slow Speed
+  - id: MLC_53H
+    en-US: Configuration to Execute Specific Station Cycle
+  - id: MLC_4Gj
+    en-US: Station and all sub object are in idle
+  - id: MLC_4t5
+    en-US: Station no alarms
+  - id: MLC_3p4
+    en-US: Station is ready for next cycle
+  - id: MLC_vd
+    en-US: Station has completed the cycle
+  - id: MLC_4ft
+    en-US: Station Reset 1 Done
+  - id: MLC_3sU
+    en-US: Manual execute from HMI was done
+  - id: MLC_nr
+    en-US: Station is slow
+  - id: MLC_4WW
+    en-US: Zone Free After Station
+  - id: MLC_3M3
+    en-US: No Mover In The Station
+  - id: MLC_kf
+    en-US: All Movers Inside The Station In Position
+  - id: MLC_36g
+    en-US: Memo Start Feeding
+  - id: MLC_X5
+    en-US: Station is secured
+  - id: MLC_ZF
+    en-US: Limp Track (Mover) Automatic
+  - id: MLC_57Q
+    en-US: Limp Track (Mover) Manual
+  - id: MLC_3Ax
+    en-US: Mover Requested
+  - id: MLC_4kG
+    en-US: Station Feeding Request
+  - id: MLC_3FA
+    en-US: Feeding Mover Allowed
+  - id: MLC_3un
+    en-US: Memo Start Station Cycle
+  - id: MLC_5CU
+    en-US: Memo Status Mover Moved
+  - id: MLC_4N7
+    en-US: Status Mover Position Ok
+  - id: MLC_3wK
+    en-US: Status Manual Function Executed
+  - id: MLC_4ui
+    en-US: Status Mover in Zone Ok
+  - id: MLC_4vX
+    en-US: Status Previous WPH ID
+  - id: MLC_ZN
+    en-US: Status WPH ID
+  - id: MLC_4kU
+    en-US: Status Work Done On Zone
+  - id: MLC_uD
+    en-US: Command Go to Position Index allowed
+  - id: MLC_3H5
+    en-US: Timer Without Mover Simulation

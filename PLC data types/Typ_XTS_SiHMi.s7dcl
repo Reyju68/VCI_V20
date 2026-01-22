@@ -1,0 +1,17 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_SiHMi : STRUCT
+        { S7_MLC := "MLC_R7" }
+        N_MoversDetected : DInt;
+        { S7_MLC := "MLC_3dE" }
+        eStateXtsModel : DInt;
+        { S7_MLC := "MLC_3A3" }
+        Sts_StateInfeed : DInt;
+        { S7_MLC := "MLC_33X" }
+        Cmd_RebootPLC : Bool;
+        { S7_MLC := "MLC_3cG" }
+        Sts_Ready : Bool;
+        { S7_MLC := "MLC_3Vc" }
+        Sts_Error : Bool;
+    END_STRUCT;
+END_TYPE

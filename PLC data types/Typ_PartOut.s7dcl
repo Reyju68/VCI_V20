@@ -1,0 +1,14 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_PartOut : STRUCT
+        TimeStamp : LInt;
+        UID : String[20];
+        PartStatus : SInt;
+        SubAssembly : SInt;
+        FailStationID : Int;
+        FailTrackID : Int;
+        FailCodeID : Int;
+        FailWPHID : Int;
+        FailNestID : Int;
+    END_STRUCT;
+END_TYPE

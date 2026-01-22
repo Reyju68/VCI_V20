@@ -1,0 +1,15 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_To_Mch : STRUCT
+        Sts_CycleResetFctMover : SInt;
+        Cmd_RqstResetFctMover : SInt;
+        Sts_CycleAbortMover : Bool;
+        Sts_CycleResetMover : Bool;
+        Sts_MoverStateIdle : Bool;
+        Sts_MoverAlarmL1 : Bool;
+        Sts_MoverAlarmL2 : Bool;
+        Sts_XTS_Enabled : Bool;
+        Sts_XTS_Running : Bool;
+        Sts_XTS_Error : Bool;
+    END_STRUCT;
+END_TYPE

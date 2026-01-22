@@ -1,0 +1,13 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_SiMode : STRUCT
+        { S7_MLC := "MLC_4MP" }
+        Prod : Bool;
+        { S7_MLC := "MLC_4CM" }
+        Maint : Bool;
+        { S7_MLC := "MLC_3Mq" }
+        Manu : Bool;
+        { S7_MLC := "MLC_5AT" }
+        Local : Bool;
+    END_STRUCT;
+END_TYPE

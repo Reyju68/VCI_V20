@@ -1,0 +1,33 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_StationAlms : STRUCT
+        { S7_MLC := "MLC_aD" }
+        Rep_TmrStsDown : DInt;
+        { S7_MLC := "MLC_4pm" }
+        Rep_TmrStsWait : DInt;
+        { S7_MLC := "MLC_WU" }
+        Rep_TmrStsAbort : DInt;
+        { S7_MLC := "MLC_4Es" }
+        Rep_TmrStsStop : DInt;
+        { S7_MLC := "MLC_3cW" }
+        Rep_TmrStsIdle : DInt;
+        { S7_MLC := "MLC_39K" }
+        Rep_TmrStsHold : DInt;
+        { S7_MLC := "MLC_4uX" }
+        Rep_TmrStsSusp : DInt;
+        { S7_MLC := "MLC_nh" }
+        Rep_CtrStsDown : DInt;
+        { S7_MLC := "MLC_4fB" }
+        Rep_CtrStsWait : DInt;
+        { S7_MLC := "MLC_4pP" }
+        Rep_CtrStsAbort : DInt;
+        { S7_MLC := "MLC_3zJ" }
+        Rep_CtrStsStop : DInt;
+        { S7_MLC := "MLC_4hT" }
+        Rep_CtrStsIdle : DInt;
+        { S7_MLC := "MLC_4RK" }
+        Rep_CtrStsHold : DInt;
+        { S7_MLC := "MLC_33q" }
+        Rep_CtrStsSusp : DInt;
+    END_STRUCT;
+END_TYPE

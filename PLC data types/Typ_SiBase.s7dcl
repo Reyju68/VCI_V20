@@ -1,0 +1,34 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_SiBase : STRUCT
+        { S7_Setpoint := "False" }
+        Cfg : _.Typ_SiCfgBase;
+        { S7_Setpoint := "True" }
+        Cfg_RejectCause : DInt;
+        { S7_Setpoint := "True" }
+        Cmd_ImAbort : Bool;
+        { S7_Setpoint := "True" }
+        Cmd_Abort : Bool;
+        { S7_Setpoint := "True" }
+        Cmd_Stop : Bool;
+        { S7_Setpoint := "True" }
+        Cmd_Reset1 : Bool;
+        { S7_Setpoint := "True" }
+        Cmd_Reset2 : Bool;
+        Cmd_ResetTransport : Bool;
+        Sts_TransportRstDone : Bool;
+        Cmd_Exec : Bool;
+        Sts_AllStationsIdle : Bool;
+        Sts_AllStationsNoAlm : Bool;
+        Sts_AllStationsReady : Bool;
+        Sts_AllStationsSecu : Bool;
+        Sts_AllStationsWorked : Bool;
+        Sts_AllStationsPending : Bool;
+        Sts_StationIdle : Array[0..63] of Bool;
+        Sts_StationNoAlm : Array[0..63] of Bool;
+        Sts_StationReady : Array[0..63] of Bool;
+        Sts_StationSecu : Array[0..63] of Bool;
+        Sts_StationWorked : Array[0..63] of Bool;
+        Sts_StationPending : Array[0..63] of Bool;
+    END_STRUCT;
+END_TYPE

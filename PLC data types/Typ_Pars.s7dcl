@@ -1,0 +1,11 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_Pars : STRUCT
+        { S7_MLC := "MLC_3KA" }
+        Lim_MIn : DInt;
+        { S7_MLC := "MLC_4i5" }
+        Lim_Max : DInt;
+        { S7_MLC := "MLC_3UH" }
+        Value : DInt;
+    END_STRUCT;
+END_TYPE

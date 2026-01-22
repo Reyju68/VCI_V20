@@ -1,0 +1,9 @@
+﻿MultiLingualTexts:
+  - id: MLC_4fQ
+    en-US: Machine Ideal Time
+  - id: MLC_4v8
+    en-US: Maximun Waiting Time
+  - id: MLC_4r6
+    en-US: Configuration HMi without remote ACK
+  - id: MLC_j9
+    en-US: Pressure Unit (0=Bar, 1=Psi)

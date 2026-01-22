@@ -1,0 +1,15 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_SiCfgBase : STRUCT
+        MachineNbr : DInt;
+        IdealPartRate : DInt;
+        FirstSt_Nbr : DInt;
+        LastSt_Nbr : DInt;
+        NbrOfWPH : DInt;
+        NbrOfNest : DInt;
+        MaxTrackNbr : DInt;
+        OperationRequired : Array[0..63] of Bool;
+        TransportSynchro : Bool;
+        AllStHoldSuspend : Bool;
+    END_STRUCT;
+END_TYPE

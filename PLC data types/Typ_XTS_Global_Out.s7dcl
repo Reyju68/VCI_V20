@@ -1,0 +1,26 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_Global_Out : STRUCT
+        { S7_MLC := "MLC_3vP" }
+        F_MOVER_GAP0 : Real;
+        { S7_MLC := "MLC_3ae" }
+        F_MOVER_GAP1 : Real;
+        { S7_MLC := "MLC_4Uy" }
+        F_MOVER_GAP2 : Real;
+        { S7_MLC := "MLC_3CP" }
+        F_MOVER_GAP3 : Real;
+        { S7_MLC := "MLC_4cy" }
+        Cmd_RebootPLC : Bool;
+        Vision : Array[0..9] of _.Typ_XTS_ParVision;
+        { S7_Setpoint := "True" }
+        FirstPosAfterReset : Real;
+        { S7_MLC := "MLC_399" }
+        Sts_XTS_SlowSpeed : Bool;
+        { S7_MLC := "MLC_4F6" }
+        Cfg_XTS_SlowSpeed : Real;
+        { S7_MLC := "MLC_4L3" }
+        Cfg_Ctrl_XTS_SlowSpeed : Real;
+        { S7_MLC := "MLC_46T" }
+        Cmd_RstLub_Counter : Bool;
+    END_STRUCT;
+END_TYPE

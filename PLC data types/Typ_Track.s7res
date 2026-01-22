@@ -1,0 +1,47 @@
+﻿MultiLingualTexts:
+  - id: MLC_4aa
+    en-US: Reject Cause Number that set part as bad
+  - id: MLC_3xd
+    en-US: Command to clear last cycle status informations
+  - id: MLC_kn
+    en-US: Command to reset the statistic informations
+  - id: MLC_4P7
+    en-US: Command to set Cycle Status as Bad
+  - id: MLC_4fG
+    en-US: Command to set Cycle Status as Good
+  - id: MLC_4Zk
+    en-US: Reporting Bad parts counter since last clear
+  - id: MLC_4Zq
+    en-US: Reporting Fail Code Counter 1
+  - id: MLC_3fR
+    en-US: Reporting Fail Code Counter 2
+  - id: MLC_55b
+    en-US: Reporting Fail Code Counter 3
+  - id: MLC_4hZ
+    en-US: Reporting Fail Code Counter 4
+  - id: MLC_4dz
+    en-US: Reporting Fail Code Counter 5
+  - id: MLC_4Nr
+    en-US: Reporting Fail Code Counter 6
+  - id: MLC_4Tj
+    en-US: Reporting Fail Code Counter 7
+  - id: MLC_nm
+    en-US: Reporting Fail Code Counter 8
+  - id: MLC_59y
+    en-US: Reporting Fail Code Counter 9
+  - id: MLC_4vT
+    en-US: Reporting Good parts counter since last clear
+  - id: MLC_4BA
+    en-US: Reporting Total parts counter since last clear
+  - id: MLC_PB
+    en-US: Reporting statistic information
+  - id: MLC_3nR
+    en-US: Status to inform if current process has failed
+  - id: MLC_4i3
+    en-US: Status to inform if current track is enable or disable
+  - id: MLC_3Qp
+    en-US: Status to inform if current process is successfull
+  - id: MLC_4Ya
+    en-US: Status to inform if current track is bypassing control result
+  - id: MLC_5A7
+    en-US: Status to inform (HMI) that the track is used

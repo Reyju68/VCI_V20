@@ -1,0 +1,23 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_SiSubMode : STRUCT
+        { S7_MLC := "MLC_4WH" }
+        Dry : Bool;
+        { S7_MLC := "MLC_3zf" }
+        Purge : Bool;
+        { S7_MLC := "MLC_4qd" }
+        "Single" : Bool;
+        { S7_MLC := "MLC_37r" }
+        LimpN : Bool;
+        { S7_MLC := "MLC_4fw" }
+        LimpT : Bool;
+        { S7_MLC := "MLC_Wq" }
+        NoPuckNoMover : Bool;
+        { S7_MLC := "MLC_4zM" }
+        JogProd : Bool;
+        { S7_MLC := "MLC_pd" }
+        LinePurge : Bool;
+        { S7_MLC := "MLC_PW" }
+        VisionRR : Bool;
+    END_STRUCT;
+END_TYPE

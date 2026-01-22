@@ -1,0 +1,7 @@
+﻿MultiLingualTexts:
+  - id: MLC_3KA
+    en-US: Low limit for the parameter value
+  - id: MLC_4i5
+    en-US: High limit for the parameter value
+  - id: MLC_3UH
+    en-US: Parameter value

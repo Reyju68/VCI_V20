@@ -1,0 +1,13 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_AxSafeJogMotion : STRUCT
+        { S7_MLC := "MLC_iZ" }
+        Velocity : LReal;
+        { S7_MLC := "MLC_3rg" }
+        AccelRate : LReal;
+        { S7_MLC := "MLC_3Uc" }
+        DecelRate : LReal;
+        { S7_MLC := "MLC_Ts" }
+        Jerk : LReal;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,9 @@
+﻿MultiLingualTexts:
+  - id: MLC_iZ
+    en-US: Speed (units per sec)
+  - id: MLC_3rg
+    en-US: Acceleration Rate (units per sec2)
+  - id: MLC_3Uc
+    en-US: Deceleration Rate (units per sec2)
+  - id: MLC_Ts
+    en-US: Jerk (%)

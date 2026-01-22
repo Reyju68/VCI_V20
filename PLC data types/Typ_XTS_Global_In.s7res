@@ -1,0 +1,11 @@
+﻿MultiLingualTexts:
+  - id: MLC_4qP
+    en-US: Configuration Lenght Rail
+  - id: MLC_4V5
+    en-US: Number Of Movers
+  - id: MLC_4ww
+    en-US: Number of Movers Detected
+  - id: MLC_4xg
+    en-US: State of Xts Model sequencer
+  - id: MLC_4Ui
+    en-US: XTS Slow Speed Mode Error

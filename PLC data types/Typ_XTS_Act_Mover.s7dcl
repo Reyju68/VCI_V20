@@ -1,0 +1,47 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_Act_Mover : STRUCT
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        "ID" : Array[1.._.Cfg_XTS_NbrMaxMover] of _.Typ_Act_XTS;
+        { S7_Setpoint := "False" }
+        Cfg_Pos : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_Config_Pos;
+        { S7_Setpoint := "True" }
+        Cfg_Index_ResetFctPLCLoop : DInt;
+        Cfg_Index_Value_ResetFct : DInt;
+        Par_TimeOut : DInt;
+        Cfg_LastPos : DInt;
+        Cfg_NbrOfMover : DInt;
+        Cfg_Scaling : Real;
+        Cfg_InPos : Real;
+        Cfg_IsMoved : Real;
+        Cfg_Recovery : Real;
+        Cfg_Speed_During_Reset : SInt;
+        Cfg_AccDec_During_Reset : SInt;
+        Cfg_LenghtRail : Real;
+        Cfg_Gap0 : Real;
+        Cfg_Gap1 : Real;
+        Cfg_Gap2 : Real;
+        Cfg_Gap3 : Real;
+        Cfg_NbrHMI : DInt;
+        Cfg_MoverID2_Follow_ID1 : Bool;
+        Cfg_Positive_Direction : Bool;
+        { S7_Setpoint := "False" }
+        Sts_Mover : Array[1.._.Cfg_XTS_NbrMaxMover] of _.Typ_XTS_StatusMover;
+        { S7_Setpoint := "True" }
+        Sts_MoverNb_Pos : Array[0.._.Cfg_XTS_NbrMaxPosition] of Int;
+        Index_Pos_Mover : Array[1.._.Cfg_XTS_NbrMaxMover] of DInt;
+        { S7_Setpoint := "False" }
+        Sync_PosToXTS : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_SyncPosToXTS;
+        Sync_PosFromXTS : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_SyncPosFromXTS;
+        { S7_Setpoint := "False" }
+        Sts_StatusPos : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_StatusPos;
+        { S7_Setpoint := "True" }
+        Cfg_MoverInMD : Array[0..10] of Bool;
+        Sts_MoverInMD : Array[1.._.Cfg_XTS_NbrMaxMover] of DInt;
+        Sts_MD_Exec : Bool;
+    END_STRUCT;
+END_TYPE

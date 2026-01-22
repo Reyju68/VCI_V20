@@ -1,0 +1,159 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_IndramatDriveCtrlWord : STRUCT
+        Control_Word : STRUCT
+            X8 : Bool;
+            X9 : Bool;
+            X10 : Bool;
+            X11 : Bool;
+            X12 : Bool;
+            { S7_MLC := "MLC_e4" }
+            StartMotor : Bool;
+            X14 : Bool;
+            { S7_MLC := "MLC_5Bz" }
+            EnableMotor : Bool;
+            X0 : Bool;
+            X1 : Bool;
+            X2 : Bool;
+            X3 : Bool;
+            X4 : Bool;
+            { S7_MLC := "MLC_4Jd" }
+            ResetAlarm : Bool;
+            X6 : Bool;
+            X7 : Bool;
+        END_STRUCT;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_5Bb";
+            S7_Visibility := "Hidden := External"
+        }
+        TorqueCmd : Int;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3fi";
+            S7_Visibility := "Hidden := External"
+        }
+        VelocityCmd : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_38Z";
+            S7_Visibility := "Hidden := External"
+        }
+        AccelCmd : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_567";
+            S7_Visibility := "Hidden := External"
+        }
+        DecelCmd : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_55W";
+            S7_Visibility := "Hidden := External"
+        }
+        Signal_Control_Word : STRUCT
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_3v5";
+                S7_Visibility := "Hidden := External"
+            }
+            X8 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_4ej";
+                S7_Visibility := "Hidden := External"
+            }
+            X9 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_5A4";
+                S7_Visibility := "Hidden := External"
+            }
+            X10 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_Rb";
+                S7_Visibility := "Hidden := External"
+            }
+            X11 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_aD";
+                S7_Visibility := "Hidden := External"
+            }
+            X12 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_3E3";
+                S7_Visibility := "Hidden := External"
+            }
+            X13 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_3N8";
+                S7_Visibility := "Hidden := External"
+            }
+            X14 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_Vu";
+                S7_Visibility := "Hidden := External"
+            }
+            X15 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_RT";
+                S7_Visibility := "Hidden := External"
+            }
+            Release_Brake : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_3Ey";
+                S7_Visibility := "Hidden := External"
+            }
+            X1 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_3zb";
+                S7_Visibility := "Hidden := External"
+            }
+            X2 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_3XD";
+                S7_Visibility := "Hidden := External"
+            }
+            X3 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_4hB";
+                S7_Visibility := "Hidden := External"
+            }
+            X4 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_33v";
+                S7_Visibility := "Hidden := External"
+            }
+            X5 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_5B5";
+                S7_Visibility := "Hidden := External"
+            }
+            X6 : Bool;
+            {
+                S7_Access := "ReadOnly := External";
+                S7_MLC := "MLC_47V";
+                S7_Visibility := "Hidden := External"
+            }
+            X7 : Bool;
+        END_STRUCT;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_46w";
+            S7_Visibility := "Hidden := External"
+        }
+        Free : Array[1..2] of Byte;
+    END_STRUCT;
+END_TYPE

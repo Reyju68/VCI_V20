@@ -1,0 +1,7 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_StatusMover : STRUCT
+        { S7_Setpoint := "False" }
+        Sts_Pos : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_StatusPos;
+    END_STRUCT;
+END_TYPE

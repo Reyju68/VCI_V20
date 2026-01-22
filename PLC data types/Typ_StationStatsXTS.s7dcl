@@ -1,0 +1,15 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_StationStatsXTS : STRUCT
+        Sts_CmdHold : Bool;
+        Sts_CmdSuspend : Bool;
+        Sts_MemoLastCycleTime : Array[0..9] of DInt;
+        MemoLastCycleTime_tmp : Array[0..9] of DInt;
+        Sts_AvrCycleTime : DInt;
+        Sts_AvrPartRate : DInt;
+        Tmp_TrackDsblCtr : DInt;
+        { S7_Setpoint := "False" }
+        Tmr_StCycleTime : TONR_TIME;
+        Fct_Average : Bool;
+    END_STRUCT;
+END_TYPE

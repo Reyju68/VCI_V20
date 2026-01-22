@@ -1,0 +1,17 @@
+﻿MultiLingualTexts:
+  - id: MLC_4fY
+    en-US: Move Type
+  - id: MLC_3hs
+    en-US: Absolute target position (1/10 units)
+  - id: MLC_4pZ
+    en-US: Distance for the positioning process (1/10 units)
+  - id: MLC_uY
+    en-US: Approach Offset (1/10 units)
+  - id: MLC_3gF
+    en-US: Speed (units per sec)
+  - id: MLC_38m
+    en-US: Acceleration Rate (units per sec2)
+  - id: MLC_Tk
+    en-US: Deceleration Rate (units per sec2)
+  - id: MLC_3mW
+    en-US: Acceleration Jerk (%)

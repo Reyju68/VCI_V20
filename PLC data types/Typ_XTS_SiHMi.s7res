@@ -1,0 +1,13 @@
+﻿MultiLingualTexts:
+  - id: MLC_R7
+    en-US: Number of Movers Detected
+  - id: MLC_3dE
+    en-US: State of XTS Model sequencer
+  - id: MLC_3A3
+    en-US: Infeed status
+  - id: MLC_33X
+    en-US: Command Reboot PLC Beckhoff
+  - id: MLC_3cG
+    en-US: XTS Transport Ready
+  - id: MLC_3Vc
+    en-US: XTS Transport Error

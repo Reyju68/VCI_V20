@@ -1,0 +1,13 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_PartPrStatus : STRUCT
+        { S7_MLC := "MLC_4J8" }
+        Sts_Full : Bool;
+        { S7_MLC := "MLC_3ga" }
+        Sts_Bad : Bool;
+        { S7_MLC := "MLC_52a" }
+        Sts_NotInProd : Bool;
+        { S7_MLC := "MLC_368" }
+        Cfg_RejectCause : DInt;
+    END_STRUCT;
+END_TYPE

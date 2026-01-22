@@ -1,0 +1,7 @@
+﻿MultiLingualTexts:
+  - id: MLC_bP
+    en-US: Module Number
+  - id: MLC_3P5
+    en-US: Station Number
+  - id: MLC_cb
+    en-US: Position Description

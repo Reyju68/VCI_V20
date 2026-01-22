@@ -1,0 +1,11 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_SyncPosToXTS : STRUCT
+        { S7_MLC := "MLC_n5" }
+        Sts_Cycle : Bool;
+        { S7_MLC := "MLC_3yQ" }
+        Cmd_Allow : Bool;
+        { S7_MLC := "MLC_LP" }
+        Cmd_Force_Index : Int;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,108 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    TypActVisCognexInputsF5 : STRUCT
+        { S7_MLC := "MLC_3n2" }
+        AcquisitionStatus : STRUCT
+            { S7_MLC := "MLC_3pH" }
+            TriggerReady : Bool;
+            { S7_MLC := "MLC_4TP" }
+            TriggerAck : Bool;
+            { S7_MLC := "MLC_54q" }
+            Acquiring : Bool;
+            { S7_MLC := "MLC_43M" }
+            MissedAcq : Bool;
+            { S7_MLC := "MLC_4Y7" }
+            OfflineReason0 : Bool;
+            { S7_MLC := "MLC_4MR" }
+            OfflineReason1 : Bool;
+            { S7_MLC := "MLC_4sZ" }
+            OfflineReason2 : Bool;
+            { S7_MLC := "MLC_WM" }
+            Online : Bool;
+            { S7_MLC := "MLC_34x" }
+            AcquisitionIDByte0 : Byte;
+            { S7_MLC := "MLC_428" }
+            AcquisitionIDByte1 : Byte;
+        END_STRUCT;
+        { S7_MLC := "MLC_4nC" }
+        InspectionStatus : STRUCT
+            { S7_MLC := "MLC_4Fn" }
+            Inspecting : Bool;
+            { S7_MLC := "MLC_Uh" }
+            InspectionCompleted : Bool;
+            { S7_MLC := "MLC_3Xe" }
+            ResultsBufferOverrun : Bool;
+            { S7_MLC := "MLC_WV" }
+            ResultsValid : Bool;
+            { S7_MLC := "MLC_459" }
+            JobLoading : Bool;
+            { S7_MLC := "MLC_3HU" }
+            JobLoadComplete : Bool;
+            { S7_MLC := "MLC_4sA" }
+            JobLoadFailed : Bool;
+            { S7_MLC := "MLC_44Z" }
+            NotUsed : Bool;
+            { S7_MLC := "MLC_57J" }
+            NotUsed0 : Bool;
+            { S7_MLC := "MLC_4kA" }
+            TestRunReady : Bool;
+            { S7_MLC := "MLC_St" }
+            NotUsed2 : Bool;
+            { S7_MLC := "MLC_45P" }
+            NotUsed3 : Bool;
+            { S7_MLC := "MLC_4Ae" }
+            NotUsed4 : Bool;
+            { S7_MLC := "MLC_322" }
+            NotUsed5 : Bool;
+            { S7_MLC := "MLC_4SL" }
+            NotUsed6 : Bool;
+            { S7_MLC := "MLC_eU" }
+            NotUsed7 : Bool;
+            ErrorCode : Word;
+        END_STRUCT;
+        { S7_MLC := "MLC_4Aj" }
+        JobControl : STRUCT
+            { S7_MLC := "MLC_3m2" }
+            JobID : UInt;
+        END_STRUCT;
+        { S7_MLC := "MLC_ij" }
+        InspectionResults : STRUCT
+            { S7_MLC := "MLC_mi" }
+            InspectionID : Int;
+            { S7_MLC := "MLC_4Vz" }
+            InspectionResultCode : Int;
+            { S7_MLC := "MLC_QC" }
+            InspectionResults0 : DInt;
+            { S7_MLC := "MLC_3pe" }
+            InspectionResults1 : DInt;
+            { S7_MLC := "MLC_52W" }
+            InspectionResults2 : DInt;
+            { S7_MLC := "MLC_3tC" }
+            InspectionResults3 : DInt;
+            { S7_MLC := "MLC_3BG" }
+            InspectionResults4 : DInt;
+            { S7_MLC := "MLC_4mU" }
+            InspectionResults5 : DInt;
+            { S7_MLC := "MLC_4A5" }
+            InspectionResults6 : DInt;
+            { S7_MLC := "MLC_a4" }
+            InspectionResults7 : DInt;
+            { S7_MLC := "MLC_39G" }
+            InspectionResults8 : DInt;
+            { S7_MLC := "MLC_wv" }
+            InspectionResults9 : DInt;
+            { S7_MLC := "MLC_uK" }
+            InspectionResults10 : DInt;
+            { S7_MLC := "MLC_3yW" }
+            InspectionResults11 : DInt;
+            { S7_MLC := "MLC_4Nm" }
+            InspectionResults12 : DInt;
+            { S7_MLC := "MLC_3HA" }
+            InspectionResults13 : DInt;
+            { S7_MLC := "MLC_4ee" }
+            InspectionResults14 : DInt;
+            { S7_MLC := "MLC_3rJ" }
+            InspectionResults15 : DInt;
+        END_STRUCT;
+    END_STRUCT;
+END_TYPE

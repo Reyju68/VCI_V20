@@ -1,0 +1,11 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_State : STRUCT
+        { S7_MLC := "MLC_3Ff" }
+        TimeStamp : LInt;
+        { S7_MLC := "MLC_3Kx" }
+        StationNb : DInt;
+        { S7_MLC := "MLC_39K" }
+        State : DInt;
+    END_STRUCT;
+END_TYPE

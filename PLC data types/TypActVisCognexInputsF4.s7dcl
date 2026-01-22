@@ -1,0 +1,50 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    TypActVisCognexInputsF4 : STRUCT
+        AcquisitionStatus : STRUCT
+            TriggerReady : Bool;
+            TriggerAck : Bool;
+            Acquiring : Bool;
+            MissedAcq : Bool;
+            OfflineReason0 : Bool;
+            OfflineReason1 : Bool;
+            OfflineReason2 : Bool;
+            Online : Bool;
+            AcquisitionIDByte0 : Byte;
+            AcquisitionIDByte1 : Byte;
+        END_STRUCT;
+        InspectionStatus : STRUCT
+            Inspecting : Bool;
+            InspectionCompleted : Bool;
+            ResultsBufferOverrun : Bool;
+            ResultsValid : Bool;
+            JobLoading : Bool;
+            JobLoadComplete : Bool;
+            JobLoadFailed : Bool;
+            NotUsed : Bool;
+            NotUsed0 : Bool;
+            NotUsed1 : Bool;
+            NotUsed2 : Bool;
+            NotUsed3 : Bool;
+            NotUsed4 : Bool;
+            NotUsed5 : Bool;
+            NotUsed6 : Bool;
+            NotUsed7 : Bool;
+        END_STRUCT;
+        JobControl : STRUCT
+            JobID : Word;
+        END_STRUCT;
+        InspectionResults : STRUCT
+            InspectionID : Int;
+            InspectionResultCode : Int;
+            InspectionResults0 : DInt;
+            InspectionResults1 : DInt;
+            InspectionResults2 : DInt;
+            InspectionResults3 : DInt;
+            InspectionResults4 : DInt;
+            InspectionResults5 : DInt;
+            InspectionResults6 : DInt;
+            InspectionResults7 : DInt;
+        END_STRUCT;
+    END_STRUCT;
+END_TYPE

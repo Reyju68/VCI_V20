@@ -1,0 +1,121 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_FanucR30iB_Set : STRUCT
+        { S7_MLC := "MLC_qD" }
+        IMSTP : Bool;
+        { S7_MLC := "MLC_Qb" }
+        HOLD : Bool;
+        { S7_MLC := "MLC_5Aj" }
+        SFSPD : Bool;
+        { S7_MLC := "MLC_jj" }
+        CSTOPI : Bool;
+        { S7_MLC := "MLC_LC" }
+        FAULT_RESET : Bool;
+        { S7_MLC := "MLC_L4" }
+        START : Bool;
+        { S7_MLC := "MLC_3eB" }
+        Home : Bool;
+        { S7_MLC := "MLC_4ET" }
+        ENBL : Bool;
+        { S7_MLC := "MLC_349" }
+        PNS_Bit0 : Bool;
+        { S7_MLC := "MLC_3wS" }
+        PNS_Bit1 : Bool;
+        { S7_MLC := "MLC_5BS" }
+        PNS_Bit2 : Bool;
+        { S7_MLC := "MLC_3YY" }
+        PNS_Bit3 : Bool;
+        { S7_MLC := "MLC_3rZ" }
+        PNS_Bit4 : Bool;
+        { S7_MLC := "MLC_jU" }
+        PNS_Bit5 : Bool;
+        { S7_MLC := "MLC_QR" }
+        PNS_Bit6 : Bool;
+        { S7_MLC := "MLC_fj" }
+        PNS_Bit7 : Bool;
+        { S7_MLC := "MLC_3Ui" }
+        PNSTROBE : Bool;
+        { S7_MLC := "MLC_4iE" }
+        Prod_Start : Bool;
+        { S7_MLC := "MLC_3ed" }
+        SynchRobotPLC : Bool;
+        { S7_MLC := "MLC_53g" }
+        Cfg_Slow : Bool;
+        { S7_MLC := "MLC_4BE" }
+        Auto_Ack : Bool;
+        { S7_MLC := "MLC_ZR" }
+        ResetRqst : Bool;
+        { S7_MLC := "MLC_3zb" }
+        ExecRqst : Bool;
+        { S7_MLC := "MLC_4Xr" }
+        StopRqst : Bool;
+        { S7_MLC := "MLC_RZ" }
+        Secu : Bool;
+        { S7_MLC := "MLC_Lj" }
+        Nest1_Sts_OK : Bool;
+        { S7_MLC := "MLC_3Dy" }
+        Nest2_Sts_OK : Bool;
+        { S7_MLC := "MLC_3f8" }
+        DI10 : Bool;
+        { S7_MLC := "MLC_sb" }
+        DI11 : Bool;
+        { S7_MLC := "MLC_588" }
+        DI12 : Bool;
+        { S7_MLC := "MLC_44t" }
+        DI13 : Bool;
+        { S7_MLC := "MLC_Rn" }
+        DI14 : Bool;
+        { S7_MLC := "MLC_4q4" }
+        UserAlms : Int;
+        { S7_MLC := "MLC_4PN" }
+        UserAlms2 : Int;
+        { S7_MLC := "MLC_mz" }
+        Program_Request : Byte;
+        { S7_MLC := "MLC_5BP" }
+        Spare_Byte2 : Byte;
+        { S7_MLC := "MLC_RP" }
+        Spare_Byte3 : Byte;
+        { S7_MLC := "MLC_aY" }
+        Spare_Byte4 : Byte;
+        { S7_MLC := "MLC_3fx" }
+        Spare_Byte5 : Byte;
+        { S7_MLC := "MLC_3Ub" }
+        Spare_Byte6 : Byte;
+        { S7_MLC := "MLC_4w7" }
+        Spare_Byte7 : Byte;
+        { S7_MLC := "MLC_3G7" }
+        Spare_Byte8 : Byte;
+        { S7_MLC := "MLC_3kP" }
+        Spare_Byte9 : Byte;
+        { S7_MLC := "MLC_nG" }
+        Spare_Byte10 : Byte;
+        { S7_MLC := "MLC_53E" }
+        Spare_Byte11 : Byte;
+        { S7_MLC := "MLC_4aC" }
+        Spare_Byte12 : Byte;
+        { S7_MLC := "MLC_NE" }
+        Spare_Byte13 : Byte;
+        { S7_MLC := "MLC_4K3" }
+        Spare_Byte14 : Byte;
+        { S7_MLC := "MLC_4kj" }
+        Spare_Byte15 : Byte;
+        { S7_MLC := "MLC_z7" }
+        Spare_Byte16 : Byte;
+        { S7_MLC := "MLC_3t2" }
+        Spare_Byte17 : Byte;
+        { S7_MLC := "MLC_4Yf" }
+        Spare_Byte18 : Byte;
+        { S7_MLC := "MLC_3Kt" }
+        Spare_Byte19 : Byte;
+        { S7_MLC := "MLC_ms" }
+        Spare_Byte20 : Byte;
+        { S7_MLC := "MLC_v4" }
+        Spare_Byte21 : Byte;
+        { S7_MLC := "MLC_ad" }
+        Spare_Byte22 : Byte;
+        { S7_MLC := "MLC_3bZ" }
+        Spare_Byte23 : Byte;
+        { S7_MLC := "MLC_wk" }
+        Spare_Byte24 : Byte;
+    END_STRUCT;
+END_TYPE

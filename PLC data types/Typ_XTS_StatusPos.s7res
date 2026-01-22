@@ -1,0 +1,7 @@
+﻿MultiLingualTexts:
+  - id: MLC_4bc
+    en-US: Status Mover position ok
+  - id: MLC_pG
+    en-US: Status TO inform that mover is moved BY hand
+  - id: MLC_39Q
+    en-US: Status Manual Operation FROM HMI was done

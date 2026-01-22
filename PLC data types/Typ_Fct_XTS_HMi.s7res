@@ -1,0 +1,47 @@
+﻿MultiLingualTexts:
+  - id: MLC_bS
+    en-US: 'Last Position number : used to reset position index'
+  - id: MLC_3m8
+    en-US: Configuration Mover Present in Module
+  - id: MLC_et
+    en-US: Configuration Mover number
+  - id: MLC_4eY
+    en-US: Configuration number of HMI
+  - id: MLC_4AL
+    en-US: Status Actual Position
+  - id: MLC_3ic
+    en-US: Status to inform end of command
+  - id: MLC_gX
+    en-US: Status Mover in Collision Avoidance Both Way
+  - id: MLC_tC
+    en-US: Status Mover in Collision Avoidance Fast Forward
+  - id: MLC_4QK
+    en-US: Status to inform while no alarm pending
+  - id: MLC_3fu
+    en-US: Configuration scaling of Position t
+  - id: MLC_n8
+    en-US: Mover Input data
+  - id: MLC_33X
+    en-US: Command From HMi
+  - id: MLC_3aL
+    en-US: Memory of Mover Position for Abort cycle
+  - id: MLC_4aT
+    en-US: Command send by the station sequence
+  - id: MLC_js
+    en-US: XTS System Interface HMi
+  - id: MLC_3cS
+    en-US: UDT Position Status
+  - id: MLC_cv
+    en-US: Mover Output data
+  - id: MLC_3ww
+    en-US: XTS System Interface HMi
+  - id: MLC_4hD
+    en-US: Index for Loop HMI interface
+  - id: MLC_3XG
+    en-US: Index for Loop to set all position status ManExe
+  - id: MLC_4ww
+    en-US: Local Status Manual Exec
+  - id: MLC_4FQ
+    en-US: Temp index select ARRAY value FROM HMI
+  - id: MLC_37M
+    en-US: Index select ARRAY value FROM HMI

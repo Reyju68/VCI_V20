@@ -1,0 +1,51 @@
+﻿MultiLingualTexts:
+  - id: MLC_e4
+    en-US: Start Motor
+  - id: MLC_5Bz
+    en-US: Enable motor
+  - id: MLC_4Jd
+    en-US: Reset Alarm
+  - id: MLC_5Bb
+    en-US: S-0-0092 Torque value
+  - id: MLC_3fi
+    en-US: S-0-0036 Velocity value
+  - id: MLC_38Z
+    en-US: P-0-1203
+  - id: MLC_567
+    en-US: P-0-1213
+  - id: MLC_55W
+    en-US: S-0-0145
+  - id: MLC_3v5
+    en-US: Signal Control Word Bit 8
+  - id: MLC_4ej
+    en-US: Signal Control Word Bit 9
+  - id: MLC_5A4
+    en-US: Signal Control Word Bit 10
+  - id: MLC_Rb
+    en-US: Signal Control Word Bit 11
+  - id: MLC_aD
+    en-US: Signal Control Word Bit 12
+  - id: MLC_3E3
+    en-US: Signal Control Word Bit 13
+  - id: MLC_3N8
+    en-US: Signal Control Word Bit 14
+  - id: MLC_Vu
+    en-US: Signal Control Word Bit 15
+  - id: MLC_RT
+    en-US: Signal Control Word Bit 0
+  - id: MLC_3Ey
+    en-US: Signal Control Word Bit 1
+  - id: MLC_3zb
+    en-US: Signal Control Word Bit 2
+  - id: MLC_3XD
+    en-US: Signal Control Word Bit 3
+  - id: MLC_4hB
+    en-US: Signal Control Word Bit 4
+  - id: MLC_33v
+    en-US: Signal Control Word Bit 5
+  - id: MLC_5B5
+    en-US: Signal Control Word Bit 6
+  - id: MLC_47V
+    en-US: Signal Control Word Bit 7
+  - id: MLC_46w
+    en-US: Data input

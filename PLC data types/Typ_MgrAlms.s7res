@@ -1,0 +1,57 @@
+﻿MultiLingualTexts:
+  - id: MLC_3mb
+    en-US: Alarms Abort
+  - id: MLC_QE
+    en-US: Alarms Stop
+  - id: MLC_3SA
+    en-US: Alarms Idle
+  - id: MLC_4nf
+    en-US: Alarms Held
+  - id: MLC_Ln
+    en-US: Alarms Suspend
+  - id: MLC_Wz
+    en-US: Alarms Warning
+  - id: MLC_3QX
+    en-US: Alarms Help
+  - id: MLC_3nE
+    en-US: 'Level 1 : Abort'
+  - id: MLC_4kA
+    en-US: 'Level 2 : Stop'
+  - id: MLC_hC
+    en-US: 'Level 3 : Idle'
+  - id: MLC_36u
+    en-US: 'Level 4 : Held'
+  - id: MLC_4jb
+    en-US: 'Level 5 : Suspend'
+  - id: MLC_3CR
+    en-US: 'Level 6 : Warning'
+  - id: MLC_4wg
+    en-US: 'Level 7 : Help'
+  - id: MLC_3iU
+    en-US: Reset Remote-Acknowledgement Alarms Abort
+  - id: MLC_37a
+    en-US: Reset Remote-Acknowledgement Alarms Abort
+  - id: MLC_3HX
+    en-US: Reset Remote-Acknowledgement Alarms Idle
+  - id: MLC_4sA
+    en-US: Reset Remote-Acknowledgement Alarms Held
+  - id: MLC_3Kw
+    en-US: Reset Remote-Acknowledgement Alarms Suspend
+  - id: MLC_ex
+    en-US: Reset Remote-Acknowledgement Alarms Warning
+  - id: MLC_3eb
+    en-US: Reset Remote-Acknowledgement Alarms Help
+  - id: MLC_3Mm
+    en-US: Reset Alarms Abort
+  - id: MLC_wM
+    en-US: Reset Alarms Stop
+  - id: MLC_4jS
+    en-US: Reset Alarms Idle
+  - id: MLC_Nn
+    en-US: Reset Alarms Held
+  - id: MLC_4at
+    en-US: Reset Alarms Suspend
+  - id: MLC_4wW
+    en-US: Reset Alarms Warning
+  - id: MLC_4cV
+    en-US: Reset Alarms Help

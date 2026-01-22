@@ -1,0 +1,147 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_Nest : STRUCT
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_fu";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_Ack : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_5AF";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_ClrStat : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_ip";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_RejectPart : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_g5";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_Clear : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_49R";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_GoodPart : Bool;
+        { S7_MLC := "MLC_4tH" }
+        Cfg_Station : Int;
+        { S7_MLC := "MLC_ey" }
+        Cfg_SubAssembly : SInt;
+        { S7_MLC := "MLC_3fx" }
+        Cfg_RejectCause : Int;
+        { S7_MLC := "MLC_53z" }
+        Cfg_MaxCons : DInt;
+        { S7_MLC := "MLC_3Ch" }
+        Sts_LastGoodStation : DInt;
+        { S7_MLC := "MLC_4rz" }
+        Sts_NestID : Int;
+        { S7_MLC := "MLC_3eZ" }
+        Sts_NestNb : SInt;
+        { S7_MLC := "MLC_3yJ" }
+        Sts_TrackNb : SInt;
+        { S7_MLC := "MLC_u8" }
+        Sts_PartID : DInt;
+        { S7_MLC := "MLC_3WM" }
+        Sts_StationFailID : Int;
+        { S7_MLC := "MLC_4MT" }
+        Sts_SpecFailCode : Int;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4sB";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_OperationDone : Array[0..63] of Bool;
+        { S7_MLC := "MLC_376" }
+        Sts_NotInProd : Bool;
+        { S7_MLC := "MLC_34z" }
+        Sts_Enable : Bool;
+        { S7_MLC := "MLC_3iE" }
+        Sts_Good : Bool;
+        { S7_MLC := "MLC_56K" }
+        Sts_Bad : Bool;
+        { S7_MLC := "MLC_4BV" }
+        Sts_Full : Bool;
+        { S7_MLC := "MLC_4Qe" }
+        Sts_OK : Bool;
+        { S7_MLC := "MLC_3LS" }
+        Sts_FullPos : SInt;
+        { S7_MLC := "MLC_4kp" }
+        Sts_BadPos : SInt;
+        { S7_MLC := "MLC_fw" }
+        Sts_AuditRqst : Bool;
+        { S7_MLC := "MLC_xC" }
+        Sts_Alm : Bool;
+        { S7_MLC := "MLC_3at" }
+        Sts_Unused : Bool;
+        { S7_MLC := "MLC_3ME" }
+        Sts_FailNestID : SInt;
+        { S7_MLC := "MLC_QL" }
+        Sts_FailSubAssembly : SInt;
+        { S7_MLC := "MLC_4Gb" }
+        Sts_FailTrackID : SInt;
+        { S7_MLC := "MLC_eE" }
+        Sts_FailWPHID : Int;
+        { S7_MLC := "MLC_zE" }
+        Rep_CtrTotal : DInt;
+        { S7_MLC := "MLC_3YZ" }
+        Rep_CtrGood : DInt;
+        { S7_MLC := "MLC_3Bq" }
+        Rep_CtrBad : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_n2";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_Quality : Real;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4FT";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_Cons : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3X5";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_Miscellaneous : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_wB";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_User1 : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3Fj";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_User2 : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_Ru";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_User3 : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_cW";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_User4 : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4UC";
+            S7_Visibility := "Hidden := External"
+        }
+        Rep_User5 : DInt;
+    END_STRUCT;
+END_TYPE

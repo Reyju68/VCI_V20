@@ -1,0 +1,61 @@
+﻿MultiLingualTexts:
+  - id: MLC_3Sa
+    en-US: Acquisition Control
+  - id: MLC_35L
+    en-US: Enabled Trigger
+  - id: MLC_48p
+    en-US: Trigger
+  - id: MLC_5AW
+    en-US: Reserved
+  - id: MLC_5AC
+    en-US: Reserved
+  - id: MLC_4cZ
+    en-US: Reserved
+  - id: MLC_4EQ
+    en-US: Reserved
+  - id: MLC_3gG
+    en-US: Reserved
+  - id: MLC_hs
+    en-US: Force Offline
+  - id: MLC_3E3
+    en-US: Inspection Control
+  - id: MLC_3MC
+    en-US: Enabled Results Buffer
+  - id: MLC_Rd
+    en-US: Inspection Results Acknowledge
+  - id: MLC_42p
+    en-US: Reserved
+  - id: MLC_33f
+    en-US: Reserved
+  - id: MLC_3vt
+    en-US: Reserved
+  - id: MLC_e6
+    en-US: Reserved
+  - id: MLC_3YF
+    en-US: Reserved
+  - id: MLC_c4
+    en-US: Reserved
+  - id: MLC_4BU
+    en-US: Job Control
+  - id: MLC_3rc
+    en-US: Job ID
+  - id: MLC_3hh
+    en-US: SoftEvent Control
+  - id: MLC_3pr
+    en-US: SoftEvent Bit 0
+  - id: MLC_3Dj
+    en-US: SoftEvent Bit 1
+  - id: MLC_3gY
+    en-US: SoftEvent Bit 2
+  - id: MLC_33w
+    en-US: SoftEvent Bit 3
+  - id: MLC_3nN
+    en-US: SoftEvent Bit 4
+  - id: MLC_4Hu
+    en-US: SoftEvent Bit 5
+  - id: MLC_497
+    en-US: SoftEvent Bit 6
+  - id: MLC_4j8
+    en-US: SoftEvent Bit 7
+  - id: MLC_Qi
+    en-US: User Data

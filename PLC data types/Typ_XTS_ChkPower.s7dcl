@@ -1,0 +1,25 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_ChkPower : STRUCT
+        b24v_On : Int;
+        b48vPower_On : Int;
+        Lub_Ok : Int;
+        Lub1_ErrID : Int;
+        Lub2_ErrID : Int;
+        Lub3_ErrID : Int;
+        Lub4_ErrID : Int;
+        Lub5_ErrID : Int;
+        Lub6_ErrID : Int;
+        Lub7_ErrID : Int;
+        Lub8_ErrID : Int;
+        Lub9_ErrID : Int;
+        bBuffer_Active : Int;
+        bBuffer_Ready : Int;
+        SCATempOk : Bool;
+        CCATempOk : Bool;
+        UPSAlarm : Bool;
+        UPSBatMod : Bool;
+        UPSACOK : Bool;
+        UPSPWOvrld : Bool;
+    END_STRUCT;
+END_TYPE

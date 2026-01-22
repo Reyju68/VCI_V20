@@ -1,0 +1,7 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_HMi : STRUCT
+        { S7_Setpoint := "False" }
+        "MD" : Array[0..10] of _.Typ_XTS_AxSiHMi;
+    END_STRUCT;
+END_TYPE

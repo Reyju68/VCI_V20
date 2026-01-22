@@ -1,0 +1,6 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_AxHomeJS : STRUCT
+        Done : Bool;
+    END_STRUCT;
+END_TYPE

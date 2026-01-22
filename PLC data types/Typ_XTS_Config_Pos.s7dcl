@@ -1,0 +1,14 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_Config_Pos : STRUCT
+        Used : Bool;
+        Station_Present : Bool;
+        Speed : SInt;
+        Acc : SInt;
+        Dec : SInt;
+        Position : Real;
+        Anticip : Real;
+        Gap : DInt;
+        WaitTime : DInt;
+    END_STRUCT;
+END_TYPE

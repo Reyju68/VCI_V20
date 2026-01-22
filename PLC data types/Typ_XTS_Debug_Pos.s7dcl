@@ -1,0 +1,11 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_Debug_Pos : STRUCT
+        { S7_MLC := "MLC_bP" }
+        Module : String;
+        { S7_MLC := "MLC_3P5" }
+        Station : String;
+        { S7_MLC := "MLC_cb" }
+        Desc : String;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,16 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_Global_In : STRUCT
+        { S7_MLC := "MLC_4qP" }
+        F_TRACK_LENGTH : Real;
+        { S7_MLC := "MLC_4V5" }
+        N_MOVERS : DInt;
+        { S7_MLC := "MLC_4ww" }
+        N_MoversDetected : DInt;
+        { S7_MLC := "MLC_4xg" }
+        eStateXtsModel : DInt;
+        ChkPower : _.Typ_XTS_ChkPower;
+        { S7_MLC := "MLC_4Ui" }
+        Sts_XTS_SlowSpeed_Error : Bool;
+    END_STRUCT;
+END_TYPE

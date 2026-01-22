@@ -1,0 +1,76 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_StationMgtXTS : STRUCT
+        { S7_MLC := "MLC_tr" }
+        Cmd_ResetFault : Bool;
+        { S7_MLC := "MLC_3is" }
+        Cfg_Dry : Bool;
+        { S7_MLC := "MLC_3JU" }
+        Cfg_DryIMA : Bool;
+        { S7_MLC := "MLC_We" }
+        Cmd_Exec : Bool;
+        { S7_MLC := "MLC_nh" }
+        Cfg_ContCycle : Bool;
+        { S7_MLC := "MLC_3tZ" }
+        Cfg_SlowSpeed : Bool;
+        { S7_MLC := "MLC_53H" }
+        Cfg_SpecCycle : Bool;
+        { S7_MLC := "MLC_4Gj" }
+        Sts_Idle : Bool;
+        { S7_MLC := "MLC_4t5" }
+        Sts_NoAlm : Bool;
+        { S7_MLC := "MLC_3p4" }
+        Sts_Ready : Bool;
+        { S7_MLC := "MLC_vd" }
+        Sts_Worked : Bool;
+        { S7_MLC := "MLC_4ft" }
+        Sts_Reset1Done : Bool;
+        { S7_MLC := "MLC_3sU" }
+        Sts_ManExe : Bool;
+        { S7_MLC := "MLC_nr" }
+        Sts_Slow : Bool;
+        { S7_MLC := "MLC_4WW" }
+        Sts_ZoneFreeAfterStation : Bool;
+        { S7_MLC := "MLC_3M3" }
+        Sts_StationMty : Bool;
+        { S7_MLC := "MLC_kf" }
+        Sts_AllMoverPosOk : Bool;
+        { S7_MLC := "MLC_36g" }
+        Sts_StartFeeding : Bool;
+        { S7_MLC := "MLC_X5" }
+        Sts_Secu : Int;
+        { S7_MLC := "MLC_ZF" }
+        Sts_LimpAuto : LInt;
+        { S7_MLC := "MLC_57Q" }
+        Sts_LimpManu : LInt;
+        { S7_MLC := "MLC_3Ax" }
+        Sts_MoverRqstd : LInt;
+        { S7_MLC := "MLC_4kG" }
+        Sts_StationFeeded : LInt;
+        { S7_MLC := "MLC_3FA" }
+        Sts_MoverAllow : LInt;
+        { S7_MLC := "MLC_3un" }
+        Sts_StationStartCycle : LInt;
+        { S7_MLC := "MLC_5CU" }
+        Sts_Mover_Moved : LInt;
+        { S7_MLC := "MLC_4N7" }
+        Sts_Mover_PosOk : LInt;
+        { S7_MLC := "MLC_3wK" }
+        Sts_Mover_ManExe : LInt;
+        { S7_MLC := "MLC_4ui" }
+        Sts_Mover_ZoneOk : DInt;
+        { S7_MLC := "MLC_4vX" }
+        Sts_PrevWPHID : Array[0..40] of Int;
+        { S7_MLC := "MLC_ZN" }
+        Sts_WPHID : Array[0..40] of Int;
+        { S7_MLC := "MLC_4kU" }
+        Sts_WorkDone_Zone : DInt;
+        { S7_MLC := "MLC_uD" }
+        Cmd_Allow_Pos : LInt;
+        {
+            S7_MLC := "MLC_3H5";
+            S7_Setpoint := "False"
+        }
+        Tmr_NoMover : IEC_TIMER;
+    END_STRUCT;
+END_TYPE

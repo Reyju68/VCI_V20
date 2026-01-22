@@ -1,0 +1,8 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_FanucR30iB_Safety_Outputs : STRUCT
+        ESTOP : Bool;
+        DOORS : Bool;
+        SLS : Bool;
+    END_STRUCT;
+END_TYPE

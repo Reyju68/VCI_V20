@@ -1,0 +1,5 @@
+﻿MultiLingualTexts:
+  - id: MLC_TZ
+    en-US: State of all channels ready
+  - id: MLC_35Z
+    en-US: Number of Breaker that is in FAULT

@@ -1,0 +1,33 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_PROTop : STRUCT
+        { S7_MLC := "MLC_35S" }
+        OutputVoltage : Real;
+        { S7_MLC := "MLC_4aw" }
+        ORingVoltage : Real;
+        { S7_MLC := "MLC_37n" }
+        OutputCurrent : Real;
+        { S7_MLC := "MLC_3mL" }
+        DI_State : Bool;
+        { S7_MLC := "MLC_4Fw" }
+        Relay_State : Bool;
+        { S7_MLC := "MLC_4Gd" }
+        DCL_Active : Bool;
+        { S7_MLC := "MLC_eb" }
+        Ovrl150 : Bool;
+        { S7_MLC := "MLC_4xW" }
+        Ovrl110 : Bool;
+        { S7_MLC := "MLC_48e" }
+        ShortCircuitSw : Bool;
+        { S7_MLC := "MLC_4Xc" }
+        LoadPrewarning : Bool;
+        { S7_MLC := "MLC_zC" }
+        ShortCircuit : Bool;
+        { S7_MLC := "MLC_ja" }
+        DO_State_Out : Bool;
+        { S7_MLC := "MLC_4ur" }
+        Relay_State_Out : Bool := False;
+        { S7_MLC := "MLC_34C" }
+        AllChannelsOK : Bool := False;
+    END_STRUCT;
+END_TYPE

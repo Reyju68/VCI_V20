@@ -1,0 +1,13 @@
+﻿MultiLingualTexts:
+  - id: MLC_4LX
+    en-US: 'Event if top Guard ELM detects any internal failureCondition: Internal failure occurred0: No failure 1: FailureRead/Write'
+  - id: MLC_4GQ
+    en-US: Event if switched off (tripping) the DC-Output of corre-sponding top Guard ELM
+  - id: MLC_3gY
+    en-US: Event if output current on DC-Output of corresponding top Guard ELM is higher than present TGD-ELM L
+  - id: MLC_4ca
+    en-US: Event if output current on DC-Output of corresponding top Guard ELM is higher than present TGD-ELM Load Alarm Warning Value
+  - id: MLC_3WS
+    en-US: Cb is switched on
+  - id: MLC_39j
+    en-US: Actual current setting

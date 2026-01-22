@@ -1,0 +1,85 @@
+﻿MultiLingualTexts:
+  - id: MLC_3zj
+    en-US: STW1 Control Word
+  - id: MLC_343
+    en-US: Jog 1
+  - id: MLC_33X
+    en-US: Jog 2
+  - id: MLC_3nU
+    en-US: Control by PLC
+  - id: MLC_pm
+    en-US: Start Homing
+  - id: MLC_4YN
+    en-US: Start 0=Off   1=On
+  - id: MLC_yB
+    en-US: 0= Coast stop,   1= No Coast stop
+  - id: MLC_4mn
+    en-US: 0= Quick stop,   1= No Quick stop
+  - id: MLC_3e8
+    en-US: Enable operation
+  - id: MLC_3VB
+    en-US: Reject traversing Task
+  - id: MLC_59m
+    en-US: Intermediate stop
+  - id: MLC_3kA
+    en-US: Activate travering Task, positive edge
+  - id: MLC_44J
+    en-US: Fault acknowledge positive dge
+  - id: MLC_3jn
+    en-US: Traversing Block selection
+  - id: MLC_RS
+    en-US: 0=Program sub mode active  1=Activate MDI
+  - id: MLC_4Da
+    en-US: STW 2 Control word
+  - id: MLC_a7
+    en-US: Target position absolute or relative depending on MDI-MOD
+  - id: MLC_k9
+    en-US: Setpoint speed
+  - id: MLC_46a
+    en-US: Acceleration as % relating nominal value
+  - id: MLC_4JE
+    en-US: Deceleration
+  - id: MLC_38t
+    en-US: 0= relative positioning  / 1= absolute positioning
+  - id: MLC_TS
+    en-US: Setpoint Current Force proportinal value
+  - id: MLC_4pH
+    en-US: ZSW Status word
+  - id: MLC_54A
+    en-US: Following error within tolerance
+  - id: MLC_k8
+    en-US: Control request
+  - id: MLC_4SR
+    en-US: Target Position reached
+  - id: MLC_3fg
+    en-US: Home Position set
+  - id: MLC_eW
+    en-US: Traversing Tack Acknowledgement
+  - id: MLC_RB
+    en-US: Drive stopped
+  - id: MLC_49g
+    en-US: Ready to switch On
+  - id: MLC_d2
+    en-US: Ready to operate
+  - id: MLC_3S9
+    en-US: Operation Enabled
+  - id: MLC_3cL
+    en-US: Fault present
+  - id: MLC_dx
+    en-US: Coast stop not activated
+  - id: MLC_Lw
+    en-US: Quick stop not activated
+  - id: MLC_5CC
+    en-US: Switching on inhibited
+  - id: MLC_3EE
+    en-US: Warning Present
+  - id: MLC_44A
+    en-US: Actual Traversing block
+  - id: MLC_34K
+    en-US: ZSW2 Status word
+  - id: MLC_3GF
+    en-US: Actual position linear motor axis
+  - id: MLC_3XA
+    en-US: Actual I Force
+  - id: MLC_4GN
+    en-US: Process Status Register

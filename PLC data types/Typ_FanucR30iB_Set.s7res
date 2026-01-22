@@ -1,0 +1,117 @@
+﻿MultiLingualTexts:
+  - id: MLC_qD
+    en-US: Immediate Stop
+  - id: MLC_Qb
+    en-US: Hold
+  - id: MLC_5Aj
+    en-US: Safety Speed
+  - id: MLC_jj
+    en-US: Cycle Stop Input
+  - id: MLC_LC
+    en-US: Fault Reset
+  - id: MLC_L4
+    en-US: Start
+  - id: MLC_3eB
+    en-US: Home
+  - id: MLC_4ET
+    en-US: Enable
+  - id: MLC_349
+    en-US: PNS.0
+  - id: MLC_3wS
+    en-US: PNS.1
+  - id: MLC_5BS
+    en-US: PNS.2
+  - id: MLC_3YY
+    en-US: PNS.3
+  - id: MLC_3rZ
+    en-US: PNS.4
+  - id: MLC_jU
+    en-US: PNS.5
+  - id: MLC_QR
+    en-US: PNS.6
+  - id: MLC_fj
+    en-US: PNS.7
+  - id: MLC_3Ui
+    en-US: PnsStrobe
+  - id: MLC_4iE
+    en-US: Prod Start
+  - id: MLC_3ed
+    en-US: Synchro Robot PLC
+  - id: MLC_53g
+    en-US: Slow Motion
+  - id: MLC_4BE
+    en-US: Auto Mode Acknowledge
+  - id: MLC_ZR
+    en-US: Reset Request (Only Used With Cfg_ProgRunRst)
+  - id: MLC_3zb
+    en-US: Execute Request (Only Used With Cfg_ProgRunExec)
+  - id: MLC_4Xr
+    en-US: Stop Request
+  - id: MLC_RZ
+    en-US: Robot in secure position
+  - id: MLC_Lj
+    en-US: Nest 1 Status OK
+  - id: MLC_3Dy
+    en-US: Nest 2 Status OK
+  - id: MLC_3f8
+    en-US: DI10 Robot
+  - id: MLC_sb
+    en-US: DI11 Robot
+  - id: MLC_588
+    en-US: DI12 Robot
+  - id: MLC_44t
+    en-US: DI13 Robot
+  - id: MLC_Rn
+    en-US: DI14 Robot
+  - id: MLC_4q4
+    en-US: User Alarm
+  - id: MLC_4PN
+    en-US: User Alarm 2
+  - id: MLC_mz
+    en-US: Program Requested by PLC
+  - id: MLC_5BP
+    en-US: Spare Byte 2
+  - id: MLC_RP
+    en-US: Spare Byte 3
+  - id: MLC_aY
+    en-US: Spare Byte 4
+  - id: MLC_3fx
+    en-US: Spare Byte 5
+  - id: MLC_3Ub
+    en-US: Spare Byte 6
+  - id: MLC_4w7
+    en-US: Spare Byte 7
+  - id: MLC_3G7
+    en-US: Spare Byte 8
+  - id: MLC_3kP
+    en-US: Spare Byte 9
+  - id: MLC_nG
+    en-US: Spare Byte 10
+  - id: MLC_53E
+    en-US: Spare Byte 11
+  - id: MLC_4aC
+    en-US: Spare Byte 12
+  - id: MLC_NE
+    en-US: Spare Byte 13
+  - id: MLC_4K3
+    en-US: Spare Byte 14
+  - id: MLC_4kj
+    en-US: Spare Byte 15
+  - id: MLC_z7
+    en-US: Spare Byte 16
+  - id: MLC_3t2
+    en-US: Spare Byte 17
+  - id: MLC_4Yf
+    en-US: Spare Byte 18
+  - id: MLC_3Kt
+    en-US: Spare Byte 19
+  - id: MLC_ms
+    en-US: Spare Byte 20
+  - id: MLC_v4
+    en-US: Spare Byte 21
+  - id: MLC_ad
+    en-US: Spare Byte 22
+  - id: MLC_3bZ
+    en-US: Spare Byte 23
+  - id: MLC_wk
+    en-US: Spare Byte 24

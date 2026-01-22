@@ -1,0 +1,9 @@
+﻿MultiLingualTexts:
+  - id: MLC_4MP
+    en-US: Mode Production
+  - id: MLC_4CM
+    en-US: Mode Maintenance
+  - id: MLC_3Mq
+    en-US: Mode Manual
+  - id: MLC_5AT
+    en-US: Mode Local Production

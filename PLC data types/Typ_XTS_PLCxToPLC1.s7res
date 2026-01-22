@@ -1,0 +1,7 @@
+﻿MultiLingualTexts:
+  - id: MLC_RJ
+    en-US: Command Reset Function Mover (.0 Loop 1, .1 Loop 2, etc)
+  - id: MLC_3Ke
+    en-US: XTS Add-On Running Status
+  - id: MLC_4bd
+    en-US: Heart Beat

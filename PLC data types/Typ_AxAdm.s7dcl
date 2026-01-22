@@ -1,0 +1,14 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_AxAdm : STRUCT
+        Cmd_EnableLoop : Bool;
+        Cmd_DisableLoop : Bool;
+        Cmd_FaultReset : Bool;
+        Sts_AxisHomed : Bool;
+        Sts_AxisFault : Bool;
+        Sts_AxisLoopEnabled : Bool;
+        Sts_AxisLoopDisabled : Bool;
+        Sts_AxisReady : Bool;
+        Sts_AxisAlarm : Bool;
+    END_STRUCT;
+END_TYPE

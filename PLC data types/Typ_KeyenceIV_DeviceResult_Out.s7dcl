@@ -1,0 +1,15 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_KeyenceIV_DeviceResult_Out : STRUCT
+        Overall_judgment : Bool;
+        Position_correction : Bool;
+        Logic_1 : Bool;
+        Logic_2 : Bool;
+        Logic_3 : Bool;
+        Logic_4 : Bool;
+        Overall_judgment_NG : Bool;
+        Reserved_bit_1_7 : Bool;
+        Reserved_bit_1_8To1_15 : SInt;
+        Tool1To16 : Int;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,254 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_Act_XTS : STRUCT
+        { S7_MLC := "MLC_4sy" }
+        Cfg_AccDec_During_Reset : SInt;
+        { S7_MLC := "MLC_34a" }
+        Cfg_DisableNoHaltMotion : Bool;
+        { S7_MLC := "MLC_u4" }
+        Cfg_Gap0 : Real;
+        { S7_MLC := "MLC_49P" }
+        Cfg_Gap1 : Real;
+        { S7_MLC := "MLC_34q" }
+        Cfg_Gap2 : Real;
+        { S7_MLC := "MLC_3SM" }
+        Cfg_Gap3 : Real;
+        { S7_MLC := "MLC_3Qh" }
+        Cfg_Index_Pos_ResetFct : DInt;
+        { S7_MLC := "MLC_3sf" }
+        Cfg_InhbtMotionAlarm : Bool;
+        { S7_MLC := "MLC_3Ah" }
+        Cfg_InPos : Real;
+        { S7_MLC := "MLC_4Ua" }
+        Cfg_IsMoved : Real;
+        { S7_MLC := "MLC_4QG" }
+        Cfg_LastPos : DInt;
+        { S7_MLC := "MLC_j9" }
+        Cfg_LenghtRail : Real;
+        { S7_MLC := "MLC_3hU" }
+        Cfg_MoverIN_Number : DInt;
+        { S7_MLC := "MLC_4Rz" }
+        Cfg_MoverInMD : Array[0..10] of Bool;
+        { S7_MLC := "MLC_4LA" }
+        Cfg_MoverNumber : Int;
+        { S7_MLC := "MLC_gA" }
+        Cfg_NbrHMI : DInt;
+        { S7_MLC := "MLC_32B" }
+        Cfg_NbrOfMover : DInt;
+        { S7_MLC := "MLC_Xj" }
+        Cfg_Offset_Mover : DInt;
+        { S7_Setpoint := "False" }
+        Cfg_Pos : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_Config_Pos;
+        { S7_MLC := "MLC_4uV" }
+        Cfg_Positive_Direction : Bool;
+        { S7_MLC := "MLC_3PL" }
+        Cfg_Scaling : Real;
+        { S7_MLC := "MLC_3TB" }
+        Cfg_Speed_During_Reset : SInt;
+        { S7_MLC := "MLC_e2" }
+        Cmd_Ack : Bool;
+        { S7_MLC := "MLC_jj" }
+        Cmd_HaltMotion : Bool;
+        { S7_MLC := "MLC_3S9" }
+        Cmd_ResetFct : Bool;
+        {
+            S7_MLC := "MLC_4hk";
+            S7_Setpoint := "True"
+        }
+        Cmd_FromHMi : DInt;
+        Cmd_NewRqst : Bool;
+        { S7_MLC := "MLC_4eW" }
+        Cmd_Out : DInt;
+        { S7_MLC := "MLC_4eg" }
+        Cmd_Seq : DInt;
+        { S7_MLC := "MLC_Mk" }
+        LastIndex_Pos : DInt;
+        { S7_MLC := "MLC_4Ab" }
+        Index_pos : DInt;
+        { S7_MLC := "MLC_4NL" }
+        MemoryPos : Real := -99.0;
+        { S7_MLC := "MLC_53b" }
+        Mem_Force_Index : DInt;
+        { S7_MLC := "MLC_44m" }
+        Mem_Index_pos : DInt;
+        { S7_MLC := "MLC_3u8" }
+        Mem_MoverNb_Pos : Int;
+        { S7_MLC := "MLC_xA" }
+        Par_TimeOut : DInt;
+        { S7_MLC := "MLC_XU" }
+        Sts_MD_Exec : Bool;
+        Sts_NewMotionAck : Bool;
+        { S7_MLC := "MLC_3YS" }
+        Rep_dT : DInt;
+        { S7_MLC := "MLC_4R6" }
+        Sts_ActualPos : Real;
+        { S7_MLC := "MLC_32h" }
+        Sts_AlmOns : Bool;
+        { S7_MLC := "MLC_3T9" }
+        Sts_Alms : DInt;
+        { S7_MLC := "MLC_zX" }
+        Sts_HoldMotionNoCA : Bool;
+        { S7_MLC := "MLC_43h" }
+        Sts_Idle : Bool := 1;
+        { S7_MLC := "MLC_3J6" }
+        Sts_Mover_ColAvoidBW : Bool;
+        { S7_MLC := "MLC_yW" }
+        Sts_Mover_ColAvoidFF : Bool;
+        { S7_MLC := "MLC_4Lw" }
+        Sts_Mover_PosOk : Bool;
+        { S7_MLC := "MLC_33i" }
+        Sts_MoverInMD : Array[1.._.Cfg_XTS_NbrMaxMover] of DInt;
+        { S7_MLC := "MLC_3UL" }
+        Sts_NoAlm : Bool;
+        { S7_MLC := "MLC_4xu" }
+        Sts_Out : DInt;
+        { S7_MLC := "MLC_bT" }
+        Sts_Seq : DInt;
+        { S7_MLC := "MLC_3Xz" }
+        Sts_Seqp : DInt;
+        { S7_MLC := "MLC_h3" }
+        Sts_ManExe : Bool;
+        { S7_MLC := "MLC_4Lu" }
+        Sts_Mover_AnticipOk : Bool;
+        { S7_MLC := "MLC_3tN" }
+        Sts_Mover_OutOfAnticip : Bool;
+        { S7_MLC := "MLC_338" }
+        Sts_SeqOns : Bool;
+        { S7_MLC := "MLC_LL" }
+        Sts_SeqT : DInt;
+        { S7_MLC := "MLC_4Yq" }
+        Sts_TimeOut : Bool;
+        { S7_MLC := "MLC_ch" }
+        TargetPosition : Real;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4eU";
+            S7_Visibility := "Hidden := External"
+        }
+        Index_Pos_Mover : Array[1.._.Cfg_XTS_NbrMaxMover] of DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4cB";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_MoverNb_Pos : Array[0.._.Cfg_XTS_NbrMaxPosition] of Int;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3at";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Pos : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_StatusPos;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3yD";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Sync_PosFromXTS : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_SyncPosFromXTS;
+        {
+            S7_MLC := "MLC_3Np";
+            S7_Setpoint := "False"
+        }
+        Sync_PosToXTS : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_SyncPosToXTS;
+        {
+            S7_MLC := "MLC_4ud";
+            S7_Setpoint := "False"
+        }
+        AckTmr : TOF_TIME;
+        {
+            S7_MLC := "MLC_3yw";
+            S7_Setpoint := "True"
+        }
+        "Tmp_" : DInt;
+        {
+            S7_MLC := "MLC_4dY";
+            S7_Setpoint := "False"
+        }
+        Tmr_Cmd : TON_TIME;
+        { S7_MLC := "MLC_3hx" }
+        Tmr_Grp_TO : TON_TIME;
+        { S7_MLC := "MLC_3su" }
+        Tmr_Pos_TO1 : TON_TIME;
+        { S7_MLC := "MLC_4zv" }
+        Tmr_Pos_TO2 : TON_TIME;
+        { S7_MLC := "MLC_3nh" }
+        Tmr_Pos_TO3 : TON_TIME;
+        { S7_MLC := "MLC_48X" }
+        Tmr_TO : TON_TIME;
+        { S7_MLC := "MLC_4LH" }
+        Tmr_Wait : TON_TIME;
+        { S7_MLC := "MLC_3me" }
+        Gap : Real;
+        { S7_MLC := "MLC_4hb" }
+        iLoop_HMI : DInt;
+        { S7_MLC := "MLC_3mE" }
+        iLoop_ManExe : DInt;
+        { S7_MLC := "MLC_he" }
+        IN_NextMover : DInt;
+        { S7_MLC := "MLC_4c3" }
+        IN_PrevMover : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4YV";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        IN_InterfaceHMi : Array[0..10] of _.Typ_XTS_AxSiHMi;
+        { S7_MLC := "MLC_4xm" }
+        Index_pos_HMi : Array[0..10] of DInt;
+        {
+            S7_MLC := "MLC_4Hk";
+            S7_Setpoint := "False"
+        }
+        InterfaceHMi : _.Typ_XTS_AxSiHMi;
+        { S7_MLC := "MLC_3zt" }
+        Fct_XTS_HMi : _.Typ_Fct_XTS_HMi;
+        { S7_MLC := "MLC_3W3" }
+        SelectMover_HMi : Array[0..9] of DInt;
+        Memo_NewMotionAck : Bool;
+        { S7_MLC := "MLC_4tL" }
+        MemoryPosPre : Real;
+        {
+            S7_MLC := "MLC_4wr";
+            S7_Setpoint := "False"
+        }
+        MoverIN_Mover : Array[1.._.Cfg_XTS_NbrMaxMover] of _.Typ_XTS_In_Mover;
+        {
+            S7_MLC := "MLC_wU";
+            S7_Setpoint := "False"
+        }
+        MoverIN : _.Typ_XTS_In_Mover;
+        {
+            S7_MLC := "MLC_3zB";
+            S7_Setpoint := "False"
+        }
+        MoverOUT : _.Typ_XTS_Out_Mover;
+        { S7_MLC := "MLC_32Z" }
+        NextMoverNumber : DInt;
+        { S7_MLC := "MLC_4KM" }
+        Pos_LastIndex_Pos : Real;
+        { S7_MLC := "MLC_3MX" }
+        PrevMoverNumber : DInt;
+        { S7_MLC := "MLC_3te" }
+        rTolPos : Real;
+        { S7_MLC := "MLC_57L" }
+        bInPos : Bool;
+        { S7_MLC := "MLC_46X" }
+        N : DInt;
+        { S7_Setpoint := "False" }
+        Empty_StatusPos : _.Typ_XTS_StatusPos;
+        { S7_Setpoint := "True" }
+        rMinPosWithTol : Real;
+        rMaxPosWithTol : Real;
+        {
+            S7_MLC := "MLC_4zT";
+            S7_Setpoint := "True"
+        }
+        Memo_AbortSign : Bool;
+        { S7_MLC := "MLC_4cP" }
+        ONS : DInt;
+        { S7_MLC := "MLC_4fU" }
+        RisingEdge1 : Bool;
+    END_STRUCT;
+END_TYPE

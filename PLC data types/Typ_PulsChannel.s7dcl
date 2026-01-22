@@ -1,0 +1,13 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_PulsChannel : STRUCT
+        { S7_MLC := "MLC_Rr" }
+        Current : Real;
+        { S7_MLC := "MLC_3ex" }
+        State : Bool;
+        { S7_MLC := "MLC_Um" }
+        Tripped : Bool;
+        { S7_MLC := "MLC_4zp" }
+        Shorted : Bool;
+    END_STRUCT;
+END_TYPE

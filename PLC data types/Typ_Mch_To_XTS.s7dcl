@@ -1,0 +1,21 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_Mch_To_XTS : STRUCT
+        { S7_MLC := "MLC_4MX" }
+        Cmd_CycleResetFctMover : SInt;
+        { S7_MLC := "MLC_4f2" }
+        Cmd_CycleAbortMover : Bool;
+        { S7_MLC := "MLC_ij" }
+        Cmd_CycleResetMover : Bool;
+        { S7_MLC := "MLC_yq" }
+        Cmd_CycleExecMover : Bool;
+        { S7_MLC := "MLC_3WQ" }
+        Sts_MD_Exec : Bool;
+        { S7_MLC := "MLC_39r" }
+        Cmd_Enable : Bool;
+        { S7_MLC := "MLC_gH" }
+        PushBtnReset : Bool;
+        { S7_MLC := "MLC_4sc" }
+        Sts_XTS_SlowSpeed : Bool;
+    END_STRUCT;
+END_TYPE

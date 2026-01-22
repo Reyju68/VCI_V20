@@ -1,0 +1,41 @@
+﻿MultiLingualTexts:
+  - id: MLC_3ZY
+    en-US: Selection Mover ID
+  - id: MLC_3Mh
+    en-US: Selection of Position Index
+  - id: MLC_47Y
+    en-US: Value of Target Position Index
+  - id: MLC_vH
+    en-US: Value Position Index
+  - id: MLC_3et
+    en-US: Command Abort
+  - id: MLC_Zx
+    en-US: Command Reset
+  - id: MLC_4r3
+    en-US: Command Execute manual motion
+  - id: MLC_3Le
+    en-US: Command To Reset Mover Memory Position
+  - id: MLC_4kn
+    en-US: Value of actual Target Position
+  - id: MLC_4Zt
+    en-US: Value of actual Position
+  - id: MLC_3BE
+    en-US: Mover error ID
+  - id: MLC_3Tc
+    en-US: Mover Ready
+  - id: MLC_i2
+    en-US: Mover in Alarm
+  - id: MLC_h2
+    en-US: Mover in Collision Avoidance Status
+  - id: MLC_3kT
+    en-US: Mover is Enabled
+  - id: MLC_4Xa
+    en-US: Mover in Fault Status
+  - id: MLC_wW
+    en-US: Interlock Configuration
+  - id: MLC_32Y
+    en-US: Configuration First position index Allowed
+  - id: MLC_45H
+    en-US: Configuration Last position index Allowed
+  - id: MLC_X2
+    en-US: 'Zone Interlock Configuration FOR HMI (Reset Loop + Position Visualization: .1 Zone 1, .2 Zone 2, etc )'

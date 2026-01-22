@@ -1,0 +1,76 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_Fct_XTS_HMi : STRUCT
+        { S7_MLC := "MLC_bS" }
+        Cfg_LastPos : DInt;
+        { S7_MLC := "MLC_3m8" }
+        Cfg_MoverInMD : Array[0.._.Cfg_XTS_NbrOfHMI_Interface] of Bool;
+        { S7_MLC := "MLC_et" }
+        Cfg_MoverNumber : DInt;
+        { S7_MLC := "MLC_4eY" }
+        Cfg_NbrHMI : DInt;
+        { S7_MLC := "MLC_4AL" }
+        Sts_ActualPos : Real;
+        { S7_MLC := "MLC_3ic" }
+        Sts_Idle : Bool;
+        { S7_MLC := "MLC_gX" }
+        Sts_Mover_ColAvoidBW : Bool;
+        { S7_MLC := "MLC_tC" }
+        Sts_Mover_ColAvoidFF : Bool;
+        { S7_MLC := "MLC_4QK" }
+        Sts_NoAlm : Bool;
+        { S7_MLC := "MLC_3fu" }
+        Cfg_Scaling : Real;
+        { S7_Setpoint := "False" }
+        Cfg_Pos : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_Config_Pos;
+        {
+            S7_MLC := "MLC_n8";
+            S7_Setpoint := "False"
+        }
+        MoverIN : _.Typ_XTS_In_Mover;
+        { S7_MLC := "MLC_33X" }
+        Cmd_FromHMi : DInt;
+        { S7_MLC := "MLC_3aL" }
+        MemoryPos : Real;
+        { S7_MLC := "MLC_4aT" }
+        Cmd_Out : DInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_js";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        InterfaceHMi : _.Typ_XTS_AxSiHMi;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3cS";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Pos : Array[0.._.Cfg_XTS_NbrMaxPosition] of _.Typ_XTS_StatusPos;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_cv";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        MoverOUT : _.Typ_XTS_Out_Mover;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3ww";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        IN_InterfaceHMi : Array[0.._.Cfg_XTS_NbrOfHMI_Interface] of _.Typ_XTS_AxSiHMi;
+        { S7_MLC := "MLC_4hD" }
+        iLoop_HMI : DInt;
+        { S7_MLC := "MLC_3XG" }
+        iLoop_ManExe : DInt;
+        { S7_MLC := "MLC_4ww" }
+        Sts_ManExe : Bool;
+        { S7_MLC := "MLC_4FQ" }
+        Tmp_Index_pos_HMi : DInt;
+        { S7_MLC := "MLC_37M" }
+        Index_pos_HMi : Array[1.._.Cfg_XTS_NbrOfHMI_Interface] of DInt;
+    END_STRUCT;
+END_TYPE

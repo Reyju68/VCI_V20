@@ -1,0 +1,21 @@
+﻿MultiLingualTexts:
+  - id: MLC_595
+    en-US: 'Index type:  0: Index=8bits Sub=0Bits;1: Index=8bits Sub=8Bits; 2: Index=16bits Sub=8Bits;'
+  - id: MLC_3gX
+    en-US: Message Index
+  - id: MLC_4NX
+    en-US: Message Sub Index
+  - id: MLC_4x4
+    en-US: Lenght in bytes of message data
+  - id: MLC_4kw
+    en-US: Data Value to send
+  - id: MLC_xg
+    en-US: Minimum Value
+  - id: MLC_uh
+    en-US: Maximum Value
+  - id: MLC_5AH
+    en-US: Data Value read for device
+  - id: MLC_yz
+    en-US: Online data is readonly
+  - id: MLC_u4
+    en-US: Data name to collect for predictive Maintenance

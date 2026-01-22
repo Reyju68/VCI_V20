@@ -1,0 +1,75 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_MgrAlms : STRUCT
+        { S7_MLC := "MLC_3mb" }
+        "A1" : DInt;
+        { S7_MLC := "MLC_QE" }
+        A2 : DInt;
+        { S7_MLC := "MLC_3SA" }
+        A3 : DInt;
+        { S7_MLC := "MLC_4nf" }
+        A4 : DInt;
+        { S7_MLC := "MLC_Ln" }
+        A5 : DInt;
+        { S7_MLC := "MLC_Wz" }
+        A6 : DInt;
+        { S7_MLC := "MLC_3QX" }
+        A7 : DInt;
+        { S7_MLC := "MLC_3nE" }
+        L1 : DInt;
+        { S7_MLC := "MLC_4kA" }
+        L2 : DInt;
+        { S7_MLC := "MLC_hC" }
+        L3 : DInt;
+        { S7_MLC := "MLC_36u" }
+        L4 : DInt;
+        { S7_MLC := "MLC_4jb" }
+        L5 : DInt;
+        { S7_MLC := "MLC_3CR" }
+        L6 : DInt;
+        { S7_MLC := "MLC_4wg" }
+        L7 : DInt;
+        { S7_MLC := "MLC_3iU" }
+        RA1 : DInt;
+        { S7_MLC := "MLC_37a" }
+        RA2 : DInt;
+        { S7_MLC := "MLC_3HX" }
+        RA3 : DInt;
+        { S7_MLC := "MLC_4sA" }
+        RA4 : DInt;
+        { S7_MLC := "MLC_3Kw" }
+        RA5 : DInt;
+        { S7_MLC := "MLC_ex" }
+        RA6 : DInt;
+        { S7_MLC := "MLC_3eb" }
+        RA7 : DInt;
+        { S7_MLC := "MLC_3Mm" }
+        Reset_L1 : Bool;
+        { S7_MLC := "MLC_wM" }
+        Reset_L2 : Bool;
+        { S7_MLC := "MLC_4jS" }
+        Reset_L3 : Bool;
+        { S7_MLC := "MLC_Nn" }
+        Reset_L4 : Bool;
+        { S7_MLC := "MLC_4at" }
+        Reset_L5 : Bool;
+        { S7_MLC := "MLC_4wW" }
+        Reset_L6 : Bool;
+        { S7_MLC := "MLC_4cV" }
+        Reset_L7 : Bool;
+        L1_Bool : Array[0..31] of Bool;
+        L2_Bool : Array[0..31] of Bool;
+        L3_Bool : Array[0..31] of Bool;
+        L4_Bool : Array[0..31] of Bool;
+        L5_Bool : Array[0..31] of Bool;
+        L6_Bool : Array[0..31] of Bool;
+        L7_Bool : Array[0..31] of Bool;
+        RA1_Bool : Array[0..31] of Bool;
+        RA2_Bool : Array[0..31] of Bool;
+        RA3_Bool : Array[0..31] of Bool;
+        RA4_Bool : Array[0..31] of Bool;
+        RA5_Bool : Array[0..31] of Bool;
+        RA6_Bool : Array[0..31] of Bool;
+        RA7_Bool : Array[0..31] of Bool;
+    END_STRUCT;
+END_TYPE

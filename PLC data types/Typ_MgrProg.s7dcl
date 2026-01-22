@@ -1,0 +1,99 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_MgrProg : STRUCT
+        { S7_MLC := "MLC_4fA" }
+        Cfg_BtnNoInterlock : DInt;
+        { S7_MLC := "MLC_u2" }
+        Cfg_ModularTst : Bool;
+        { S7_MLC := "MLC_3WF" }
+        Cfg_Safe : Bool;
+        { S7_MLC := "MLC_3UU" }
+        Cfg_SeqStep : Bool;
+        { S7_MLC := "MLC_3zb" }
+        Cmd_Idle : Bool;
+        { S7_MLC := "MLC_489" }
+        Cmd_ImAbort : Bool;
+        { S7_MLC := "MLC_3wB" }
+        Cmd_ResetTmrSeq : Bool;
+        { S7_MLC := "MLC_3pK" }
+        Cmd_Seq : DInt;
+        { S7_MLC := "MLC_3Yt" }
+        Cmd_SeqOns : Bool;
+        { S7_MLC := "MLC_eG" }
+        Cmd_State : DInt;
+        { S7_MLC := "MLC_3fa" }
+        Par_TimeIdeal : DInt;
+        { S7_MLC := "MLC_4BP" }
+        Max_dT : DInt;
+        { S7_MLC := "MLC_3sN" }
+        Mem_Idle : Bool;
+        { S7_MLC := "MLC_3JZ" }
+        Mem_SeqP : DInt;
+        { S7_MLC := "MLC_3Q6" }
+        Mem_SeqPT : DInt;
+        { S7_MLC := "MLC_XP" }
+        Tmr : IEC_TIMER;
+        { S7_MLC := "MLC_4PF" }
+        TmrSeq : IEC_TIMER;
+        { S7_MLC := "MLC_3Rw" }
+        Rep_dT : DInt;
+        { S7_MLC := "MLC_4uB" }
+        Sts_BtnNoInterlock : DInt;
+        { S7_MLC := "MLC_4bQ" }
+        Sts_dTing : Bool;
+        { S7_MLC := "MLC_3GP" }
+        Sts_Idle : Bool;
+        { S7_MLC := "MLC_4pi" }
+        Sts_Seq : DInt;
+        { S7_MLC := "MLC_4ts" }
+        Sts_SeqExe : Bool;
+        { S7_MLC := "MLC_3qn" }
+        Sts_SeqOns : Bool;
+        { S7_MLC := "MLC_52U" }
+        Sts_SeqP : DInt;
+        { S7_MLC := "MLC_MB" }
+        Sts_SeqP2 : DInt;
+        { S7_MLC := "MLC_3Xs" }
+        Sts_SeqP3 : DInt;
+        { S7_MLC := "MLC_jg" }
+        Sts_SeqP4 : DInt;
+        { S7_MLC := "MLC_4eR" }
+        Sts_SeqP5 : DInt;
+        { S7_MLC := "MLC_3tG" }
+        Sts_SeqP6 : DInt;
+        { S7_MLC := "MLC_4ji" }
+        Sts_SeqP7 : DInt;
+        { S7_MLC := "MLC_wT" }
+        Sts_SeqP8 : DInt;
+        { S7_MLC := "MLC_m3" }
+        Sts_SeqP9 : DInt;
+        { S7_MLC := "MLC_3yb" }
+        Sts_SeqP10 : DInt;
+        { S7_MLC := "MLC_4Kd" }
+        Sts_SeqT : DInt;
+        { S7_MLC := "MLC_4Bz" }
+        Sts_SeqTp : DInt;
+        { S7_MLC := "MLC_4PV" }
+        Sts_SeqTp2 : DInt;
+        { S7_MLC := "MLC_4ny" }
+        Sts_SeqTp3 : DInt;
+        { S7_MLC := "MLC_35r" }
+        Sts_SeqTp4 : DInt;
+        { S7_MLC := "MLC_4Gr" }
+        Sts_SeqTp5 : DInt;
+        { S7_MLC := "MLC_3LN" }
+        Sts_SeqTp6 : DInt;
+        { S7_MLC := "MLC_57i" }
+        Sts_SeqTp7 : DInt;
+        { S7_MLC := "MLC_4jF" }
+        Sts_SeqTp8 : DInt;
+        { S7_MLC := "MLC_x8" }
+        Sts_SeqTp9 : DInt;
+        { S7_MLC := "MLC_3WR" }
+        Sts_SeqTp10 : DInt;
+        { S7_MLC := "MLC_4M7" }
+        Sts_State : DInt;
+        { S7_MLC := "MLC_3zA" }
+        Sts_StateOns : Bool;
+    END_STRUCT;
+END_TYPE

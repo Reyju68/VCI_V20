@@ -1,0 +1,7 @@
+﻿MultiLingualTexts:
+  - id: MLC_n5
+    en-US: Status End OF Cycle Station
+  - id: MLC_3yQ
+    en-US: Command Go TO Position Index allowed
+  - id: MLC_LP
+    en-US: Command TO force Mover Position Index

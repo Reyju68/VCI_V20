@@ -1,0 +1,95 @@
+﻿MultiLingualTexts:
+  - id: MLC_4fA
+    en-US: Configuration of the function allowed to be activated
+  - id: MLC_u2
+    en-US: Configuration instruction to force step by step mode using during modular testing
+  - id: MLC_3WF
+    en-US: Configuration instruction to enable safe sequence execution
+  - id: MLC_3UU
+    en-US: Configuration instruction to request step-by-step mode
+  - id: MLC_3zb
+    en-US: Command to define the end of sequence
+  - id: MLC_489
+    en-US: Command to execute an immediate abort
+  - id: MLC_3wB
+    en-US: Command to reset the Seq Timer
+  - id: MLC_3pK
+    en-US: Command to define next sequence value
+  - id: MLC_3Yt
+    en-US: Command to request a single step while being in step-by-step mode
+  - id: MLC_eG
+    en-US: Bitwise state command (.0 requests Abort, .1 requests Reset and .2 requests Exec)
+  - id: MLC_3fa
+    en-US: Parameter to define the ideal execution time
+  - id: MLC_4BP
+    en-US: Maxi TimeIdeal
+  - id: MLC_3sN
+    en-US: Memo Idle
+  - id: MLC_3JZ
+    en-US: Memo Previous Step
+  - id: MLC_3Q6
+    en-US: Memo Previous Step Time
+  - id: MLC_XP
+    en-US: Timer
+  - id: MLC_4PF
+    en-US: Timer
+  - id: MLC_3Rw
+    en-US: Reporting value to give current execution elapsed time
+  - id: MLC_4uB
+    en-US: Status No Interlock by function
+  - id: MLC_4bQ
+    en-US: Status to inform that Rep_dT value is less than or equal to 2 x Par_TimeIdeal
+  - id: MLC_3GP
+    en-US: Status to inform end of process
+  - id: MLC_4pi
+    en-US: Status to give current sequence value
+  - id: MLC_4ts
+    en-US: Status to free (or not) current sequence (link to step-by-step mode)
+  - id: MLC_3qn
+    en-US: Status to inform once a sequence change
+  - id: MLC_52U
+    en-US: Status to give previous sequence value
+  - id: MLC_MB
+    en-US: Status to give previous -2 sequence value
+  - id: MLC_3Xs
+    en-US: Status to give previous -3 sequence value
+  - id: MLC_jg
+    en-US: Status to give previous -4 sequence value
+  - id: MLC_4eR
+    en-US: Status to give previous -5 sequence value
+  - id: MLC_3tG
+    en-US: Status to give previous -6 sequence value
+  - id: MLC_4ji
+    en-US: Status to give previous -7 sequence value
+  - id: MLC_wT
+    en-US: Status to give previous -8 sequence value
+  - id: MLC_m3
+    en-US: Status to give previous -9 sequence value
+  - id: MLC_3yb
+    en-US: Status to give previous -10 sequence value
+  - id: MLC_4Kd
+    en-US: Reporting value to give current execution elapsed time of the sequence
+  - id: MLC_4Bz
+    en-US: Reporting value to give previous execution elapsed time of the sequence
+  - id: MLC_4PV
+    en-US: Reporting value to give previous -2 execution elapsed time of the sequence
+  - id: MLC_4ny
+    en-US: Reporting value to give previous -3 execution elapsed time of the sequence
+  - id: MLC_35r
+    en-US: Reporting value to give previous -4 execution elapsed time of the sequence
+  - id: MLC_4Gr
+    en-US: Reporting value to give previous -5 execution elapsed time of the sequence
+  - id: MLC_3LN
+    en-US: Reporting value to give previous -6 execution elapsed time of the sequence
+  - id: MLC_57i
+    en-US: Reporting value to give previous -7 execution elapsed time of the sequence
+  - id: MLC_4jF
+    en-US: Reporting value to give previous -8 execution elapsed time of the sequence
+  - id: MLC_x8
+    en-US: Reporting value to give previous -9 execution elapsed time of the sequence
+  - id: MLC_3WR
+    en-US: Reporting value to give previous -10 execution elapsed time of the sequence
+  - id: MLC_4M7
+    en-US: Bitwise state status (.0 requests Abort, .1 requests Reset and .2 requests Exec)
+  - id: MLC_3zA
+    en-US: Status to inform once a state change

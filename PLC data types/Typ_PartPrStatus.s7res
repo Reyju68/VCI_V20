@@ -1,0 +1,9 @@
+﻿MultiLingualTexts:
+  - id: MLC_4J8
+    en-US: Status to inform if current nest isloaded or empty
+  - id: MLC_3ga
+    en-US: Status to inform if current process has failed or not
+  - id: MLC_52a
+    en-US: Status to inform if current nest has not been processed in PRODUCING mode
+  - id: MLC_368
+    en-US: Confuguration ïnstruction to define the specific Fail Code of the station

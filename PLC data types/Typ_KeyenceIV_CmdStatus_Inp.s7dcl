@@ -1,0 +1,37 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_KeyenceIV_CmdStatus_Inp : STRUCT
+        Trigger_response : Bool;
+        Master_registration_response : Bool;
+        Program_switching_response : Bool;
+        Warning_clear_response : Bool;
+        Statistics_reset_response : Bool;
+        Buffer_clear_response : Bool;
+        SDCard_save_reponse : Bool;
+        Setting_value_change_response : Bool;
+        Trigger_failed : Bool;
+        Master_registration_failed : Bool;
+        Program_switching_failed : Bool;
+        Reserved_bit_0_11 : Bool;
+        Reserved_bit_0_12 : Bool;
+        Reserved_bit_0_13 : Bool;
+        SDCard_save_failed : Bool;
+        Setting_value_change_failed : Bool;
+        Result_available : Bool;
+        Result_update_complete : Bool;
+        Busy : Bool;
+        Imaging_status : Bool;
+        Run : Bool;
+        Ready : Bool;
+        SDCard_ID_Status : Bool;
+        Sort_mode_information : Bool;
+        Reserved_bit_0_24 : Bool;
+        Reserved_bit_0_25 : Bool;
+        Reserved_bit_0_26 : Bool;
+        SDCard_no_free_space : Bool;
+        Temporary_memory_full : Bool;
+        Buffer_overrun : Bool;
+        Warning : Bool;
+        Error : Bool;
+    END_STRUCT;
+END_TYPE

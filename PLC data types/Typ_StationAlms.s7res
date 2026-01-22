@@ -1,0 +1,29 @@
+﻿MultiLingualTexts:
+  - id: MLC_aD
+    en-US: Rep - Status Down Time (Abort + Stop + Idle)
+  - id: MLC_4pm
+    en-US: Rep - Status Waiting Time (Hold + Suspend)
+  - id: MLC_WU
+    en-US: Rep - Status Abort Time
+  - id: MLC_4Es
+    en-US: Rep - Status Stop Time
+  - id: MLC_3cW
+    en-US: Rep - Status Idle Time
+  - id: MLC_39K
+    en-US: Rep - Status Hold Time
+  - id: MLC_4uX
+    en-US: Rep - Status Suspend Time
+  - id: MLC_nh
+    en-US: Rep - Status Down Counter (Abort + Stop + Idle)
+  - id: MLC_4fB
+    en-US: Rep - Status Waiting Counter (Hold + Suspend)
+  - id: MLC_4pP
+    en-US: Rep - Status Abort Counter
+  - id: MLC_3zJ
+    en-US: Rep - Status Stop Counter
+  - id: MLC_4hT
+    en-US: Rep - Status Idle Counter
+  - id: MLC_4RK
+    en-US: Rep - Status Hold Counter
+  - id: MLC_33q
+    en-US: Rep - Status Suspend Counter

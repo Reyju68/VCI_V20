@@ -1,0 +1,13 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_In_Mover : STRUCT
+        bInPos : Bool;
+        bIsMoving : Bool;
+        bError : Bool;
+        bNoGroupCA : Bool;
+        bGroupFF : Bool;
+        bNewMotionAck : Bool;
+        uiErrorID : UInt;
+        rPos : Real;
+    END_STRUCT;
+END_TYPE

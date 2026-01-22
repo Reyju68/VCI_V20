@@ -1,0 +1,150 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    UDT_MDI_TLG_910 : STRUCT
+        WR_Profidrive_Tele9 : STRUCT
+            { S7_MLC := "MLC_3zj" }
+            STW1 : STRUCT
+                { S7_MLC := "MLC_343" }
+                Jog_1 : Bool;
+                { S7_MLC := "MLC_33X" }
+                Jog_2 : Bool;
+                { S7_MLC := "MLC_3nU" }
+                Control_PLC : Bool := true;
+                { S7_MLC := "MLC_pm" }
+                Start_Homing : Bool;
+                res_12 : Bool;
+                res_13 : Bool;
+                res_14 : Bool;
+                res_15 : Bool;
+                { S7_MLC := "MLC_4YN" }
+                Start : Bool;
+                { S7_MLC := "MLC_yB" }
+                Coast : Bool := false;
+                { S7_MLC := "MLC_4mn" }
+                Quick_Stop : Bool := false;
+                { S7_MLC := "MLC_3e8" }
+                Enable_Operation : Bool := false;
+                { S7_MLC := "MLC_3VB" }
+                Traversing : Bool;
+                { S7_MLC := "MLC_59m" }
+                Inter_Stop : Bool;
+                { S7_MLC := "MLC_3kA" }
+                Act_Traversing : Bool;
+                { S7_MLC := "MLC_44J" }
+                Fault_Ack : Bool;
+            END_STRUCT;
+            { S7_MLC := "MLC_3jn" }
+            SATZ_ANW : STRUCT
+                res_8 : Bool;
+                res_9 : Bool;
+                res_10 : Bool;
+                res_11 : Bool;
+                res_12 : Bool;
+                res_13 : Bool;
+                res_14 : Bool;
+                { S7_MLC := "MLC_RS" }
+                MDI_activate : Bool := true;
+                Satz : Byte;
+            END_STRUCT;
+            { S7_MLC := "MLC_4Da" }
+            STW2 : STRUCT
+                res_8 : Bool;
+                res_9 : Bool;
+                res_10 : Bool;
+                res_11 : Bool;
+                res_12 : Bool;
+                res_13 : Bool;
+                res_14 : Bool;
+                res_15 : Bool;
+                res_0_7 : Byte;
+            END_STRUCT;
+            { S7_MLC := "MLC_a7" }
+            MDITarPos : DInt;
+            { S7_MLC := "MLC_k9" }
+            MDIVel : DInt;
+            { S7_MLC := "MLC_46a" }
+            MDIAcc : Int;
+            { S7_MLC := "MLC_4JE" }
+            MDIDec : Int;
+            MDI_MOD : STRUCT
+                res_8_15 : Byte;
+                { S7_MLC := "MLC_38t" }
+                MDIMode : Bool := true;
+                res_1 : Bool;
+                res_2 : Bool;
+                res_3 : Bool;
+                res_4 : Bool;
+                res_5 : Bool;
+                res_6 : Bool;
+                res_7 : Bool;
+            END_STRUCT;
+            { S7_MLC := "MLC_TS" }
+            Limit_I_Force : Int;
+        END_STRUCT;
+        RD_Profidrive_Tele9 : STRUCT
+            { S7_MLC := "MLC_4pH" }
+            ZSW1 : STRUCT
+                { S7_MLC := "MLC_54A" }
+                Follow_Error : Bool;
+                { S7_MLC := "MLC_k8" }
+                Control_Req : Bool;
+                { S7_MLC := "MLC_4SR" }
+                Target_Position : Bool;
+                { S7_MLC := "MLC_3fg" }
+                Home_Position : Bool;
+                { S7_MLC := "MLC_eW" }
+                Traversing_Ack_1 : Bool;
+                { S7_MLC := "MLC_RB" }
+                Drive_Stopped : Bool;
+                res_14 : Bool;
+                res_15 : Bool;
+                { S7_MLC := "MLC_49g" }
+                Ready_Switch : Bool;
+                { S7_MLC := "MLC_d2" }
+                Ready_Operate : Bool;
+                { S7_MLC := "MLC_3S9" }
+                Operation_Enable : Bool;
+                { S7_MLC := "MLC_3cL" }
+                Fault : Bool;
+                { S7_MLC := "MLC_dx" }
+                Coast_Off : Bool;
+                { S7_MLC := "MLC_Lw" }
+                Quick_Stop : Bool;
+                { S7_MLC := "MLC_5CC" }
+                Switch_Inhib : Bool;
+                { S7_MLC := "MLC_3EE" }
+                Warning : Bool;
+            END_STRUCT;
+            { S7_MLC := "MLC_44A" }
+            AKT_SATZ : STRUCT
+                res_8 : Bool;
+                res_9 : Bool;
+                res_10 : Bool;
+                res_11 : Bool;
+                res_12 : Bool;
+                res_13 : Bool;
+                res_14 : Bool;
+                MDI_activate : Bool;
+                Satz : Byte;
+            END_STRUCT;
+            { S7_MLC := "MLC_34K" }
+            ZSW2 : STRUCT
+                res_8 : Bool;
+                res_9 : Bool;
+                pulses_enabled : Bool;
+                res_11 : Bool;
+                res_12 : Bool;
+                res_13 : Bool;
+                res_14 : Bool;
+                res_15 : Bool;
+                res_0_7 : Byte;
+            END_STRUCT;
+            { S7_MLC := "MLC_3GF" }
+            XIST_A : DInt;
+            { S7_MLC := "MLC_3XA" }
+            I_ForceActual : DInt;
+            { S7_MLC := "MLC_4GN" }
+            ProcessStatusReg : DWord;
+        END_STRUCT;
+    END_STRUCT;
+END_TYPE

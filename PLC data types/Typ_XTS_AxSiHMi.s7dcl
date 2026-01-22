@@ -1,0 +1,45 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_AxSiHMi : STRUCT
+        { S7_MLC := "MLC_3ZY" }
+        Cmd_SelectMover : DInt;
+        { S7_MLC := "MLC_3Mh" }
+        Cmd_SelectPosition : DInt;
+        { S7_MLC := "MLC_47Y" }
+        Cmd_ValueTargetPos : Real;
+        { S7_MLC := "MLC_vH" }
+        Cmd_ForceIndex : DInt;
+        { S7_MLC := "MLC_3et" }
+        Cmd_Abort : Bool;
+        { S7_MLC := "MLC_Zx" }
+        Cmd_Reset : Bool;
+        { S7_MLC := "MLC_4r3" }
+        Cmd_ExecManual : Bool;
+        { S7_MLC := "MLC_3Le" }
+        Cmd_ResetMemPos : Bool;
+        { S7_MLC := "MLC_4kn" }
+        Sts_TargetPos : Real;
+        { S7_MLC := "MLC_4Zt" }
+        Sts_ActualPos : Real;
+        { S7_MLC := "MLC_3BE" }
+        Sts_ErrorID : DInt;
+        { S7_MLC := "MLC_3Tc" }
+        Sts_Ready : Bool;
+        { S7_MLC := "MLC_i2" }
+        Sts_Alarm : Bool;
+        { S7_MLC := "MLC_h2" }
+        Sts_CollAvoidance : Bool;
+        { S7_MLC := "MLC_3kT" }
+        Sts_MoverEnabled : Bool;
+        { S7_MLC := "MLC_4Xa" }
+        Sts_Fault : Bool;
+        { S7_MLC := "MLC_wW" }
+        Cfg_NoInterlock : Bool;
+        { S7_MLC := "MLC_32Y" }
+        Cfg_IndexFirstPos : DInt;
+        { S7_MLC := "MLC_45H" }
+        Cfg_IndexLastPos : DInt;
+        { S7_MLC := "MLC_X2" }
+        Cfg_ZoneNoInterlock : DInt;
+    END_STRUCT;
+END_TYPE

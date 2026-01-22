@@ -1,0 +1,20 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_FanucR30iB_Safety_Inputs : STRUCT
+        ESTOP : Bool;
+        FENCE : Bool;
+        AUTO : Bool;
+        T1 : Bool;
+        T2 : Bool;
+        CartesianSpaceCheck_1 : Bool;
+        CartesianSpaceCheck_2 : Bool;
+        CartesianSpaceCheck_3 : Bool;
+        CartesianSpaceCheck_4 : Bool;
+        CartesianSpaceCheck_5 : Bool;
+        CartesianPositionCheck_1 : Bool;
+        CartesianPositionCheck_2 : Bool;
+        CartesianPositionCheck_3 : Bool;
+        CartesianPositionCheck_4 : Bool;
+        CartesianPositionCheck_5 : Bool;
+    END_STRUCT;
+END_TYPE

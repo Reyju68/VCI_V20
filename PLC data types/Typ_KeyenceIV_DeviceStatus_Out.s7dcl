@@ -1,0 +1,13 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_KeyenceIV_DeviceStatus_Out : STRUCT
+        Error_Number : Int;
+        Warning_Number : Int;
+        Number_of_remaining_buffers : Int;
+        Checksum : Int;
+        Current_Program_Number : Int;
+        Program_Number_during_judgment : Int;
+        Result_Number : Int;
+        Process_Time : Int;
+    END_STRUCT;
+END_TYPE

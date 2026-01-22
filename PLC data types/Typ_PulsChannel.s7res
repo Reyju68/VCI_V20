@@ -1,0 +1,9 @@
+﻿MultiLingualTexts:
+  - id: MLC_Rr
+    en-US: Actual Fuse Current
+  - id: MLC_3ex
+    en-US: Fuse state 1=ON
+  - id: MLC_Um
+    en-US: Fuse tripped 1=Tripped
+  - id: MLC_4zp
+    en-US: Fuse is shorted 1=Shorted

@@ -1,0 +1,19 @@
+﻿MultiLingualTexts:
+  - id: MLC_3LN
+    en-US: HMI Jog Increment
+  - id: MLC_3NC
+    en-US: Status of Homing Offset Positon Configuration
+  - id: MLC_4PK
+    en-US: Command Safe Jog Direction (0=Backward / 1=Forward)
+  - id: MLC_4AN
+    en-US: Command Safe Jog Moving
+  - id: MLC_Qs
+    en-US: Command Axis homing
+  - id: MLC_3vA
+    en-US: Command Release brake
+  - id: MLC_rN
+    en-US: Command Engage brake
+  - id: MLC_tm
+    en-US: HMI Start Incremental move Backward
+  - id: MLC_4xq
+    en-US: HMI Start Incremental move Forward

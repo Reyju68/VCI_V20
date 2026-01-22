@@ -1,0 +1,21 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_AxLinearMotion : STRUCT
+        { S7_MLC := "MLC_4fY" }
+        MoveType : DInt;
+        { S7_MLC := "MLC_3hs" }
+        Position : DInt;
+        { S7_MLC := "MLC_4pZ" }
+        Distance : DInt;
+        { S7_MLC := "MLC_uY" }
+        Approach : DInt;
+        { S7_MLC := "MLC_3gF" }
+        Velocity : DInt;
+        { S7_MLC := "MLC_38m" }
+        AccelRate : DInt;
+        { S7_MLC := "MLC_Tk" }
+        DecelRate : DInt;
+        { S7_MLC := "MLC_3mW" }
+        Jerk : DInt;
+    END_STRUCT;
+END_TYPE

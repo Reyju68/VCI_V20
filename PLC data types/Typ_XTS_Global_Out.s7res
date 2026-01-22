@@ -1,0 +1,19 @@
+﻿MultiLingualTexts:
+  - id: MLC_3vP
+    en-US: Value OF Gap0
+  - id: MLC_3ae
+    en-US: Value OF Gap1
+  - id: MLC_4Uy
+    en-US: Value OF Gap2
+  - id: MLC_3CP
+    en-US: Value OF Gap3
+  - id: MLC_4cy
+    en-US: Command Reboot PLC Beckhoff
+  - id: MLC_399
+    en-US: XTS Slow Speed Mode
+  - id: MLC_4F6
+    en-US: Speed Value OF  XTS Slow Speed Mode
+  - id: MLC_4L3
+    en-US: Speed LIMIT MAX OF XTS Slow Speed Mode
+  - id: MLC_46T
+    en-US: Reset Lubrification counter

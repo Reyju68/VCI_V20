@@ -1,0 +1,29 @@
+﻿MultiLingualTexts:
+  - id: MLC_4Gf
+    en-US: Axis X Coordinate (1/Cfg_Scaling Units)
+  - id: MLC_4xx
+    en-US: Axis Y Coordinate (1/Cfg_Scaling Units)
+  - id: MLC_3Qb
+    en-US: Axis Z Coordinate (1/Cfg_Scaling Units)
+  - id: MLC_4dx
+    en-US: Axis A Coordinate (1/Cfg_Scaling Units)
+  - id: MLC_kE
+    en-US: Axis B Coordinate (1/Cfg_Scaling Units)
+  - id: MLC_4iT
+    en-US: Axis C Coordinate (1/Cfg_Scaling Units)
+  - id: MLC_3WK
+    en-US: Velocity [Units per sec]
+  - id: MLC_4nu
+    en-US: Acceleration [Units per sec2]
+  - id: MLC_398
+    en-US: Deceleration [Units per sec2]
+  - id: MLC_3Jy
+    en-US: Jerk [Units per sec2]
+  - id: MLC_3YA
+    en-US: Value [%] of blending distance before and after the point
+  - id: MLC_3kM
+    en-US: 1= Positive Direction / 2= Negative Direction / 3= Shortest Distance
+  - id: MLC_4hJ
+    en-US: 0= World Coordinate System (WCS) / 1= Object Coor Sys 1 (OCS1) / 2= OCS2 / 3= OCS3
+  - id: MLC_4VX
+    en-US: True if there is a Wait Point in this position

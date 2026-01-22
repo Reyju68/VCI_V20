@@ -1,0 +1,15 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_PLCxToPLC1 : STRUCT
+        { S7_MLC := "MLC_RJ" }
+        Sts_RqstResetFctMover : SInt;
+        { S7_MLC := "MLC_3Ke" }
+        Sts_XTS_Running : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4bd";
+            S7_Visibility := "Hidden := External"
+        }
+        HeartBeat : Int;
+    END_STRUCT;
+END_TYPE

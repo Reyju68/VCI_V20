@@ -1,0 +1,13 @@
+﻿MultiLingualTexts:
+  - id: MLC_3AJ
+    en-US: Buffer Size
+  - id: MLC_jf
+    en-US: Data read in data base
+  - id: MLC_38D
+    en-US: Data write out to database
+  - id: MLC_3AA
+    en-US: Internal pointer
+  - id: MLC_3tE
+    en-US: Free Space
+  - id: MLC_c5
+    en-US: Part Out Buffer  (Power 2)

@@ -1,0 +1,17 @@
+﻿MultiLingualTexts:
+  - id: MLC_4MX
+    en-US: Command Cycle Reset Fct Mover
+  - id: MLC_4f2
+    en-US: Command Cycle Abort Mover
+  - id: MLC_ij
+    en-US: Command Cycle Reset Mover
+  - id: MLC_yq
+    en-US: Command Cycle Exec Mover
+  - id: MLC_3WQ
+    en-US: Status Module In Execute
+  - id: MLC_39r
+    en-US: Command Enable XTS
+  - id: MLC_gH
+    en-US: PushBtnReset
+  - id: MLC_4sc
+    en-US: Command for Slow speed

@@ -1,0 +1,25 @@
+﻿MultiLingualTexts:
+  - id: MLC_4hE
+    en-US: Start Push Button
+  - id: MLC_4P4
+    en-US: Rising Edge of Start Push Button
+  - id: MLC_WJ
+    en-US: Falling Edge of Start Push Button
+  - id: MLC_nw
+    en-US: Stop Push Button
+  - id: MLC_3sQ
+    en-US: Rising Edge of Stop Push Button
+  - id: MLC_3yJ
+    en-US: Falling Edge of Stop Push Button
+  - id: MLC_4JF
+    en-US: Reset Push Button
+  - id: MLC_y8
+    en-US: Rising Edge of Reset Push Button
+  - id: MLC_3iX
+    en-US: Falling Edge of Reset Push Button
+  - id: MLC_4tf
+    en-US: Jog Push Button
+  - id: MLC_y4
+    en-US: Rising Edge of Jog Push Button
+  - id: MLC_4X7
+    en-US: Falling Edge of Jog Push Button

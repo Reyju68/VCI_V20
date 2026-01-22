@@ -1,0 +1,25 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_XTS_Module : STRUCT
+        Cmd_CycleReseFctMover : SInt;
+        Cmd_CycleAbortMover : Bool;
+        Cmd_CycleResetMover : Bool;
+        Cmd_CycleExecMover : Bool;
+        Cmd_Reset : Bool;
+        Sts_MoverInMD : Array[0..31] of Bool;
+        Sts_MoverInExec : Bool;
+        Memo_MoverIdle : Bool;
+        Memo_MoverInAlarmL1 : Bool;
+        Memo_MoverInAlarmL2 : Bool;
+        { S7_Setpoint := "False" }
+        Tmr_MoverInExecOn : TON_TIME;
+        { S7_Setpoint := "False" }
+        Tmr_MoverInExecOff : TON_TIME;
+        Cfg_ResetFct_Zone : DInt;
+        Cfg_Index_ResetFct : Array[0..9] of DInt;
+        Cfg_LowLimit_Zone : Array[0..9] of Real;
+        Cfg_HighLimit_Zone : Array[0..9] of Real;
+        Cfg_LowLimit_MD : Array[0..9] of Real;
+        Cfg_HighLimit_MD : Array[0..9] of Real;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,20 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_DataProductKnowledge : STRUCT
+        { S7_MLC := "MLC_pi" }
+        BufferSize : DInt;
+        { S7_MLC := "MLC_a6" }
+        DataRead_In : DInt;
+        { S7_MLC := "MLC_3d8" }
+        DataWrite_Out : DInt;
+        { S7_MLC := "MLC_3ek" }
+        "Pointer" : DInt;
+        { S7_MLC := "MLC_Ve" }
+        FreeSpace : Real;
+        {
+            S7_MLC := "MLC_4rN";
+            S7_Setpoint := "False"
+        }
+        Buffer : Array[0..1023] of _.Typ_ProductKnowledge;
+    END_STRUCT;
+END_TYPE

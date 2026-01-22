@@ -1,0 +1,13 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_SiCfgMachine : STRUCT
+        { S7_MLC := "MLC_4fQ" }
+        IdealTime : Real;
+        { S7_MLC := "MLC_4v8" }
+        MaxWaitingTime : DInt;
+        { S7_MLC := "MLC_4r6" }
+        HMiNoRA : Bool;
+        { S7_MLC := "MLC_j9" }
+        PressureUnit : Bool;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,143 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_SiAdm : STRUCT
+        { S7_MLC := "MLC_36F" }
+        Cfg : _.Typ_SiCfgMachine;
+        {
+            S7_MLC := "MLC_59K";
+            S7_Setpoint := "False"
+        }
+        MainProg : _.Typ_MgrProg;
+        {
+            S7_MLC := "MLC_PN";
+            S7_Setpoint := "True"
+        }
+        CurTimeStamp : LInt;
+        { S7_MLC := "MLC_54g" }
+        Cmd_State : DInt;
+        { S7_MLC := "MLC_Rz" }
+        Sts_State : DInt;
+        { S7_MLC := "MLC_3nB" }
+        Sts_State_Aborting : Bool;
+        { S7_MLC := "MLC_49G" }
+        Sts_State_Aborted : Bool;
+        { S7_MLC := "MLC_4Gz" }
+        Sts_State_Stopping : Bool;
+        { S7_MLC := "MLC_sN" }
+        Sts_State_Stopped : Bool;
+        { S7_MLC := "MLC_3Kf" }
+        Sts_State_Reseting : Bool;
+        { S7_MLC := "MLC_4jy" }
+        Sts_State_Idle : Bool;
+        { S7_MLC := "MLC_4BK" }
+        Sts_State_Starting : Bool;
+        { S7_MLC := "MLC_4Wh" }
+        Sts_State_Execute : Bool;
+        { S7_MLC := "MLC_54B" }
+        Sts_State_Holding : Bool;
+        { S7_MLC := "MLC_XT" }
+        Sts_State_Held : Bool;
+        { S7_MLC := "MLC_3p6" }
+        Sts_State_Suspending : Bool;
+        { S7_MLC := "MLC_4f7" }
+        Sts_State_Suspended : Bool;
+        { S7_MLC := "MLC_Nk" }
+        Sts_Mode : DInt;
+        {
+            S7_MLC := "MLC_PF";
+            S7_Setpoint := "False"
+        }
+        Mode : _.Typ_SiMode;
+        { S7_MLC := "MLC_3Xd" }
+        Sts_SubMode : DInt;
+        {
+            S7_MLC := "MLC_3Gw";
+            S7_Setpoint := "False"
+        }
+        SubMode : _.Typ_SiSubMode;
+        { S7_MLC := "MLC_34Z" }
+        Sts_SubModeUser : DInt;
+        {
+            S7_MLC := "MLC_ZG";
+            S7_Setpoint := "False"
+        }
+        SubModeUser : _.Typ_SiSubModeUser;
+        { S7_MLC := "MLC_36V" }
+        Sts_DryCycleFE : Bool;
+        { S7_MLC := "MLC_55y" }
+        Mode_SlowSpeed : Bool;
+        { S7_MLC := "MLC_4VC" }
+        Sts_SlowSpeed : Bool;
+        {
+            S7_MLC := "MLC_4hM";
+            S7_Setpoint := "False"
+        }
+        Sts_Alms : _.Typ_AlarmLevel;
+        { S7_MLC := "MLC_526" }
+        Sts_GlobStHold : Array[0..1] of DInt;
+        { S7_MLC := "MLC_4sV" }
+        Sts_GlobStSuspd : Array[0..1] of DInt;
+        { S7_MLC := "MLC_339" }
+        Cmd_Reset : Bool;
+        { S7_MLC := "MLC_4ym" }
+        Ctr_MachinePartGood : DInt;
+        { S7_MLC := "MLC_4zQ" }
+        Ctr_MachinePartBad : DInt;
+        { S7_MLC := "MLC_4kx" }
+        Ctr_MachinePartAudit : DInt;
+        { S7_MLC := "MLC_3ZV" }
+        Cmd_EnableAllTracks : Bool;
+        { S7_MLC := "MLC_46y" }
+        Cmd_DisableAllTracks : Bool;
+        { S7_MLC := "MLC_33f" }
+        Cmd_ClrAlmsStat : Bool;
+        { S7_MLC := "MLC_Um" }
+        Cmd_DownTimeOn : Bool;
+        { S7_MLC := "MLC_38z" }
+        Cmd_WaitTimeOn : Bool;
+        { S7_MLC := "MLC_3ZB" }
+        Cmd_EnblActStat : Bool;
+        { S7_MLC := "MLC_55h" }
+        Cmd_ClrActStat : Bool;
+        { S7_MLC := "MLC_5A3" }
+        Cmd_ClrBatch : Bool;
+        { S7_MLC := "MLC_3Hh" }
+        Cmd_ForceRstEnd : Bool;
+        { S7_MLC := "MLC_TJ" }
+        Cmd_ImStopAlm : Bool;
+        { S7_MLC := "MLC_3fA" }
+        Sts_MachineEmpty : Bool;
+        { S7_MLC := "MLC_q9" }
+        Sts_SecPulse : Bool;
+        { S7_MLC := "MLC_4Ej" }
+        Sts_HR1 : Bool;
+        { S7_MLC := "MLC_Za" }
+        Sts_HR2 : Bool;
+        { S7_MLC := "MLC_33S" }
+        Sts_HR3 : Bool;
+        { S7_MLC := "MLC_4TU" }
+        Sts_HR1PrsOn : Bool;
+        { S7_MLC := "MLC_wL" }
+        Sts_HR2PrsOn : Bool;
+        { S7_MLC := "MLC_du" }
+        Sts_HR3PrsOn : Bool;
+        { S7_MLC := "MLC_ix" }
+        Sts_GA : Bool;
+        { S7_MLC := "MLC_3kt" }
+        Sts_GO : Bool;
+        { S7_MLC := "MLC_sa" }
+        Sts_SftyModeIMA : Bool;
+        { S7_MLC := "MLC_3Bc" }
+        Sts_SftyModeGO : Bool;
+        {
+            S7_MLC := "MLC_MY";
+            S7_Setpoint := "False"
+        }
+        PushBtn : _.Typ_SiPushButton;
+        {
+            S7_MLC := "MLC_4tv";
+            S7_Setpoint := "False"
+        }
+        User : _.Typ_SiUserTags;
+    END_STRUCT;
+END_TYPE

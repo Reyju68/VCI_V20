@@ -1,0 +1,67 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    TypActChkCognexInputs : STRUCT
+        AcquisitionStatus : STRUCT
+            TriggerReady : Bool;
+            TriggerAck : Bool;
+            ExposureComplete : Bool;
+            MissedAcq : Bool;
+            OfflineReason0 : Bool;
+            OfflineReason1 : Bool;
+            OfflineReason2 : Bool;
+            Online : Bool;
+            AcquisitionIDByte0 : Byte;
+            AcquisitionIDByte1 : Byte;
+        END_STRUCT;
+        InspectionStatus : STRUCT
+            SystemBusy : Bool;
+            InspectionCompleted : Bool;
+            ResultsBufferOverrun : Bool;
+            ResultsValid : Bool;
+            CmdExecuting : Bool;
+            CmdComplete : Bool;
+            CmdFailed : Bool;
+            SetUserDataAck : Bool;
+            JobPass : Bool;
+            NotUsed1 : Bool;
+            NotUsed2 : Bool;
+            NotUsed3 : Bool;
+            NotUsed4 : Bool;
+            NotUsed5 : Bool;
+            NotUsed6 : Bool;
+            Error : Bool;
+            ErrorCode1 : Int;
+        END_STRUCT;
+        CmdControl : STRUCT
+            Command : Int;
+        END_STRUCT;
+        InspectionResults : STRUCT
+            InspectionID : Int;
+            InspectionResultCode : Int;
+            InspectionResults0 : DInt;
+            InspectionResults1 : DInt;
+            InspectionResults2 : DInt;
+            InspectionResults3 : DInt;
+            InspectionResults4 : DInt;
+            InspectionResults5 : DInt;
+            InspectionResults6 : DInt;
+            InspectionResults7 : DInt;
+            { S7_MLC := "MLC_4pW" }
+            InspectionResults8 : DInt;
+            { S7_MLC := "MLC_557" }
+            InspectionResults9 : DInt;
+            { S7_MLC := "MLC_3dD" }
+            InspectionResults10 : DInt;
+            { S7_MLC := "MLC_4nc" }
+            InspectionResults11 : DInt;
+            { S7_MLC := "MLC_56R" }
+            InspectionResults12 : DInt;
+            { S7_MLC := "MLC_4q8" }
+            InspectionResults13 : DInt;
+            { S7_MLC := "MLC_42D" }
+            InspectionResults14 : DInt;
+            { S7_MLC := "MLC_4XK" }
+            InspectionResults15 : DInt;
+        END_STRUCT;
+    END_STRUCT;
+END_TYPE

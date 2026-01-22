@@ -1,0 +1,12 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_AlarmLevel : STRUCT
+        Abort : Bool;
+        Stop : Bool;
+        Idle : Bool;
+        Hold : Bool;
+        Suspend : Bool;
+        Warning : Bool;
+        Help : Bool;
+    END_STRUCT;
+END_TYPE

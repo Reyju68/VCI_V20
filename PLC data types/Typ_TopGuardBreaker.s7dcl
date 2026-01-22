@@ -1,0 +1,17 @@
+﻿TYPE
+    { S7_UnitAccess := "Published" }
+    Typ_TopGuardBreaker : STRUCT
+        { S7_MLC := "MLC_4LX" }
+        Device_Failure : Bool;
+        { S7_MLC := "MLC_4GQ" }
+        ShortCircuitSwitchOff : Bool;
+        { S7_MLC := "MLC_3gY" }
+        LoadPreWarning : Bool;
+        { S7_MLC := "MLC_4ca" }
+        LoadAlarmWarning : Bool;
+        { S7_MLC := "MLC_3WS" }
+        Device_On : Bool;
+        { S7_MLC := "MLC_39j" }
+        TripCurrentSet : Int;
+    END_STRUCT;
+END_TYPE
