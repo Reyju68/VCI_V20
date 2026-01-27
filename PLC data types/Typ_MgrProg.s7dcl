@@ -1,14 +1,14 @@
 ﻿TYPE
     { S7_UnitAccess := "Published" }
     Typ_MgrProg : STRUCT
-        { S7_MLC := "MLC_35p" }
-        Cfg_SeqStep : Bool;
-        { S7_MLC := "MLC_3rm" }
+        { S7_MLC := "MLC_4fA" }
         Cfg_BtnNoInterlock : DInt;
         { S7_MLC := "MLC_u2" }
         Cfg_ModularTst : Bool;
         { S7_MLC := "MLC_3WF" }
         Cfg_Safe : Bool;
+        { S7_MLC := "MLC_3UU" }
+        Cfg_SeqStep : Bool;
         { S7_MLC := "MLC_3zb" }
         Cmd_Idle : Bool;
         { S7_MLC := "MLC_489" }
