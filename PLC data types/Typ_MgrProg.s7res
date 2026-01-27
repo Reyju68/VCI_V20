@@ -1,12 +1,12 @@
 ﻿MultiLingualTexts:
-  - id: MLC_4fA
+  - id: MLC_35p
+    en-US: Configuration instruction to request step-by-step mode
+  - id: MLC_3rm
     en-US: Configuration of the function allowed to be activated
   - id: MLC_u2
     en-US: Configuration instruction to force step by step mode using during modular testing
   - id: MLC_3WF
     en-US: Configuration instruction to enable safe sequence execution
-  - id: MLC_3UU
-    en-US: Configuration instruction to request step-by-step mode
   - id: MLC_3zb
     en-US: Command to define the end of sequence
   - id: MLC_489
