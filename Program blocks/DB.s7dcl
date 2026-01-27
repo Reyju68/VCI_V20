@@ -1,0 +1,10 @@
+﻿NAMESPACE _01_91
+    {
+        S7_Optimized := "TRUE";
+        S7_StandardRetain := "FALSE";
+        S7_UnitAccess := "Published";
+        S7_Version := "0.1"
+    }
+    DATA_BLOCK "DB" : Program_logic
+    END_DATA_BLOCK
+END_NAMESPACE
