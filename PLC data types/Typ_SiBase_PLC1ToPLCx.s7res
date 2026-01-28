@@ -1,0 +1,39 @@
+﻿MultiLingualTexts:
+  - id: MLC_3YR
+    en-US: Typ_SiBase_PLC1ToPLCx
+  - id: MLC_49P
+    en-US: Base Interface Communication PLC1 to PLCx
+  - id: MLC_3fK
+    en-US: Base Configuration
+  - id: MLC_3fL
+    en-US: Specific Reject Cause Number
+  - id: MLC_46j
+    en-US: Base Cmd Immediate Abort
+  - id: MLC_N9
+    en-US: Base Cmd Abort
+  - id: MLC_zn
+    en-US: Base Cmd Stop
+  - id: MLC_4ey
+    en-US: Base Cmd Reset 1
+  - id: MLC_PZ
+    en-US: Base Cmd Reset 2
+  - id: MLC_3DV
+    en-US: Base Cmd Execute
+  - id: MLC_4kS
+    en-US: Cmd Reset Motion Group
+  - id: MLC_t4
+    en-US: Status All Stations In Idle State
+  - id: MLC_4f5
+    en-US: Status All Stations are No Alarm
+  - id: MLC_4RZ
+    en-US: Status All Stations are Ready for next cycle
+  - id: MLC_4z9
+    en-US: Status All Stations are in Security state
+  - id: MLC_mr
+    en-US: Status All Stations In Worked State
+  - id: MLC_3qG
+    en-US: All Stations are waiting for Parts/Movers
+  - id: MLC_46M
+    en-US: Base Transport Reset Done
+  - id: MLC_48h
+    en-US: Heart Beat

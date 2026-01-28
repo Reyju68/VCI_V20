@@ -1,0 +1,35 @@
+﻿MultiLingualTexts:
+  - id: MLC_3hv
+    en-US: Typ_SiBase_PLCxToPLC1
+  - id: MLC_3WM
+    en-US: Consumed Base Interface from other PLCs
+  - id: MLC_3cB
+    en-US: Handshake Base Cmd Immediate Abort
+  - id: MLC_4mf
+    en-US: Handshake Base Cmd Abort
+  - id: MLC_4tr
+    en-US: Handshake Base Cmd Stop
+  - id: MLC_3RN
+    en-US: Handshake Base Cmd Reset 1
+  - id: MLC_3nw
+    en-US: Handshake Base Cmd Reset 2
+  - id: MLC_3cQ
+    en-US: Handshake Base Cmd Execute
+  - id: MLC_3aN
+    en-US: Handshake Cmd Reset Motion Group
+  - id: MLC_4TA
+    en-US: Handshake Specific Reject Cause Number
+  - id: MLC_3kr
+    en-US: Bitwise of Idle Status per stations
+  - id: MLC_ax
+    en-US: Bitwise of No Alarm Status per stations
+  - id: MLC_XG
+    en-US: Bitwise of Ready Status per stations
+  - id: MLC_4QZ
+    en-US: Bitwise of Secu Status per stations
+  - id: MLC_55V
+    en-US: Bitwise of Worked Status per stations
+  - id: MLC_NN
+    en-US: Bitwise of Pending Status per stations
+  - id: MLC_4di
+    en-US: Heart Beat

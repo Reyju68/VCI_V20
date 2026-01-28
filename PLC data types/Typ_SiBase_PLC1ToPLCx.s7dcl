@@ -1,0 +1,50 @@
+﻿TYPE
+    {
+        S7_BlockComment := "MLC_49P";
+        S7_BlockTitle := "MLC_3YR";
+        S7_UnitAccess := "Published"
+    }
+    Typ_SiBase_PLC1ToPLCx : STRUCT
+        {
+            S7_MLC := "MLC_3fK";
+            S7_Setpoint := "False"
+        }
+        Cfg : _.Typ_SiCfgBase;
+        { S7_MLC := "MLC_3fL" }
+        Cfg_RejectCause : DInt;
+        { S7_MLC := "MLC_46j" }
+        Cmd_ImAbort : Bool;
+        { S7_MLC := "MLC_N9" }
+        Cmd_Abort : Bool;
+        { S7_MLC := "MLC_zn" }
+        Cmd_Stop : Bool;
+        { S7_MLC := "MLC_4ey" }
+        Cmd_Reset1 : Bool;
+        { S7_MLC := "MLC_PZ" }
+        Cmd_Reset2 : Bool;
+        { S7_MLC := "MLC_3DV" }
+        Cmd_Exec : Bool;
+        { S7_MLC := "MLC_4kS" }
+        Cmd_RstMotionGrp : Bool;
+        { S7_MLC := "MLC_t4" }
+        Sts_AllStationsIdle : Bool;
+        { S7_MLC := "MLC_4f5" }
+        Sts_AllStationsNoAlm : Bool;
+        { S7_MLC := "MLC_4RZ" }
+        Sts_AllStationsReady : Bool;
+        { S7_MLC := "MLC_4z9" }
+        Sts_AllStationsSecu : Bool;
+        { S7_MLC := "MLC_mr" }
+        Sts_AllStationsWorked : Bool;
+        { S7_MLC := "MLC_3qG" }
+        Sts_AllStationsPending : Bool;
+        { S7_MLC := "MLC_46M" }
+        Sts_TransportRstDone : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_48h";
+            S7_Visibility := "Hidden := External"
+        }
+        HeartBeat : Int;
+    END_STRUCT;
+END_TYPE
