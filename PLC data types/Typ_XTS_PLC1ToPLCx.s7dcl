@@ -1,0 +1,35 @@
+﻿TYPE
+    {
+        S7_BlockTitle := "MLC_3Nz";
+        S7_UnitAccess := "Published"
+    }
+    Typ_XTS_PLC1ToPLCx : STRUCT
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_RqstResetFctMover : SInt;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_XTS_Running : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Cfg : _.Typ_XTS_MoverEnable;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        Mover_MD_Number : Array[1.._.Cfg_XTS_NbrMaxMover] of Int;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3yV";
+            S7_Visibility := "Hidden := External"
+        }
+        HeartBeat : Int;
+    END_STRUCT;
+END_TYPE

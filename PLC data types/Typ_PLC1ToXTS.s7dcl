@@ -1,0 +1,36 @@
+﻿TYPE
+    {
+        S7_BlockComment := "MLC_49H";
+        S7_BlockTitle := "MLC_4Qz";
+        S7_UnitAccess := "Published"
+    }
+    Typ_PLC1ToXTS : STRUCT
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Std : _.Typ_Mch_To_XTS;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4xr";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_StationSecu : Array[0..32] of Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3vB";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Sync_Pos : Array[0..50] of _.Typ_XTS_SyncPosToXTS;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_yA";
+            S7_Visibility := "Hidden := External"
+        }
+        HeartBeat : Int;
+        Sts_MoverRqstd_St91 : LInt;
+        Sts_PositionFeeded_St91 : LInt;
+    END_STRUCT;
+END_TYPE

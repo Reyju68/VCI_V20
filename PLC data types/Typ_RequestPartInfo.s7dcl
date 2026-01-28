@@ -1,0 +1,17 @@
+﻿TYPE
+    {
+        S7_BlockTitle := "MLC_k3";
+        S7_UnitAccess := "Published"
+    }
+    Typ_RequestPartInfo : STRUCT
+        WPH_Requested : DInt;
+        { S7_Setpoint := "False" }
+        WPH : _.Typ_WPH;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4Nj";
+            S7_Visibility := "Hidden := External"
+        }
+        HeartBeat : Int;
+    END_STRUCT;
+END_TYPE

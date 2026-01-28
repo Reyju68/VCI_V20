@@ -1,0 +1,59 @@
+﻿TYPE
+    {
+        S7_BlockComment := "MLC_4i8";
+        S7_BlockTitle := "MLC_37G";
+        S7_UnitAccess := "Published"
+    }
+    Typ_SyncTasks : STRUCT
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4gV";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Alms : _.Typ_AlarmLevel;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4gy";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_GlobAlms : _.Typ_AlarmLevel;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3C3";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_Reset : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_43W";
+            S7_Visibility := "Hidden := External"
+        }
+        Cmd_GlobReset : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_Tf";
+            S7_Visibility := "Hidden := External"
+        }
+        Clr_Batch : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3iD";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_NestsEmpty : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3ii";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_LimpTrack : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_Rp";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_LimpNest : Bool;
+    END_STRUCT;
+END_TYPE

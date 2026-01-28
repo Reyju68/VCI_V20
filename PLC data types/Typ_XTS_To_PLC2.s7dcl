@@ -1,0 +1,72 @@
+﻿TYPE
+    {
+        S7_BlockComment := "MLC_4Nn";
+        S7_BlockTitle := "MLC_pa";
+        S7_UnitAccess := "Published"
+    }
+    Typ_XTS_To_PLC2 : STRUCT
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3vj";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Std : _.Typ_XTS_To_Mch;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_sV";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_AreaChk : Array[0..63] of Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3bd";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_AreaMty : Array[0..63] of Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_42T";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_AreaSecu : Array[0..31] of Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3Gp";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_AreaPosOk : Array[0..31] of Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_eu";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_MoverId_St20 : Array[0..9] of Int;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4Ck";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_MoverNb_Pos : Array[51..100] of Int;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_44x";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Sync_Pos : Array[51..100] of _.Typ_XTS_SyncPosFromXTS;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4kW";
+            S7_Setpoint := "False";
+            S7_Visibility := "Hidden := External"
+        }
+        Sts_Mover : Array[51..100] of _.Typ_XTS_StatusPos;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_4Kv";
+            S7_Visibility := "Hidden := External"
+        }
+        HeartBeat : Int;
+    END_STRUCT;
+END_TYPE

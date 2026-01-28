@@ -1,0 +1,73 @@
+﻿MultiLingualTexts:
+  - id: MLC_3BV
+    en-US: System Interface Communication PLC1 to PLCx
+  - id: MLC_4VS
+    en-US: Machine Configuration
+  - id: MLC_5BG
+    en-US: Main Manager Prog
+  - id: MLC_39N
+    en-US: Current Mode
+  - id: MLC_4HN
+    en-US: Current SubMode
+  - id: MLC_4Ki
+    en-US: Current SubMode User (specific project)
+  - id: MLC_4b4
+    en-US: User Tags
+  - id: MLC_53m
+    en-US: Current State
+  - id: MLC_3XT
+    en-US: Handshake Alams status
+  - id: MLC_4x9
+    en-US: Mode Slow Speed
+  - id: MLC_4au
+    en-US: Status Slow Speed
+  - id: MLC_3H5
+    en-US: Memo State Ons Of Main Prog Sequencer
+  - id: MLC_3H4
+    en-US: Reset Command
+  - id: MLC_4gM
+    en-US: Enable All Tracks
+  - id: MLC_3eB
+    en-US: Disable All Tracks
+  - id: MLC_3rx
+    en-US: Alarms Statistics Clear Command
+  - id: MLC_429
+    en-US: Alarms Statistics Down Time Enable
+  - id: MLC_W7
+    en-US: Alarms Statistics Wait Time Enable
+  - id: MLC_3aB
+    en-US: Batch Statistics Clear Command
+  - id: MLC_5Bn
+    en-US: Status Machine Empty
+  - id: MLC_v8
+    en-US: Second Pulse Status
+  - id: MLC_46e
+    en-US: Safety HR1
+  - id: MLC_aD
+    en-US: Safety HR2
+  - id: MLC_3B7
+    en-US: Safety HR3
+  - id: MLC_4FT
+    en-US: HR1 Pressure On
+  - id: MLC_3zm
+    en-US: HR2 Pressure On
+  - id: MLC_sU
+    en-US: HR3 Pressure On
+  - id: MLC_4G2
+    en-US: Safety Guard Active
+  - id: MLC_h7
+    en-US: Safety Guard Override
+  - id: MLC_4Zf
+    en-US: Safety Mode IMA selected
+  - id: MLC_3YP
+    en-US: Safety Mode GO selected
+  - id: MLC_4EE
+    en-US: Push Button Start
+  - id: MLC_hj
+    en-US: Push Button Stop
+  - id: MLC_45H
+    en-US: Push Button Reset
+  - id: MLC_3LJ
+    en-US: Push Button Jog
+  - id: MLC_3Bu
+    en-US: Heart Beat

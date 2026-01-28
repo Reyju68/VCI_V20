@@ -1,0 +1,23 @@
+﻿TYPE
+    {
+        S7_BlockTitle := "MLC_YN";
+        S7_UnitAccess := "Published"
+    }
+    Typ_MxIntToMx : STRUCT
+        State_Inter : DInt;
+        { S7_Setpoint := "False" }
+        SubMode : _.Typ_SiSubMode;
+        { S7_Setpoint := "False" }
+        SubModeUser : _.Typ_SiSubModeUser;
+        { S7_Setpoint := "False" }
+        Base_Inter : _.Typ_SiBase;
+        Sts_GA : Bool;
+        Sts_GO : Bool;
+        Sts_NoAlmTransport : Bool;
+        ChckDoorsInter_StsOut : Bool;
+        Cmd_ClearAllNest : Bool;
+        Cmd_ClearBatch : Bool;
+        Sts_AllNestEmpty : Bool;
+        Misc : Array[0..1] of DInt;
+    END_STRUCT;
+END_TYPE

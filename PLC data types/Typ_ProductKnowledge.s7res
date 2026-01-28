@@ -1,0 +1,15 @@
+﻿MultiLingualTexts:
+  - id: MLC_PE
+    en-US: 'MaJ: 07/08/2025'
+  - id: MLC_55d
+    en-US: Description of the value about the Part ID
+  - id: MLC_54a
+    en-US: Part ID Unique
+  - id: MLC_mJ
+    en-US: ID of the station about the information
+  - id: MLC_wi
+    en-US: TimeStamp
+  - id: MLC_47Q
+    en-US: 1 = DINT - 2 = REAL - 3 = STRING
+  - id: MLC_3gy
+    en-US: Value of the information

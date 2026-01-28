@@ -1,0 +1,21 @@
+﻿MultiLingualTexts:
+  - id: MLC_37G
+    en-US: Typ_SyncTasks
+  - id: MLC_4i8
+    en-US: Tasks Synchronise Interface
+  - id: MLC_4gV
+    en-US: Alarms status for task synchronisation
+  - id: MLC_4gy
+    en-US: Alarms status of Global Task
+  - id: MLC_3C3
+    en-US: Reset Command for task synchronisation
+  - id: MLC_43W
+    en-US: Reset Command of Global Task
+  - id: MLC_Tf
+    en-US: Clear Batch Command from Main task
+  - id: MLC_3iD
+    en-US: Nests Empty Status for task synchronisation
+  - id: MLC_3ii
+    en-US: Limp Track Status for task synchronisation
+  - id: MLC_Rp
+    en-US: Limp Nest Status for task synchronisation

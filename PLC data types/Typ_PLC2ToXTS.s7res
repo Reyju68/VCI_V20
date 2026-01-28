@@ -1,0 +1,15 @@
+﻿MultiLingualTexts:
+  - id: MLC_3aw
+    en-US: Typ_PLC1_1ToXTS
+  - id: MLC_3Q2
+    en-US: Data communication to PLC Loop
+  - id: MLC_5AJ
+    en-US: Status Station Secured (.0 Z1 /.1 Z2 / etc)
+  - id: MLC_4vp
+    en-US: Status All Position To Feed
+  - id: MLC_4hu
+    en-US: Status First Position To Feed
+  - id: MLC_4cr
+    en-US: Command From station to XTS
+  - id: MLC_X2
+    en-US: Heart Beat

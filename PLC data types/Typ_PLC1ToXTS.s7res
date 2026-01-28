@@ -1,0 +1,11 @@
+﻿MultiLingualTexts:
+  - id: MLC_4Qz
+    en-US: Typ_PLC1_1ToXTS
+  - id: MLC_49H
+    en-US: Data communication to PLC Loop
+  - id: MLC_4xr
+    en-US: Status Station Secured (.0 Z1 /.1 Z2 / etc)
+  - id: MLC_3vB
+    en-US: Command From station to XTS
+  - id: MLC_yA
+    en-US: Heart Beat

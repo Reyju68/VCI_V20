@@ -1,0 +1,103 @@
+﻿TYPE
+    {
+        S7_BlockComment := "MLC_3BV";
+        S7_UnitAccess := "Published"
+    }
+    Typ_SiAdm_PLC1ToPLCx : STRUCT
+        {
+            S7_MLC := "MLC_4VS";
+            S7_Setpoint := "False"
+        }
+        Cfg : _.Typ_SiCfgMachine;
+        {
+            S7_MLC := "MLC_5BG";
+            S7_Setpoint := "False"
+        }
+        MainProg : _.Typ_MgrProg;
+        {
+            S7_MLC := "MLC_39N";
+            S7_Setpoint := "False"
+        }
+        Mode : _.Typ_SiMode;
+        {
+            S7_MLC := "MLC_4HN";
+            S7_Setpoint := "False"
+        }
+        SubMode : _.Typ_SiSubMode;
+        {
+            S7_MLC := "MLC_4Ki";
+            S7_Setpoint := "False"
+        }
+        SubModeUser : _.Typ_SiSubModeUser;
+        {
+            S7_MLC := "MLC_4b4";
+            S7_Setpoint := "False"
+        }
+        User : _.Typ_SiUserTags;
+        { S7_MLC := "MLC_53m" }
+        Sts_State : DInt;
+        {
+            S7_MLC := "MLC_3XT";
+            S7_Setpoint := "False"
+        }
+        Hdsk_StsAlms : _.Typ_AlarmLevel;
+        { S7_MLC := "MLC_4x9" }
+        Mode_SlowSpeed : Bool;
+        { S7_MLC := "MLC_4au" }
+        Sts_SlowSpeed : Bool;
+        { S7_MLC := "MLC_3H5" }
+        Cmd_MainProgStateOns : Bool;
+        { S7_MLC := "MLC_3H4" }
+        Cmd_Reset : Bool;
+        { S7_MLC := "MLC_4gM" }
+        Cmd_EnableAllTracks : Bool;
+        { S7_MLC := "MLC_3eB" }
+        Cmd_DisableAllTracks : Bool;
+        { S7_MLC := "MLC_3rx" }
+        Cmd_ClrAlmsStat : Bool;
+        { S7_MLC := "MLC_429" }
+        Cmd_DownTimeOn : Bool;
+        { S7_MLC := "MLC_W7" }
+        Cmd_WaitTimeOn : Bool;
+        { S7_MLC := "MLC_3aB" }
+        Cmd_ClrBatch : Bool;
+        { S7_MLC := "MLC_5Bn" }
+        Sts_MachineEmpty : Bool;
+        { S7_MLC := "MLC_v8" }
+        Sts_SecPulse : Bool;
+        { S7_MLC := "MLC_46e" }
+        Sts_HR1 : Bool;
+        { S7_MLC := "MLC_aD" }
+        Sts_HR2 : Bool;
+        { S7_MLC := "MLC_3B7" }
+        Sts_HR3 : Bool;
+        { S7_MLC := "MLC_4FT" }
+        Sts_HR1PrsOn : Bool;
+        { S7_MLC := "MLC_3zm" }
+        Sts_HR2PrsOn : Bool;
+        { S7_MLC := "MLC_sU" }
+        Sts_HR3PrsOn : Bool;
+        { S7_MLC := "MLC_4G2" }
+        Sts_GA : Bool;
+        { S7_MLC := "MLC_h7" }
+        Sts_GO : Bool;
+        { S7_MLC := "MLC_4Zf" }
+        Sts_SftyModeIMA : Bool;
+        { S7_MLC := "MLC_3YP" }
+        Sts_SftyModeGO : Bool;
+        { S7_MLC := "MLC_4EE" }
+        Cmd_PushBtnStart : Bool;
+        { S7_MLC := "MLC_hj" }
+        Cmd_PushBtnStop : Bool;
+        { S7_MLC := "MLC_45H" }
+        Cmd_PushBtnReset : Bool;
+        { S7_MLC := "MLC_3LJ" }
+        Cmd_PushBtnJog : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_3Bu";
+            S7_Visibility := "Hidden := External"
+        }
+        HeartBeat : Int;
+    END_STRUCT;
+END_TYPE

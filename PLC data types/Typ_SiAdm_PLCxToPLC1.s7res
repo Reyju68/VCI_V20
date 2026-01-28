@@ -1,0 +1,45 @@
+﻿MultiLingualTexts:
+  - id: MLC_3JV
+    en-US: Typ_SiAdm_PLCxToPLC1
+  - id: MLC_nn
+    en-US: System Interface - Admin Tags
+  - id: MLC_PT
+    en-US: Stations Alarms
+  - id: MLC_eX
+    en-US: Update Machine Good Parts Counter
+  - id: MLC_3GW
+    en-US: Update Machine Bad Parts Counter
+  - id: MLC_58x
+    en-US: Update Machine Audit Parts Counter
+  - id: MLC_4CD
+    en-US: Last Station Part Rate (if the last station is on PLCx and not on PLC1)
+  - id: MLC_NS
+    en-US: Cmd Stop State Reset
+  - id: MLC_4CK
+    en-US: Cmd Immediate Stop Alarm
+  - id: MLC_585
+    en-US: Status All stations manage by slave PLC are Empty
+  - id: MLC_4Ut
+    en-US: Status At Least One Station Deactivated In Slave PLC
+  - id: MLC_4r9
+    en-US: Handshake Memo State Ons Of Main Prog Sequencer
+  - id: MLC_3Dh
+    en-US: Handshake Reset Command
+  - id: MLC_x5
+    en-US: Handshake Enable All Tracks
+  - id: MLC_4BD
+    en-US: Handshake Disable All Tracks
+  - id: MLC_3sA
+    en-US: Handshake Alarms Statistics Clear Command
+  - id: MLC_3RK
+    en-US: Handshake Batch Statistics Clear Command
+  - id: MLC_3Bw
+    en-US: Handshake Push Button Start
+  - id: MLC_3NE
+    en-US: Handshake Push Button Stop
+  - id: MLC_3Zu
+    en-US: Handshake Push Button Reset
+  - id: MLC_3CX
+    en-US: Handshake Push Button Jog
+  - id: MLC_dW
+    en-US: Heart Beat

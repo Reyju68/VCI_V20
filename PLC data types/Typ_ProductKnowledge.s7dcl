@@ -1,0 +1,20 @@
+﻿TYPE
+    {
+        S7_BlockComment := "MLC_PE";
+        S7_UnitAccess := "Published"
+    }
+    Typ_ProductKnowledge : STRUCT
+        { S7_MLC := "MLC_55d" }
+        Description : String;
+        { S7_MLC := "MLC_54a" }
+        PartID : String[20];
+        { S7_MLC := "MLC_mJ" }
+        StationID : DInt;
+        { S7_MLC := "MLC_wi" }
+        TimeStamp : LInt;
+        { S7_MLC := "MLC_47Q" }
+        "Type" : SInt;
+        { S7_MLC := "MLC_3gy" }
+        Value : String[20];
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,56 @@
+﻿TYPE
+    {
+        S7_BlockComment := "MLC_nn";
+        S7_BlockTitle := "MLC_3JV";
+        S7_UnitAccess := "Published"
+    }
+    Typ_SiAdm_PLCxToPLC1 : STRUCT
+        {
+            S7_MLC := "MLC_PT";
+            S7_Setpoint := "False"
+        }
+        Sts_Alms : _.Typ_AlarmLevel;
+        { S7_MLC := "MLC_eX" }
+        Ctr_MachinePartGood : DInt;
+        { S7_MLC := "MLC_3GW" }
+        Ctr_MachinePartBad : DInt;
+        { S7_MLC := "MLC_58x" }
+        Ctr_MachinePartAudit : DInt;
+        { S7_MLC := "MLC_4CD" }
+        LastStationPartRate : DInt;
+        { S7_MLC := "MLC_NS" }
+        Cmd_ForceRstEnd : Bool;
+        { S7_MLC := "MLC_4CK" }
+        Cmd_ImStopAlm : Bool;
+        { S7_MLC := "MLC_585" }
+        Sts_AllStationsEmpty : Bool;
+        { S7_MLC := "MLC_4Ut" }
+        Sts_LimpTrack : Bool;
+        { S7_MLC := "MLC_4r9" }
+        Hdsk_CmdMainProgStateOns : Bool;
+        { S7_MLC := "MLC_3Dh" }
+        Hdsk_CmdReset : Bool;
+        { S7_MLC := "MLC_x5" }
+        Hdsk_CmdEnableAllTracks : Bool;
+        { S7_MLC := "MLC_4BD" }
+        Hdsk_CmdDisableAllTracks : Bool;
+        { S7_MLC := "MLC_3sA" }
+        Hdsk_CmdClrAlmsStat : Bool;
+        { S7_MLC := "MLC_3RK" }
+        Hdsk_CmdClrBatch : Bool;
+        { S7_MLC := "MLC_3Bw" }
+        Hdsk_CmdPushBtnStart : Bool;
+        { S7_MLC := "MLC_3NE" }
+        Hdsk_CmdPushBtnStop : Bool;
+        { S7_MLC := "MLC_3Zu" }
+        Hdsk_CmdPushBtnReset : Bool;
+        { S7_MLC := "MLC_3CX" }
+        Hdsk_CmdPushBtnJog : Bool;
+        {
+            S7_Access := "ReadOnly := External";
+            S7_MLC := "MLC_dW";
+            S7_Visibility := "Hidden := External"
+        }
+        HeartBeat : Int;
+    END_STRUCT;
+END_TYPE

@@ -1,0 +1,13 @@
+﻿TYPE
+    {
+        S7_BlockTitle := "MLC_4ZE";
+        S7_UnitAccess := "Published"
+    }
+    Typ_XTS_MoverEnable : STRUCT
+        {
+            S7_Access := "ReadOnly := External";
+            S7_Visibility := "Hidden := External"
+        }
+        MoverEnable : Array[1.._.Cfg_XTS_NbrMaxMover] of Bool;
+    END_STRUCT;
+END_TYPE

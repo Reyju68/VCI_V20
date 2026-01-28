@@ -1,0 +1,25 @@
+﻿MultiLingualTexts:
+  - id: MLC_pa
+    en-US: Typ_XTS_To_PLC1_1
+  - id: MLC_4Nn
+    en-US: Data communication to PLC Loop
+  - id: MLC_3vj
+    en-US: Standard
+  - id: MLC_sV
+    en-US: Status Area Check(.0 Z1 /.1 Z2 / etc)
+  - id: MLC_3bd
+    en-US: Status Area Empty(.0 Z1 /.1 Z2 / etc)
+  - id: MLC_42T
+    en-US: Status Area Secured (.0 Z1 /.1 Z2 / etc)
+  - id: MLC_3Gp
+    en-US: Status Mover Area In Pos OK (.0 Z1 /.1 Z2 / etc)
+  - id: MLC_eu
+    en-US: Mover ID for Stations
+  - id: MLC_4Ck
+    en-US: Status Mover number in front of Position_x[index]
+  - id: MLC_44x
+    en-US: Command from XTS
+  - id: MLC_4kW
+    en-US: Status from XTS
+  - id: MLC_4Kv
+    en-US: Heart Beat
