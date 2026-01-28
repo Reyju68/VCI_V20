@@ -1,0 +1,13 @@
+﻿MultiLingualTexts:
+  - id: MLC_4JZ
+    en-US: Typ_CmdHmi
+  - id: MLC_d2
+    en-US: Command from HMI
+  - id: MLC_4zT
+    en-US: 'Disable Track (Limp management : .0=All tracks / .1=Track 1 / .2 ...)'
+  - id: MLC_3ka
+    en-US: 'Enable Track (Limp management : .0=All tracks / .1=Track 1 / .2 ...)'
+  - id: MLC_42c
+    en-US: 'Disable Nest (Limp management : .0=All nests / .1=Nest 1 / .2 ...)'
+  - id: MLC_4yS
+    en-US: 'Enable Nest (Limp management : .0=All nests / .1=Nest 1 / .2 ...)'
